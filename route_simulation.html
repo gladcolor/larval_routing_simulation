@@ -117,7 +117,7 @@
     <div class="grp">
       <b>Teams</b><div id="teamSeg" class="seg"></div>
       <b style="margin-top:11px">Working days</b>
-      <div id="dayRow"><input id="dayRange" type="range" min="1" max="30" step="1" value="8"><span id="dayVal">8</span></div>
+      <div id="dayRow"><input id="dayRange" type="range" min="1" max="30" step="1" value="1"><span id="dayVal">1</span></div>
       <button id="play">▶ Drive route</button>
       <div id="spdRow" style="display:flex;align-items:center;gap:6px;margin-top:8px">
         <span class="note" style="margin:0">▶ play speed</span><div id="spdSeg" class="seg" style="flex:1"></div>
@@ -157,7 +157,7 @@
       <svg id="covsvg" viewBox="0 0 560 236" preserveAspectRatio="xMidYMid meet"></svg>
       <div id="covside">
         <h3 id="covTitle">Coverage</h3>
-        <div class="stat"><span class="k">larvae treated by day <span id="dDay">8</span></span><span class="v big" id="vLarv">—</span></div>
+        <div class="stat"><span class="k">larvae treated by day <span id="dDay">1</span></span><span class="v big" id="vLarv">—</span></div>
         <div class="stat"><span class="k">habitats visited</span><span class="v" id="vHab">—</span></div>
         <div class="stat"><span class="k">days to knock down 50% larvae</span><span class="v" id="v50">—</span></div>
         <div class="stat"><span class="k">days to knock down 80% larvae</span><span class="v" id="v80">—</span></div>
@@ -182,7 +182,7 @@ const SIMD=3650;                // simulation horizon (days): long enough for mi
 const DOT_W=0.5, DOT_W_T=0.8;  // habitat dot outline width (px): untreated / treated (team-coloured)
 const ROUTE_W=1.2;             // route line width (px); street sweep draws at .75x, animated trail at 1.25x
 const IMMOBILE=1e12;            // sec/metre used at 0 km/h: large but finite, so 0*fac stays 0 instead of NaN
-let st={city:CITIES[0],camp:"Predicted",algo:"sector",teams:2,day:8,speed:25,service:20,hours:8};
+let st={city:CITIES[0],camp:"Predicted",algo:"sector",teams:2,day:1,speed:25,service:20,hours:8};
 let map,baseDark,baseSat,habLayer,routeLayer,carLayer,habMarkers=[],curKey=null,anim=null,playMult=1,dotScale=1,showRandom=false;
 let cache={};   // routesKey -> {algo->teams->routes}
 
