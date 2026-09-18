@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Monte Carlo — survey-order simulation</title>
+<style>
+  :root{ --bg:#0b0e13; --panel:#161b22; --panel2:#11161d; --txt:#e6edf3; --mut:#9aa6b2;
+         --accent:#58a6ff; --line:#30363d; --grid:#222a34; }
+  *{box-sizing:border-box;}
+  html,body{height:100%;margin:0;background:var(--bg);color:var(--txt);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:13px;}
+  #wrap{position:absolute;inset:0;display:flex;}
+
+  /* ---------- left control rail ---------- */
+  #side{width:268px;flex:0 0 268px;background:var(--panel);border-right:1px solid var(--line);
+    overflow-y:auto;padding:14px 14px 22px;}
+  #side h1{font-size:14px;margin:0 0 2px;font-weight:600;}
+  #side h1 .em{font-style:italic;color:#cdd6e0;}
+  #side .lead{color:var(--mut);font-size:11.5px;line-height:1.45;margin:0 0 12px;}
+  .grp{border-top:1px solid var(--line);padding:11px 0 4px;}
+  .grp:first-of-type{border-top:none;}
+  .grp b{display:block;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--mut);margin-bottom:7px;}
+  label.r{display:flex;align-items:center;gap:7px;padding:3px 0;cursor:pointer;}
+  label.r input{accent-color:var(--accent);}
+  .citymeta{color:var(--mut);font-size:10.5px;margin:-1px 0 5px 23px;}
+  #simRow{display:flex;align-items:center;gap:8px;}
+  #simN{width:64px;background:var(--panel2);color:var(--txt);border:1px solid var(--line);
+    border-radius:6px;padding:5px 6px;font-size:12.5px;text-align:right;}
+  #simRange{flex:1;accent-color:var(--accent);}
+  .note{color:var(--mut);font-size:10.5px;line-height:1.4;margin-top:6px;}
+  .seg{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;margin-top:2px;}
+  .seg button{flex:1;background:var(--panel2);color:var(--mut);border:none;padding:6px 4px;
+    cursor:pointer;font-size:12px;transition:.12s;}
+  .seg button.on{background:rgba(88,166,255,.16);color:var(--txt);}
+  #rerun{width:100%;margin-top:10px;background:rgba(88,166,255,.12);color:var(--accent);
+    border:1px solid #2b4a73;border-radius:7px;padding:8px;font-size:12.5px;cursor:pointer;
+    transition:.12s;font-weight:600;}
+  #rerun:hover{background:rgba(88,166,255,.22);}
+  #rerun:active{transform:translateY(1px);}
+  /* legend */
+  .lg{display:flex;align-items:center;gap:8px;padding:3px 0;font-size:11.5px;color:#c6d0da;}
+  .lg .sw{width:26px;height:12px;border-radius:2px;flex:0 0 26px;position:relative;}
+  .lg .ln{width:26px;height:0;border-top-width:2px;border-top-style:solid;flex:0 0 26px;}
+  .lg .dash{border-top-style:dashed;}
+  .interp{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:9px 10px;
+    font-size:11px;line-height:1.5;color:#bcc7d2;margin-top:8px;}
+  .interp b{color:var(--txt);}
+  .interp .cav{display:block;margin-top:6px;color:#8f9ba8;}
+
+  /* ---------- right plot grid ---------- */
+  #main{flex:1;display:flex;flex-direction:column;min-width:0;}
+  #status{height:0;overflow:hidden;transition:height .15s;background:rgba(88,166,255,.08);
+    border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;
+    color:var(--accent);font-size:12px;}
+  #status.show{height:26px;}
+  #grid{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;
+    gap:9px;padding:10px;min-height:0;}
+  .cell{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden;}
+  .cell .hd{display:flex;align-items:baseline;gap:8px;padding:8px 11px 4px;flex-wrap:wrap;}
+  .cell .hd .nm{font-weight:600;font-size:13px;display:flex;align-items:center;gap:6px;}
+  .cell .hd .nm .dot{width:9px;height:9px;border-radius:2px;}
+  .cell .hd .mt{color:var(--mut);font-size:11px;}
+  .cell .hd .badge{margin-left:auto;font-size:10.5px;color:var(--mut);
+    background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:2px 9px;white-space:nowrap;}
+  .cell .hd .badge b{color:var(--txt);}
+  .cell .hd .zoomic{color:var(--mut);font-size:12px;line-height:1;align-self:center;margin-left:6px;}
+  .cell .hd:hover .zoomic{color:var(--accent);}
+  .cell .hd .zoomic::before{content:"⤢";}
+  #grid.zoom .cell.expanded .hd .zoomic::before{content:"✕";}
+  .cell svg{flex:1;width:100%;height:100%;min-height:0;display:block;}
+  .ax{fill:var(--mut);font-size:9.5px;}
+  .axt{fill:#7f8b98;font-size:9px;}
+  .gln{stroke:var(--grid);stroke-width:1;}
+  .diag{stroke:#5c6672;stroke-width:1.3;stroke-dasharray:4 4;fill:none;}
+  .med{fill:none;stroke:#c6d0da;stroke-width:1.3;opacity:.9;}
+  .act{fill:none;stroke:#ffffff;stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round;}
+  .acthalo{fill:none;stroke:#0b0e13;stroke-width:4.2;stroke-linejoin:round;stroke-linecap:round;opacity:.55;}
+  .empty{fill:var(--mut);font-size:11px;}
+  .ro{fill:#8492a0;font-size:10px;}
+  .ro.hi{fill:#d6dee7;font-weight:600;}
+
+  /* legend strip */
+  #legbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:7px 13px;
+    background:var(--panel2);border-bottom:1px solid var(--line);font-size:11px;color:#c2ccd6;}
+  #legbar .li{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
+  #legbar .grow{flex:1;}
+  #legbar .mut{color:var(--mut);}
+  #legbar .sw{width:22px;height:11px;border-radius:2px;display:inline-block;}
+  #legbar .sw.o{background:rgba(150,165,190,.20);}
+  #legbar .sw.in{background:rgba(150,165,190,.42);}
+  #legbar .ln{width:22px;height:0;display:inline-block;border-top-width:2px;border-top-style:solid;}
+  #legbar .ln.med{border-color:#c6d0da;}
+  #legbar .ln.dg{border-color:#5c6672;border-top-style:dashed;}
+  #legbar .ln.ac{border-color:#ffffff;border-top-width:2.5px;}
+
+  /* click-to-expand a single panel */
+  #grid.zoom .cell{display:none;}
+  #grid.zoom .cell.expanded{display:flex;grid-column:1 / 3;grid-row:1 / 3;}
+  .cell .hd{cursor:zoom-in;}
+  #grid.zoom .cell.expanded .hd{cursor:zoom-out;}
+
+  /* hover tooltip */
+  #tip{position:fixed;pointer-events:none;z-index:50;background:rgba(13,17,23,.96);
+    border:1px solid var(--line);border-radius:7px;padding:7px 9px;font-size:11px;color:var(--txt);
+    box-shadow:0 4px 18px rgba(0,0,0,.5);opacity:0;transition:opacity .08s;max-width:230px;}
+  #tip .t{color:var(--mut);margin-bottom:3px;}
+  #tip .row{display:flex;justify-content:space-between;gap:14px;}
+  .vline{stroke:#ffffff;stroke-width:1;stroke-dasharray:3 3;opacity:.5;}
+
+  @media (max-width:760px){ #side{width:210px;flex-basis:210px;} }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <!-- ================= control rail ================= -->
+  <div id="side">
+    <h1>Monte&nbsp;Carlo&nbsp;simulation</h1>
+    <p class="lead">Cumulative <span class="em">An.&nbsp;stephensi</span> larvae by campaign —
+      larval proportion vs habitats surveyed. Habitats are visited in <b>random order</b>
+      many times; the spread shows how much survey order (luck) matters.</p>
+
+    <div class="grp">
+      <b>How to read</b>
+      <div class="interp" id="interp"></div>
+    </div>
+
+    <div class="grp">
+      <b>City</b>
+      <div id="cityList"></div>
+    </div>
+
+    <div class="grp">
+      <b>Simulations</b>
+      <div id="simRow">
+        <input id="simN" type="number" min="100" max="10000" step="100" value="2000">
+        <input id="simRange" type="range" min="100" max="10000" step="100" value="2000">
+      </div>
+      <button id="rerun">↻ Re-run simulation</button>
+      <div class="note" id="simNote">More runs &rarr; smoother bands. Bands stabilise around
+        2000 runs; below ~500 the edges visibly jitter on re-run.</div>
+    </div>
+
+    <div class="grp">
+      <b>X-axis</b>
+      <div class="seg" id="xseg">
+        <button data-x="pct" class="on">% of habitats</button>
+        <button data-x="count"># habitats</button>
+      </div>
+    </div>
+
+    <div class="grp">
+      <b>Show</b>
+      <label class="r"><input type="checkbox" id="cbOuter" checked> 90% range (5–95th pct)</label>
+      <label class="r"><input type="checkbox" id="cbInner" checked> middle 50% (25–75th)</label>
+      <label class="r"><input type="checkbox" id="cbActual" checked> actual survey order</label>
+      <label class="r"><input type="checkbox" id="cbDiag" checked> even-spread diagonal</label>
+      <label class="r"><input type="checkbox" id="cbMed" checked> random median</label>
+    </div>
+  </div>
+
+  <!-- ================= plot grid ================= -->
+  <div id="main">
+    <div id="status">simulating…</div>
+    <div id="legbar">
+      <span class="li"><i class="sw o"></i>5–95% of random orders</span>
+      <span class="li"><i class="sw in"></i>middle 50%</span>
+      <span class="li"><i class="ln med"></i>random median</span>
+      <span class="li"><i class="ln dg"></i>even spread (y = x)</span>
+      <span class="li"><i class="ln ac"></i>actual survey order</span>
+      <span class="grow"></span>
+      <span class="li mut">click a panel title to enlarge · click again or press Esc to restore · hover for values</span>
+    </div>
+    <div id="grid"></div>
+  </div>
+</div>
+<div id="tip"></div>
+
+<script src="mc_data.js"></script>
+<script>
+/* =========================================================================
+   Monte Carlo larval-accumulation simulation
+   For a city x campaign, each habitat has an An. stephensi larval count.
+   We survey habitats in RANDOM order S times. After visiting k habitats we
+   have found cumsum/total of the larvae:  x = k (or k/N),  y = larval prop.
+   The MEAN random curve is provably the diagonal (E[y|k] = k/N), so the band
+   (spread) and the ACTUAL survey-order curve vs that band are the story.
+   ========================================================================= */
+const CAMP_COLORS={Dry24:"#f9a620",Rainy24:"#1f9e89",Malaria24:"#7d4fc4",Dry25:"#e0529c"};
+const $=id=>document.getElementById(id);
+
+/* ---------- state ---------- */
+let city = SIM_CITIES[0];
+let nSim = 2000;
+let xMode = "pct";                 // "pct" | "count"
+let show = {outer:true, inner:true, actual:true, diag:true, med:true};
+let expanded = null;               // campaign name of the maximized panel, or null
+let cache = {};                    // city -> {camp -> stats}
+const $h=s=>String(s);
+
+/* ---------- stats helpers ---------- */
+function quantile(sorted,q){           // linear-interpolated quantile of an ascending array
+  const n=sorted.length; if(!n) return 0; if(n===1) return sorted[0];
+  const idx=q*(n-1), lo=Math.floor(idx), f=idx-lo;
+  return sorted[lo]+(sorted[Math.min(lo+1,n-1)]-sorted[lo])*f;
+}
+function leqFraction(sorted,v){        // fraction of values <= v  (binary search)
+  let lo=0, hi=sorted.length;
+  while(lo<hi){ const m=(lo+hi)>>1; if(sorted[m]<=v) lo=m+1; else hi=m; }
+  return lo/sorted.length;
+}
+function buildGrid(N){                 // ascending k positions (<=140) for plotting/quantiles
+  const G=Math.min(N,140), set=new Set();
+  for(let i=1;i<=G;i++) set.add(Math.max(1,Math.round(N*i/G)));
+  set.add(N);
+  return Array.from(set).sort((a,b)=>a-b);
+}
+
+/* ---------- the simulation ---------- */
+function simulate(arr,S){
+  const N=arr.length; let T=0; for(let i=0;i<N;i++) T+=arr[i];
+  if(N===0||T<=0) return {N,T,empty:true};
+  const GRID=buildGrid(N), G=GRID.length;
+  const cols=new Array(G); for(let g=0;g<G;g++) cols[g]=new Float64Array(S);
+  const msum=new Float64Array(G);          // running sum of y per grid point -> mean
+  const aucs=new Float64Array(S);          // area under each random curve (= mean y)
+  const thr=new Float64Array(S);           // # habitats to capture 80% of larvae
+  const TH=0.8*T, invT=1/T, a=Float64Array.from(arr);
+  for(let s=0;s<S;s++){
+    for(let i=N-1;i>0;i--){ const j=(Math.random()*(i+1))|0; const t=a[i];a[i]=a[j];a[j]=t; } // Fisher–Yates
+    let cs=0, gi=0, asum=0; let hit=0;
+    for(let k=1;k<=N;k++){
+      cs+=a[k-1]; const y=cs*invT; asum+=y;
+      if(!hit && cs>=TH){ thr[s]=k; hit=1; }
+      while(gi<G && GRID[gi]===k){ cols[gi][s]=y; msum[gi]+=y; gi++; }
+    }
+    if(!hit) thr[s]=N;
+    aucs[s]=asum/N;
+  }
+  const p05=[],p25=[],p50=[],p75=[],p95=[];
+  for(let g=0;g<G;g++){ cols[g].sort();
+    p05.push(quantile(cols[g],.05)); p25.push(quantile(cols[g],.25));
+    p50.push(quantile(cols[g],.50)); p75.push(quantile(cols[g],.75)); p95.push(quantile(cols[g],.95)); }
+  aucs.sort(); thr.sort();
+  // actual survey order
+  let cs=0, asum=0, hitA=0, thrA=N; const cum=new Float64Array(N);
+  for(let k=1;k<=N;k++){ cs+=arr[k-1]; const y=cs*invT; cum[k-1]=y; asum+=y;
+    if(!hitA && cs>=TH){ thrA=k; hitA=1; } }
+  const aucA=asum/N;
+  return {
+    N,T,GRID,xs:GRID.map(k=>k/N),
+    p05,p25,p50,p75,p95, meanY:Array.from(msum,v=>v/S),
+    actual:GRID.map(k=>cum[k-1]),
+    aucA, aucPct:leqFraction(aucs,aucA),         // front-loading percentile vs random
+    thrA, thrRandMed:quantile(thr,.5), thrRandLo:quantile(thr,.05), thrRandHi:quantile(thr,.95)
+  };
+}
+
+function computeCity(c){
+  const out={};
+  const camps=SIM_CAMPS.filter(cm=>SIM_DATA[c] && SIM_DATA[c][cm]);
+  for(const cm of camps) out[cm]=simulate(SIM_DATA[c][cm], nSim);
+  return out;
+}
+
+/* ---------- geometry ---------- */
+const VW=360, VH=360, mL=46, mR=14, mT=14, mB=46;  // square plot (300x300) -> y=x is a true 45 degrees
+const px=t=>mL + t*(VW-mL-mR);                 // t in [0,1] across plot
+const py=v=>(VH-mB) - v*(VH-mT-mB);            // v in [0,1] up plot
+const TICKS=[0,.25,.5,.75,1];
+
+function polyline(xvals,yvals){
+  let s=""; for(let i=0;i<xvals.length;i++){ s+=(i?" ":"")+px(xvals[i]).toFixed(1)+","+py(yvals[i]).toFixed(1); }
+  return s;
+}
+function bandPath(xvals,lo,hi){                // closed polygon: along hi forward, lo backward
+  let s="M"; for(let i=0;i<xvals.length;i++){ s+=(i?"L":"")+px(xvals[i]).toFixed(1)+" "+py(hi[i]).toFixed(1)+" "; }
+  for(let i=xvals.length-1;i>=0;i--){ s+="L"+px(xvals[i]).toFixed(1)+" "+py(lo[i]).toFixed(1)+" "; }
+  return s+"Z";
+}
+
+/* ---------- draw one campaign panel ---------- */
+function drawCell(cell, cm, st){
+  const col=CAMP_COLORS[cm]||"#888";
+  const hd=cell.querySelector(".hd"), svg=cell.querySelector("svg");
+  if(st.empty){
+    hd.innerHTML=`<span class="nm"><span class="dot" style="background:${col}"></span>${cm}</span>`+
+                 `<span class="mt">no An. stephensi larvae recorded</span>`;
+    svg.innerHTML=`<text class="empty" x="${VW/2}" y="${VH/2}" text-anchor="middle">no larvae in this campaign</text>`;
+    return;
+  }
+  // x domain depends on mode; xs are k/N in [0,1] either way (we just relabel ticks)
+  const xs=st.xs, N=st.N;
+  // header
+  // Descriptive RANK of the actual order vs the random-order null — NOT a significance test.
+  // Wide neutral zone (>=85 / <=15) keeps the label from flipping on Re-run; about 2 in 5 random
+  // orders also land outside the middle band, so we use curve-shape wording, not causal "found early/late".
+  const pctRank=Math.round(st.aucPct*100);
+  const verdict = N<10 ? "" : pctRank>=85 ? "front-loaded" : pctRank<=15 ? "back-loaded" : "≈ random";
+  hd.innerHTML=
+    `<span class="nm"><span class="dot" style="background:${col}"></span>${cm}</span>`+
+    `<span class="mt">${N} habitats · ${st.T.toLocaleString()} larvae</span>`+
+    `<span class="badge" title="Where the actual survey order ranks among ${nSim.toLocaleString()} random orders, by accumulation-curve area — a descriptive percentile, not a significance test (about 2 in 5 random orders also fall outside the middle 'typical' zone).">`+
+      `actual order · <b>${pctRank}<sup>th</sup></b> pct${verdict?` · ${verdict}`:""}</span>`+
+    `<span class="zoomic" aria-hidden="true" title="Click the title strip to enlarge / restore this panel"></span>`;
+
+  // ---- build svg ----
+  let g="";
+  // gridlines + ticks
+  for(const t of TICKS){
+    g+=`<line class="gln" x1="${px(t)}" y1="${py(0)}" x2="${px(t)}" y2="${py(1)}"/>`;
+    g+=`<line class="gln" x1="${px(0)}" y1="${py(t)}" x2="${px(1)}" y2="${py(t)}"/>`;
+    const xl = xMode==="pct" ? (t*100)+"%" : Math.round(t*N);
+    g+=`<text class="axt" x="${px(t)}" y="${VH-24}" text-anchor="middle">${xl}</text>`;
+    g+=`<text class="axt" x="${mL-6}" y="${py(t)+3}" text-anchor="end">${(t*100)}%</text>`;
+  }
+  // axis titles
+  g+=`<text class="ax" x="${px(.5)}" y="${VH-7}" text-anchor="middle">`+
+     `${xMode==="pct"?"habitats surveyed (%)":"habitats surveyed (count)"}</text>`;
+  g+=`<text class="ax" x="${13}" y="${py(.5)}" text-anchor="middle" transform="rotate(-90 13 ${py(.5)})">`+
+     `cumulative larvae (%)</text>`;
+  // origin-anchored arrays so bands, median and the actual curve all pass through (0,0)
+  const xs0=[0,...xs];
+  // bands
+  if(show.outer) g+=`<path d="${bandPath(xs0,[0,...st.p05],[0,...st.p95])}" fill="${col}" fill-opacity="0.14" stroke="none"/>`;
+  if(show.inner) g+=`<path d="${bandPath(xs0,[0,...st.p25],[0,...st.p75])}" fill="${col}" fill-opacity="0.26" stroke="none"/>`;
+  // diagonal (even spread = random mean)
+  if(show.diag) g+=`<line class="diag" x1="${px(0)}" y1="${py(0)}" x2="${px(1)}" y2="${py(1)}"/>`;
+  // random median — neutral colour so it reads over any campaign-coloured band and stays distinct from the dashed diagonal
+  if(show.med)  g+=`<polyline class="med" points="${polyline(xs0,[0,...st.p50])}"/>`;
+  // actual survey-order curve (halo for contrast over the coloured band) — anchored at origin
+  if(show.actual){
+    g+=`<polyline class="acthalo" points="${polyline(xs0,[0,...st.actual])}"/>`;
+    g+=`<polyline class="act" points="${polyline(xs0,[0,...st.actual])}"/>`;
+  }
+  // operational readout (lower-right empty triangle): habitats needed to find 80% of the larvae,
+  // actual order vs the random-order range — units follow the x-axis toggle.
+  const pa=Math.round(st.thrA/N*100), plo=Math.round(st.thrRandLo/N*100), phi=Math.round(st.thrRandHi/N*100);
+  const r2 = xMode==="pct" ? `actual ${pa}% · random ${plo}–${phi}%`
+                           : `actual ${st.thrA} · random ${Math.round(st.thrRandLo)}–${Math.round(st.thrRandHi)}`;
+  g+=`<text class="ro" x="${px(.985)}" y="${py(.205)}" text-anchor="end">habitats to find 80% of larvae:</text>`;
+  g+=`<text class="ro hi" x="${px(.985)}" y="${py(.125)}" text-anchor="end">${r2}</text>`;
+
+  // hover capture rect (transparent)
+  g+=`<rect x="${px(0)}" y="${py(1)}" width="${px(1)-px(0)}" height="${py(0)-py(1)}" fill="transparent" class="hov"/>`;
+  g+=`<line class="vline" x1="0" y1="${py(0)}" x2="0" y2="${py(1)}" style="opacity:0" id="vl"/>`;
+  svg.innerHTML=g;
+
+  // hover behaviour
+  const rect=svg.querySelector(".hov"), vline=svg.querySelector(".vline");
+  rect.onmousemove=ev=>{
+    // map cursor -> SVG user coords via the live transform matrix; this is correct
+    // regardless of how preserveAspectRatio="meet" letterboxes the square viewBox in the cell.
+    const m=svg.getScreenCTM(); if(!m) return;
+    const sp=svg.createSVGPoint(); sp.x=ev.clientX; sp.y=ev.clientY;
+    const loc=sp.matrixTransform(m.inverse());
+    const t=Math.max(0,Math.min(1,(loc.x-px(0))/(px(1)-px(0))));
+    // nearest grid index
+    let gi=0,best=1e9; for(let i=0;i<xs.length;i++){ const dd=Math.abs(xs[i]-t); if(dd<best){best=dd;gi=i;} }
+    vline.setAttribute("x1",px(xs[gi])); vline.setAttribute("x2",px(xs[gi])); vline.style.opacity=.5;
+    const k=st.GRID[gi];
+    const tip=$("tip");
+    tip.innerHTML=
+      `<div class="t">${cm} · after ${xMode==="pct"?Math.round(xs[gi]*100)+"% of habitats":k+" habitats"} (k=${k})</div>`+
+      `<div class="row"><span>actual order</span><b>${(st.actual[gi]*100).toFixed(0)}%</b></div>`+
+      `<div class="row"><span>random median</span><span>${(st.p50[gi]*100).toFixed(0)}%</span></div>`+
+      `<div class="row"><span>random 5–95%</span><span>${(st.p05[gi]*100).toFixed(0)}–${(st.p95[gi]*100).toFixed(0)}%</span></div>`;
+    tip.style.opacity=1;                                // show first so offsetWidth/Height are valid
+    const tw=tip.offsetWidth, th=tip.offsetHeight;
+    let lx=ev.clientX+14; if(lx+tw>window.innerWidth-6)  lx=ev.clientX-14-tw;   // flip left near right edge
+    let ty=ev.clientY+14; if(ty+th>window.innerHeight-6) ty=Math.max(6,ev.clientY-14-th);
+    tip.style.left=Math.max(6,lx)+"px"; tip.style.top=ty+"px";
+  };
+  rect.onmouseleave=()=>{ $("tip").style.opacity=0; vline.style.opacity=0; };
+}
+
+/* ---------- render the whole grid ---------- */
+function render(){
+  const stats=cache[city];
+  const grid=$("grid"); grid.innerHTML="";
+  // 2x2 fixed grid; create up to 4 cells in campaign order
+  for(const cm of SIM_CAMPS){
+    if(!stats[cm]) continue;
+    const cell=document.createElement("div"); cell.className="cell"; cell.dataset.cm=cm;
+    cell.innerHTML=`<div class="hd"></div><svg viewBox="0 0 ${VW} ${VH}" preserveAspectRatio="xMidYMid meet"></svg>`;
+    grid.appendChild(cell);
+    drawCell(cell, cm, stats[cm]);
+    cell.querySelector(".hd").addEventListener("click",()=>{ expanded=(expanded===cm)?null:cm; applyZoom(); });
+  }
+  applyZoom();
+  updateInterp(stats);
+}
+function applyZoom(){
+  const grid=$("grid");
+  if(expanded && !grid.querySelector(`.cell[data-cm="${expanded}"]`)) expanded=null;
+  grid.classList.toggle("zoom", !!expanded);
+  grid.querySelectorAll(".cell").forEach(c=>c.classList.toggle("expanded", c.dataset.cm===expanded));
+}
+
+function updateInterp(stats){
+  $("interp").innerHTML=
+    `The shaded band spans <b>${nSim.toLocaleString()}</b> random survey orders. `+
+    `Its mean is <b>exactly the diagonal</b> (y&nbsp;=&nbsp;x), so the <b>spread</b> — not the average — is the story: `+
+    `a wide band means survey <b>order matters a lot</b>, because larvae sit in a few habitats. `+
+    `The <b>white line</b> is the real field order; above the band it ran ahead of most random orders, below, behind. `+
+    `<span class="cav">Random orders vary widely (≈2 in 5 land outside the band), so a panel's rank describes <i>this</i> survey — `+
+    `not proof of strategy. The shuffle ignores road/route &amp; travel distance; that comes later.</span> `+
+    (city==="All"
+      ? `<span class="cav" style="color:#d6b06a">⚠ <b>All cities:</b> the white line follows the <b>combined cross-city timeline</b>. `+
+        `The three cities were surveyed in different periods (and Jigjiga's Malaria24 / Rainy24 span <b>months</b>, vs ~1 week each for Logiya &amp; Semera), `+
+        `so the pooled curve reflects <i>when each city was visited and how rich it was</i>, not one within-city route. `+
+        `Pick a single city for a clean survey-order read.</span>`
+      : "")+
+    `Hit <b>Re-run</b> to resample and gauge how stable the band is.`;
+}
+
+/* ---------- recompute (heavy) with a paint break ---------- */
+function recompute(force){
+  if(force) delete cache[city];
+  if(cache[city]){ render(); notifyParent(); return; }   // cache hit: still sync sibling tabs
+  $("status").classList.add("show");
+  setTimeout(()=>{
+    cache[city]=computeCity(city);
+    $("status").classList.remove("show");
+    render();
+    notifyParent();
+  },20);
+}
+function redraw(){ if(cache[city]) render(); }   // light: toggles / x-mode only
+
+/* ---------- build city selector ---------- */
+(function initCities(){
+  const cl=$("cityList");
+  // precompute total habitats/larvae per city for the meta line
+  SIM_CITIES.forEach((c,i)=>{
+    if(!SIM_DATA[c]) return;
+    let nb=0,tl=0; for(const cm in SIM_DATA[c]){ const a=SIM_DATA[c][cm]; nb+=a.length; for(const v of a) tl+=v; }
+    const wrap=document.createElement("div");
+    wrap.innerHTML=
+      `<label class="r"><input type="radio" name="city" value="${c}" ${i===0?"checked":""}>${c}</label>`+
+      `<div class="citymeta">${nb.toLocaleString()} habitats · ${tl.toLocaleString()} larvae</div>`;
+    cl.appendChild(wrap);
+    wrap.querySelector("input").addEventListener("change",()=>{ city=c; recompute(false); });
+  });
+})();
+
+/* ---------- controls ---------- */
+function setSim(v){
+  v=Math.max(100,Math.min(10000,Math.round(v/100)*100));
+  nSim=v; $("simN").value=v; $("simRange").value=v;
+  cache={};                              // invalidate all cities
+  recompute(false);
+}
+$("simN").addEventListener("change",e=>setSim(+e.target.value));
+$("simRange").addEventListener("input",e=>{ $("simN").value=e.target.value; });
+$("simRange").addEventListener("change",e=>setSim(+e.target.value));
+$("rerun").addEventListener("click",()=>recompute(true));
+document.querySelectorAll("#xseg button").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll("#xseg button").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on"); xMode=b.dataset.x; redraw();
+}));
+const cb={cbOuter:"outer",cbInner:"inner",cbActual:"actual",cbDiag:"diag",cbMed:"med"};
+for(const id in cb) $(id).addEventListener("change",e=>{ show[cb[id]]=e.target.checked; redraw(); });
+
+/* ---------- dashboard integration (shared city selection across tabs) ---------- */
+function notifyParent(){ try{ parent.postMessage({type:"larvSel",city},"*"); }catch(e){} }
+window.addEventListener("message",e=>{ const d=e.data||{};
+  if(d.type==="larvSetSel" && d.city && d.city!==city && SIM_DATA[d.city]){
+    city=d.city; const r=document.querySelector(`input[name=city][value="${d.city}"]`); if(r) r.checked=true;
+    recompute(false);
+  }
+});
+
+/* ---------- keyboard: Esc restores an enlarged panel ---------- */
+document.addEventListener("keydown",e=>{ if(e.key==="Escape" && expanded){ expanded=null; applyZoom(); } });
+
+/* ---------- test hook ---------- */
+window.__mc={ simulate, get:()=>cache[city], state:()=>({city,nSim,xMode,show}) };
+
+/* ---------- go ---------- */
+recompute(false);
+</script>
+</body>
+</html>

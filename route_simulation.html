@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Treatment routing — live simulator</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root{ --bg:#0b0e13; --panel:#161b22; --panel2:#11161d; --txt:#e6edf3; --mut:#9aa6b2;
+         --accent:#58a6ff; --line:#30363d; --grid:#222a34; }
+  *{box-sizing:border-box;}
+  html,body{height:100%;margin:0;background:var(--bg);color:var(--txt);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:13px;}
+  #wrap{position:absolute;inset:0;display:flex;}
+  #side{width:270px;flex:0 0 270px;background:var(--panel);border-right:1px solid var(--line);
+    overflow-y:auto;padding:13px 13px 22px;}
+  #side h1{font-size:14px;margin:0 0 2px;font-weight:600;}
+  #side h1 .em{font-style:italic;color:#cdd6e0;}
+  #side .lead{color:var(--mut);font-size:11.5px;line-height:1.45;margin:0 0 10px;}
+  .grp{border-top:1px solid var(--line);padding:10px 0 4px;}
+  .grp:first-of-type{border-top:none;}
+  .grp b{display:block;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--mut);margin-bottom:7px;}
+  label.r{display:flex;align-items:center;gap:7px;padding:2px 0;cursor:pointer;}
+  label.r input{accent-color:var(--accent);}
+  label.tog{font-size:11px;color:var(--mut);margin-top:2px;}
+  [hidden]{display:none!important;}
+  .seg{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;margin-top:2px;}
+  .seg button{flex:1;background:var(--panel2);color:var(--mut);border:none;padding:6px 4px;cursor:pointer;font-size:12px;}
+  .seg button.on{background:rgba(88,166,255,.16);color:var(--txt);}
+  .pr{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:3px 0;font-size:12.5px;}
+  .pr label{color:#c6d0da;}
+  .pr input[type=number]{width:70px;background:var(--panel2);color:var(--txt);border:1px solid var(--line);
+    border-radius:6px;padding:5px 7px;font-size:12.5px;text-align:right;}
+  .pr .u{color:var(--mut);font-size:11px;width:42px;}
+  #dayRow,#dotRow{display:flex;align-items:center;gap:8px;}
+  #dayRange,#dotRange{flex:1;accent-color:var(--accent);}
+  #dayVal,#dotVal{width:64px;text-align:right;color:var(--txt);font-size:12px;}
+  #play{width:100%;margin-top:8px;background:rgba(88,166,255,.12);color:var(--accent);
+    border:1px solid #2b4a73;border-radius:7px;padding:7px;font-size:12.5px;cursor:pointer;font-weight:600;}
+  #play:hover{background:rgba(88,166,255,.22);}
+  #gifRow{display:flex;gap:6px;margin-top:8px;}
+  #gifBtn{flex:1;background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:7px;padding:6px;font-size:12px;cursor:pointer;}
+  #gifBtn:hover{border-color:#2b4a73;}
+  #gifW{background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:7px;font-size:11.5px;padding:0 4px;}
+  #gifShield{position:fixed;inset:0;z-index:9999;cursor:progress;}
+  .note{color:var(--mut);font-size:10.5px;line-height:1.4;margin-top:6px;}
+  .lgrow{display:flex;align-items:center;gap:8px;font-size:11.5px;color:#c6d0da;padding:2px 0;}
+  .lgrow .dot{width:11px;height:11px;border-radius:50%;flex:0 0 11px;}
+  .ramp{height:8px;border-radius:2px;margin:3px 0 1px 19px;}
+  .rampLab{display:flex;justify-content:space-between;margin:0 0 4px 19px;font-size:10px;color:var(--mut);}
+  .lgrow .ln{width:20px;height:0;border-top-width:3px;border-top-style:solid;flex:0 0 20px;}
+  .interp{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:9px 10px;
+    font-size:11px;line-height:1.5;color:#bcc7d2;margin-top:8px;}
+  .interp b{color:var(--txt);}
+
+  #main{flex:1;display:flex;flex-direction:column;min-width:0;}
+  #map{flex:1;min-height:0;background:#0b0e13;}
+  #covleg{display:flex;flex-wrap:wrap;align-items:center;gap:11px;padding:4px 12px;background:var(--panel);
+    border-top:1px solid var(--line);font-size:10.5px;color:#c2ccd6;}
+  #covleg .li{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;cursor:pointer;opacity:.55;}
+  #covleg .li.on{opacity:1;font-weight:600;}
+  #covleg .sw{width:16px;height:0;border-top-width:3px;border-top-style:solid;display:inline-block;}
+  #covleg .sw.dash{border-top-style:dashed;border-top-width:2px;}
+  #cov{height:206px;flex:0 0 206px;border-top:1px solid var(--line);background:var(--panel);display:flex;align-items:stretch;}
+  #covsvg{flex:1;min-width:0;}
+  #covside{width:308px;flex:0 0 308px;border-left:1px solid var(--line);padding:11px 13px;overflow-y:auto;}
+  #covside h3{margin:0 0 7px;font-size:12px;font-weight:600;}
+  .stat{display:flex;justify-content:space-between;gap:10px;padding:3px 0;font-size:12px;border-bottom:1px solid #1c232c;}
+  .stat .k{color:var(--mut);} .stat .v{color:var(--txt);font-weight:600;}
+  .big{font-size:21px;font-weight:700;}
+  .verdict{margin-top:9px;font-size:11px;color:#bcc7d2;line-height:1.5;}
+  .axt{fill:#7f8b98;font-size:10px;} .axl{fill:var(--mut);font-size:10px;} .gln{stroke:var(--grid);stroke-width:1;}
+  .leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#161b22;color:#e6edf3;}
+  .leaflet-bar a{background:#161b22;color:#e6edf3;border-color:#30363d;}
+  .carico{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:14px;border:2px solid #fff;box-shadow:0 0 8px rgba(0,0,0,.75);}
+  #busy{position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:60;background:rgba(88,166,255,.16);
+    color:var(--accent);border:1px solid #2b4a73;border-radius:20px;padding:3px 12px;font-size:11px;opacity:0;transition:.15s;}
+  #busy.on{opacity:1;}
+</style>
+</head>
+<body>
+<div id="gifShield" hidden></div>
+<div id="wrap">
+  <div id="side">
+    <h1>Treatment routing <span style="font-weight:400;color:var(--mut);font-size:11px">· live</span></h1>
+    <p class="lead">Plan <span class="em">An. stephensi</span> larval treatment on the real
+      <b>road network</b>. Set the field constraints below — routes <b>recompute live</b>.</p>
+
+    <div class="grp"><b>City</b><div id="cityList"></div></div>
+    <div class="grp"><b>Campaign</b><div id="campSeg" class="seg"></div></div>
+
+    <div class="grp">
+      <b>Field parameters</b>
+      <div class="pr"><label>driving speed</label><input id="pSpeed" type="number" min="0" max="80" step="1" value="25"><span class="u">km/h</span></div>
+      <div class="pr"><label>service / site</label><input id="pService" type="number" min="1" max="120" step="1" value="20"><span class="u">min</span></div>
+      <div class="pr"><label>working hours / day</label><input id="pHours" type="number" min="1" max="24" step="0.5" value="8"><span class="u">h</span></div>
+      <div class="note">Driving uses these road distances ÷ your speed; each site also adds a road→site walk-in.</div>
+    </div>
+
+    <div class="grp">
+      <b>Routing algorithm</b>
+      <div style="font-size:10px;color:var(--mut);margin:2px 0 1px">— optimized (target methods) —</div>
+      <label class="r"><input type="radio" name="algo" value="sector" checked> Sector sweep (clear sector by sector)</label>
+      <label class="r"><input type="radio" name="algo" value="greedy"> Greedy hotspot (richest sites first)</label>
+      <label class="r"><input type="radio" name="algo" value="cluster"> Cluster + greedy (split by area)</label>
+      <div style="font-size:10px;color:var(--mut);margin:6px 0 1px">— current-practice baselines —</div>
+      <label class="r"><input type="radio" name="algo" value="zigzag"> Zig-zag sweep (systematic, by area)</label>
+      <label class="r"><input type="radio" name="algo" value="nn"> Nearest (start &amp; treat nearby)</label>
+      <label class="r" id="randRow" hidden><input type="radio" name="algo" value="random"> Random order</label>
+      <label class="r tog"><input type="checkbox" id="showRandom"> show Random order (slowest baseline)</label>
+      <div style="font-size:10px;color:var(--mut);margin:6px 0 1px">— no map at all (must find the sites) —</div>
+      <label class="r"><input type="radio" name="algo" value="blind"> Search every street (no detection / prediction)</label>
+    </div>
+
+    <div class="grp">
+      <b>Teams</b><div id="teamSeg" class="seg"></div>
+      <b style="margin-top:11px">Working days</b>
+      <div id="dayRow"><input id="dayRange" type="range" min="1" max="30" step="1" value="8"><span id="dayVal">8</span></div>
+      <button id="play">▶ Drive route</button>
+      <div id="spdRow" style="display:flex;align-items:center;gap:6px;margin-top:8px">
+        <span class="note" style="margin:0">▶ play speed</span><div id="spdSeg" class="seg" style="flex:1"></div>
+      </div>
+      <div id="gifRow">
+        <button id="gifBtn" title="Screen-record this whole view while the drive plays, and download it as an animated GIF">⏺ Save GIF of this view</button>
+        <select id="gifW" title="GIF width (px)"><option value="960">960 px</option><option value="1280" selected>1280 px</option><option value="1600">1600 px</option><option value="0">full</option></select>
+      </div>
+      <div class="note" id="gifNote">Records ▶ Drive route at the play speed above. Your browser will ask to share this tab; Esc cancels.</div>
+      <div class="note" id="tdNote"></div>
+    </div>
+
+    <div class="grp">
+      <b>Site dot size</b>
+      <div id="dotRow"><input id="dotRange" type="range" min="0.2" max="4" step="0.1" value="1"><span id="dotVal">1.0×</span></div>
+      <div class="note">Scales every habitat dot; relative size still ∝ larvae.</div>
+    </div>
+
+    <div class="grp">
+      <b>Legend</b>
+      <div class="lgrow"><span class="dot" style="background:#39424e"></span>not yet treated</div>
+      <div class="lgrow"><span class="dot" style="background:#fd8d3c"></span>treated · fill colour = larvae per site</div>
+      <div id="ramp" class="ramp"></div>
+      <div class="rampLab"><span>0</span><span id="rampMid"></span><span id="rampMax"></span></div>
+      <div class="lgrow"><span class="dot" style="background:none;border:1px solid #9aa6b2"></span>dot size also ∝ larvae</div>
+      <div class="lgrow"><span class="ln" style="border-color:#58a6ff"></span>team 1 &nbsp;<span class="ln" style="border-color:#f9a620"></span>2 &nbsp;<span class="ln" style="border-color:#1f9e89"></span>3</div>
+      <div class="note" style="margin:0 0 3px">Team colour marks both its route line and the outline of the sites it treated.</div>
+      <div class="lgrow"><span style="font-size:13px">◆</span>&nbsp;team start (per-team zone)</div>
+      <div class="interp" id="interp"></div>
+    </div>
+  </div>
+
+  <div id="main">
+    <div id="map"></div><div id="busy">recomputing…</div>
+    <div id="covleg"></div>
+    <div id="cov">
+      <svg id="covsvg" viewBox="0 0 560 236" preserveAspectRatio="xMidYMid meet"></svg>
+      <div id="covside">
+        <h3 id="covTitle">Coverage</h3>
+        <div class="stat"><span class="k">larvae treated by day <span id="dDay">8</span></span><span class="v big" id="vLarv">—</span></div>
+        <div class="stat"><span class="k">habitats visited</span><span class="v" id="vHab">—</span></div>
+        <div class="stat"><span class="k">days to knock down 50% larvae</span><span class="v" id="v50">—</span></div>
+        <div class="stat"><span class="k">days to knock down 80% larvae</span><span class="v" id="v80">—</span></div>
+        <div class="stat"><span class="k">treat ALL sites — calendar days</span><span class="v" id="vFinish">—</span></div>
+        <div class="stat"><span class="k">team-days (total effort)</span><span class="v" id="vTd">—</span></div>
+        <div class="verdict" id="verdict"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="route_sim_data.js"></script>
+<script src="route_graph.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const CAMPS=SIM_CAMPS, CITIES=SIM_CITIES;
+const TEAM_COL=["#58a6ff","#f9a620","#1f9e89"];
+const ALGO_COL={blind:"#c08a3a",random:"#e0529c",nn:"#f9a620",zigzag:"#8b949e",greedy:"#1f9e89",cluster:"#58a6ff",sector:"#d2a8ff"};
+const ALGO_LAB={blind:"Search every street (no map)",random:"Random",nn:"Nearest (treat nearby)",zigzag:"Zig-zag sweep",greedy:"Greedy hotspot",cluster:"Cluster + greedy",sector:"Sector sweep"};
+const WALK_KMH=4.3;
+const SIMD=3650;                // simulation horizon (days): long enough for milestones and the day slider to reach the real finish
+const DOT_W=0.5, DOT_W_T=0.8;  // habitat dot outline width (px): untreated / treated (team-coloured)
+const ROUTE_W=1.2;             // route line width (px); street sweep draws at .75x, animated trail at 1.25x
+const IMMOBILE=1e12;            // sec/metre used at 0 km/h: large but finite, so 0*fac stays 0 instead of NaN
+let st={city:CITIES[0],camp:"Malaria24",algo:"sector",teams:2,day:8,speed:25,service:20,hours:8};
+let map,baseDark,baseSat,habLayer,routeLayer,carLayer,habMarkers=[],curKey=null,anim=null,playMult=1,dotScale=1,showRandom=false;
+let cache={};   // routesKey -> {algo->teams->routes}
+
+/* ---------- YlOrRd ---------- */
+const YL=["#ffffcc","#ffeda0","#fed976","#feb24c","#fd8d3c","#fc4e2a","#e31a1c","#bd0026","#800026"];
+const _h=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
+const larvCap=maxL=>Math.max(40,maxL*.5);   // larvae/site at which the fill colour saturates (darkest red)
+function ylord(t){t=Math.max(0,Math.min(1,t));const x=t*(YL.length-1),i=Math.floor(x);
+  if(i>=YL.length-1)return YL[i];const f=x-i,a=_h(YL[i]),b=_h(YL[i+1]);
+  return`rgb(${a.map((v,k)=>Math.round(v+(b[k]-v)*f)).join(",")})`;}
+
+/* ===================== LIVE SIMULATOR (ported from sim_core.py) ===================== */
+function dat(){ return SIM[st.city][st.camp]; }
+function costArray(d){ const w=st.service*60, walk=WALK_KMH*1000/3600; return d.hab.map(h=>w+2*h[4]/walk); }
+function ttFactor(){ return st.speed>0 ? 3600/(st.speed*1000) : IMMOBILE; }   // seconds per metre; 0 km/h = immobile
+
+function simulate(d,fac,cost,day_s,teams,policy,clusters,depots){
+  const n=d.hab.length,lm=d.lm,larv=d.hab.map(h=>h[2]),budget=SIMD*day_s;
+  const vis=new Uint8Array(n),cur=(depots||Array(teams).fill(d.depot)).slice(),ct=Array(teams).fill(0),routes=Array.from({length:teams},()=>[]);
+  let seed=98765; const rnd=()=>{seed=(seed*1103515245+12345)&0x7fffffff;return seed/0x7fffffff;};
+  const tt=(i,j)=>lm[i][j]*fac;
+  function pick(t){
+    const c=cur[t]; let cand=[]; for(let i=0;i<n;i++) if(!vis[i]&&(clusters===null||clusters[i]===t)) cand.push(i);
+    if(!cand.length) return -1;
+    if(policy==="random"){ for(let i=cand.length-1;i>0;i--){const j=(rnd()*(i+1))|0;[cand[i],cand[j]]=[cand[j],cand[i]];}
+      for(const j of cand) if(ct[t]+tt(c,j)+cost[j]<=budget) return j; return -1; }
+    let best=-1,bv=-Infinity;
+    for(const j of cand){ const tr=tt(c,j); if(ct[t]+tr+cost[j]>budget) continue;
+      const v= policy==="nn" ? -tr : larv[j]/(tr+cost[j]); if(v>bv){bv=v;best=j;} }
+    return best;
+  }
+  const active=[...Array(teams).keys()];
+  while(active.length){
+    let t=active[0]; for(const k of active) if(ct[k]<ct[t]) t=k;
+    const j=pick(t); if(j<0){ active.splice(active.indexOf(t),1); continue; }
+    ct[t]+=tt(cur[t],j)+cost[j]; const day=(ct[t]/day_s|0)+1; if(day>SIMD){ active.splice(active.indexOf(t),1); continue; }
+    vis[j]=1; cur[t]=j; routes[t].push([j,day]);
+  }
+  return routes;
+}
+function simulateSector(d,fac,cost,day_s,teams,depots){
+  const n=d.hab.length,lm=d.lm,larv=d.hab.map(h=>h[2]),budget=SIMD*day_s;
+  const tt=(i,j)=>lm[i][j]*fac;
+  const secMap={}; for(let i=0;i<n;i++){ (secMap[d.hab[i][3]]=secMap[d.hab[i][3]]||[]).push(i); }
+  const seclist=Object.values(secMap);
+  const vis=new Uint8Array(n),claimed=new Set(),cur=(depots||Array(teams).fill(d.depot)).slice(),ct=Array(teams).fill(0),routes=Array.from({length:teams},()=>[]);
+  function sweep(t,members){ let loc=cur[t]; let mem=members.filter(i=>!vis[i]);
+    while(mem.length){ let j=mem[0],bj=tt(loc,mem[0]); for(const x of mem){const dd=tt(loc,x); if(dd<bj){bj=dd;j=x;}}
+      if(ct[t]+tt(loc,j)+cost[j]>budget) break; ct[t]+=tt(loc,j)+cost[j]; const day=(ct[t]/day_s|0)+1; if(day>SIMD) break;
+      vis[j]=1; loc=j; mem.splice(mem.indexOf(j),1); routes[t].push([j,day]); }
+    cur[t]=loc;
+  }
+  const active=[...Array(teams).keys()];
+  while(active.length){
+    let t=active[0]; for(const k of active) if(ct[k]<ct[t]) t=k;
+    let bi=-1,bs=-Infinity;
+    seclist.forEach((s,si)=>{ if(claimed.has(si)) return; const mem=s.filter(i=>!vis[i]); if(!mem.length) return;
+      let be=tt(cur[t],mem[0]); for(const x of mem){const dd=tt(cur[t],x); if(dd<be) be=dd;}
+      let serv=0,ls=0; for(const i of mem){serv+=cost[i];ls+=larv[i];}
+      const sc=ls/Math.max(be+serv,1); if(sc>bs){bs=sc;bi=si;} });
+    if(bi<0){ active.splice(active.indexOf(t),1); continue; }
+    const mem=seclist[bi].filter(i=>!vis[i]); let entry=mem[0],be=tt(cur[t],mem[0]);
+    for(const x of mem){const dd=tt(cur[t],x); if(dd<be){be=dd;entry=x;}}
+    if(ct[t]+tt(cur[t],entry)+cost[entry]>budget){ active.splice(active.indexOf(t),1); continue; }
+    claimed.add(bi); sweep(t, seclist[bi]);
+  }
+  return routes;
+}
+// ---- current-practice baseline: systematic ZIG-ZAG (boustrophedon/serpentine) sweep ----
+function zigzagOrder(indices,hab,bands){        // bands by latitude, alternate longitude direction per band
+  if(indices.length<=1) return indices.slice();
+  let lo=Infinity,hi=-Infinity; for(const i of indices){ const y=hab[i][1]; if(y<lo)lo=y; if(y>hi)hi=y; }
+  const span=(hi-lo)||1, by={};
+  for(const i of indices){ const b=Math.min(bands-1,Math.floor((hab[i][1]-lo)/span*bands)); (by[b]=by[b]||[]).push(i); }
+  const order=[];
+  for(let b=0;b<bands;b++){ const bb=(by[b]||[]).slice().sort((a,c)=>hab[a][0]-hab[c][0]); if(b%2) bb.reverse(); for(const x of bb) order.push(x); }
+  return order;
+}
+function simulateZigzag(d,fac,cost,day_s,teams,depots,asg){   // each team sweeps its own area street-by-street
+  const n=d.hab.length,budget=SIMD*day_s,tt=(i,j)=>d.lm[i][j]*fac,routes=Array.from({length:teams},()=>[]);
+  for(let t=0;t<teams;t++){
+    const zone=[]; for(let i=0;i<n;i++) if(asg===null||asg[i]===t) zone.push(i);
+    const order=zigzagOrder(zone,d.hab,Math.max(1,Math.round(Math.sqrt(zone.length))));
+    let ct=0,loc=depots[t];
+    for(const j of order){ const trav=tt(loc,j); if(ct+trav+cost[j]>budget) break;
+      ct+=trav+cost[j]; const day=(ct/day_s|0)+1; if(day>SIMD) break; routes[t].push([j,day]); loc=j; }
+  }
+  return routes;
+}
+// ---- no-information baseline: SEARCH EVERY STREET (Chinese-Postman coverage) ----
+// The crew has no map, so it must sweep every street to discover the sites, treating each
+// when its street is reached. Geometry-only plan (per city+teams) is cached; the greedy
+// nearest-unserved-street walk with Dijkstra deadheads is the standard route-inspection heuristic.
+let undirCache={}, blindCache={};
+function buildUndir(city){
+  if(undirCache[city]) return undirCache[city];
+  const g=GRAPH[city], N=g.nodes.length, adj=Array.from({length:N},()=>[]);
+  const seen=new Map(), streets=[], geomOf=new Map();
+  for(const e of g.edges){ const u=e[0],v=e[1]; geomOf.set(u*N+v,e[3]);
+    const a=Math.min(u,v),b=Math.max(u,v),key=a*N+b; if(seen.has(key)) continue;
+    const eid=streets.length; seen.set(key,eid); streets.push([u,v,e[2],e[3]]);
+    adj[u].push([v,e[2],eid]); adj[v].push([u,e[2],eid]); }
+  return undirCache[city]={adj,streets,N,geomOf};
+}
+function edgeGeomUndir(g,geomOf,N,u,v){
+  let gi=geomOf.get(u*N+v); if(gi!==undefined) return gi>=0?g.geom[gi]:null;
+  gi=geomOf.get(v*N+u); if(gi!==undefined) return gi>=0?g.geom[gi].slice().reverse():null;
+  return null;
+}
+function kmeansNodes(g,k){
+  const N=g.nodes.length, lat0=Math.cos(g.nodes.reduce((a,n)=>a+n[0],0)/N*Math.PI/180);
+  const X=g.nodes.map(n=>[n[1]*lat0,n[0]]); let cen=[];
+  for(let i=0;i<k;i++) cen.push(X[Math.floor(i*(N-1)/(k-1||1))].slice());
+  const asg=new Int32Array(N);
+  for(let it=0;it<12;it++){
+    for(let i=0;i<N;i++){ let bj=0,bd=Infinity; for(let j=0;j<k;j++){const dx=X[i][0]-cen[j][0],dy=X[i][1]-cen[j][1],dd=dx*dx+dy*dy; if(dd<bd){bd=dd;bj=j;}} asg[i]=bj; }
+    const sx=Array(k).fill(0),sy=Array(k).fill(0),c=Array(k).fill(0);
+    for(let i=0;i<N;i++){sx[asg[i]]+=X[i][0];sy[asg[i]]+=X[i][1];c[asg[i]]++;}
+    for(let j=0;j<k;j++) if(c[j]){cen[j]=[sx[j]/c[j],sy[j]/c[j]];}
+  }
+  const starts=[]; for(let j=0;j<k;j++){ let bi=-1,bd=Infinity; for(let i=0;i<N;i++){ if(asg[i]!==j) continue; const dx=X[i][0]-cen[j][0],dy=X[i][1]-cen[j][1],dd=dx*dx+dy*dy; if(dd<bd){bd=dd;bi=i;} } starts.push(bi<0?0:bi); }
+  return {asg,starts};
+}
+function greedyPostman(adj,start,cover){   // cover=Uint8Array over eids; returns node walk
+  const N=adj.length, covered=new Uint8Array(cover.length); let need=0;
+  for(let e=0;e<cover.length;e++) if(cover[e]) need++;
+  const walk=[start]; let loc=start, done=0;
+  while(done<need){
+    let best=-1,bl=Infinity,be=-1;
+    for(const [v,ln,eid] of adj[loc]) if(cover[eid]&&!covered[eid]&&(ln<bl||(ln===bl&&eid<be))){best=v;bl=ln;be=eid;}
+    if(best>=0){ covered[be]=1; done++; walk.push(best); loc=best; continue; }
+    // deadhead: Dijkstra to nearest node owning an unserved cover-street
+    const dist=new Float64Array(N).fill(Infinity), prev=new Int32Array(N).fill(-1), fin=new Uint8Array(N);
+    dist[loc]=0; const heap=new MinHeap(); heap.push(loc,0); let target=-1;
+    while(heap.size){ const u=heap.pop(); if(fin[u])continue; fin[u]=1;
+      if(u!==loc){ let has=false; for(const [,,eid] of adj[u]) if(cover[eid]&&!covered[eid]){has=true;break;} if(has){target=u;break;} }
+      const du=dist[u]; for(const [w,ln] of adj[u]){ const nd=du+ln; if(nd<dist[w]){dist[w]=nd;prev[w]=u;heap.push(w,nd);} } }
+    if(target<0) break;
+    const path=[]; let c=target; while(c!==-1){path.push(c); if(c===loc)break; c=prev[c];} path.reverse();
+    for(let k=1;k<path.length;k++){ walk.push(path[k]); } loc=target;
+  }
+  return walk;
+}
+function blindPlan(city,teams){
+  const key=city+"|"+teams; if(blindCache[key]) return blindCache[key];
+  const g=GRAPH[city], U=buildUndir(city), km=kmeansNodes(g,teams), terr=km.asg;
+  const cover=Array.from({length:teams},()=>new Uint8Array(U.streets.length));
+  U.streets.forEach((s,eid)=>{ cover[terr[s[0]]][eid]=1; cover[terr[s[1]]][eid]=1; });
+  const teamPlans=[];
+  for(let t=0;t<teams;t++){
+    const walk=greedyPostman(U.adj,km.starts[t],cover[t]);
+    const poly=[], cumPoly=[], arrivals=[];
+    const push=pt=>{ if(poly.length){ cumPoly.push(cumPoly[cumPoly.length-1]+L.latLng(poly[poly.length-1]).distanceTo(L.latLng(pt))); } else cumPoly.push(0); poly.push(pt); };
+    push(g.nodes[walk[0]].slice()); arrivals.push({vi:0,node:walk[0]});
+    for(let w=1;w<walk.length;w++){ const u=walk[w-1],v=walk[w], gm=edgeGeomUndir(g,U.geomOf,U.N,u,v);
+      if(gm){ for(let p=0;p<gm.length;p++) push(gm[p].slice()); }   // geom = intermediate shape pts (endpoints excluded)
+      push(g.nodes[v].slice()); arrivals.push({vi:poly.length-1,node:v}); }
+    teamPlans.push({poly,cumPoly,arrivals,stops:[]});
+  }
+  return blindCache[key]={teamPlans,terr,starts:km.starts};
+}
+function simulateBlind(d,fac,cost,day_s,teams){
+  const plan=blindPlan(st.city,teams), routes=Array.from({length:teams},()=>[]), budget=SIMD*day_s;
+  const nodeHabs={}; d.habNode.forEach((nd,i)=>{ (nodeHabs[nd]=nodeHabs[nd]||[]).push(i); });
+  const treated=new Set();
+  for(let t=0;t<teams;t++){ const tp=plan.teamPlans[t]; tp.stops=[]; let ct=0;
+    for(let a=0;a<tp.arrivals.length;a++){ const vi=tp.arrivals[a].vi, node=tp.arrivals[a].node;
+      if(a>0){ ct+=(tp.cumPoly[vi]-tp.cumPoly[tp.arrivals[a-1].vi])*fac; if(ct>budget) break; }
+      for(const hi of (nodeHabs[node]||[])){ if(plan.terr[d.habNode[hi]]!==t||treated.has(hi)) continue;
+        treated.add(hi); ct+=cost[hi]; const day=(ct/day_s|0)+1; if(day>SIMD) continue;
+        routes[t].push([hi,day]); tp.stops.push({vi,site:hi,day}); } }
+  }
+  return routes;
+}
+function kmeans(d,k){
+  const n=d.hab.length, lat0=Math.cos(d.hab.reduce((a,h)=>a+h[1],0)/n*Math.PI/180);
+  const X=d.hab.map(h=>[h[0]*lat0,h[1]]); let cen=[];
+  for(let i=0;i<k;i++) cen.push(X[Math.floor(i*(n-1)/(k-1||1))].slice());
+  const asg=new Array(n).fill(0);
+  for(let it=0;it<12;it++){
+    for(let i=0;i<n;i++){ let bj=0,bd=Infinity; for(let j=0;j<k;j++){const dx=X[i][0]-cen[j][0],dy=X[i][1]-cen[j][1],dd=dx*dx+dy*dy; if(dd<bd){bd=dd;bj=j;}} asg[i]=bj; }
+    const sx=Array(k).fill(0),sy=Array(k).fill(0),c=Array(k).fill(0);
+    for(let i=0;i<n;i++){sx[asg[i]]+=X[i][0];sy[asg[i]]+=X[i][1];c[asg[i]]++;}
+    for(let j=0;j<k;j++) if(c[j]){cen[j]=[sx[j]/c[j],sy[j]/c[j]];}
+  }
+  return asg;
+}
+// per-team ZONE STARTS: split into `teams` zones (k-means), start each team at the site
+// nearest its zone's centre. Returns {asg, depots}. Cached per city|camp|teams (geography only).
+let zoneCache={};
+function zonesFor(d,teams){
+  const key=st.city+"|"+st.camp+"|"+teams; if(zoneCache[key]) return zoneCache[key];
+  let asg=null, depots;
+  if(teams<=1){ depots=[d.depot]; }
+  else{
+    asg=kmeans(d,teams); const n=d.hab.length, lat0=Math.cos(d.hab.reduce((a,h)=>a+h[1],0)/n*Math.PI/180);
+    const sx=Array(teams).fill(0),sy=Array(teams).fill(0),c=Array(teams).fill(0);
+    for(let i=0;i<n;i++){ sx[asg[i]]+=d.hab[i][0]*lat0; sy[asg[i]]+=d.hab[i][1]; c[asg[i]]++; }
+    depots=[];
+    for(let z=0;z<teams;z++){ const cx=sx[z]/Math.max(1,c[z]), cy=sy[z]/Math.max(1,c[z]);
+      let bi=-1,bd=Infinity; for(let i=0;i<n;i++){ if(asg[i]!==z) continue; const dx=d.hab[i][0]*lat0-cx,dy=d.hab[i][1]-cy,dd=dx*dx+dy*dy; if(dd<bd){bd=dd;bi=i;} }
+      depots.push(bi>=0?bi:d.depot); }
+  }
+  return (zoneCache[key]={asg,depots});
+}
+function computeRoutes(algo,teams){
+  const key=`${st.city}|${st.camp}|${st.speed}|${st.service}|${st.hours}`;
+  if(curKey!==key){ cache={}; curKey=key; }
+  cache[algo]=cache[algo]||{};
+  if(cache[algo][teams]) return cache[algo][teams];
+  const d=dat(); ensureMatrix(d);
+  const fac=ttFactor(),cost=costArray(d),day_s=st.hours*3600;
+  const {asg,depots}=zonesFor(d,teams);
+  let r;
+  if(algo==="blind") r=simulateBlind(d,fac,cost,day_s,teams);
+  else if(algo==="zigzag") r=simulateZigzag(d,fac,cost,day_s,teams,depots,asg);
+  else if(algo==="sector") r=simulateSector(d,fac,cost,day_s,teams,depots);
+  else { const cl=(algo==="cluster"&&teams>1)?asg:null;
+    r=simulate(d,fac,cost,day_s,teams,algo==="cluster"?"greedy":algo,cl,depots); }
+  cache[algo][teams]=r; return r;
+}
+function coverage(algo,teams){
+  const d=dat(),r=computeRoutes(algo,teams),T=d.hab.reduce((a,h)=>a+h[2],0)||1,N=d.hab.length;
+  const bl=new Array(SIMD+1).fill(0),bh=new Array(SIMD+1).fill(0);
+  r.forEach(t=>t.forEach(([s,day])=>{ bl[day]+=d.hab[s][2]; bh[day]++; }));
+  const lc=[],hc=[]; let sl=0,sh=0; for(let i=0;i<=SIMD;i++){sl+=bl[i];sh+=bh[i];lc.push(sl);hc.push(sh);}
+  return {larvPct:lc.map(x=>x/T*100),habPct:hc.map(x=>x/N*100),larvCum:lc,habCum:hc,total_larv:T,total_hab:N};
+}
+function daysToPct(cov,p){ for(let i=0;i<cov.larvPct.length;i++) if(cov.larvPct[i]>=p) return i; return null; }
+function finishDay(cov){ for(let i=0;i<cov.habCum.length;i++) if(cov.habCum[i]>=cov.total_hab) return i; return null; }
+function endDay(cov){ const f=finishDay(cov); if(f!=null) return Math.max(1,f);   // plan finished, or else its last day of progress
+  for(let i=cov.habCum.length-1;i>0;i--) if(cov.habCum[i]>cov.habCum[i-1]) return i; return 1; }
+function teamDaysUsed(algo,teams,D){ let s=0; computeRoutes(algo,teams).forEach(t=>{let last=0;t.forEach(([si,day])=>{if(day<=D&&day>last)last=day;});s+=last;}); return s; }
+
+/* ===================== ROAD pathfinding (A* on shipped graph) ===================== */
+let ADJ=null, adjCity=null, pairCache={};
+function buildAdj(){
+  if(adjCity===st.city) return ADJ;
+  const g=GRAPH[st.city], adj=Array.from({length:g.nodes.length},()=>[]);
+  for(const e of g.edges) adj[e[0]].push([e[1],e[2],e[3]]);   // u -> [v,len,geomIdx]
+  ADJ=adj; adjCity=st.city; return adj;
+}
+class MinHeap{ constructor(){this.a=[];} get size(){return this.a.length;}
+  push(n,p){const a=this.a;a.push([p,n]);let i=a.length-1;while(i>0){const j=(i-1)>>1;if(a[j][0]<=a[i][0])break;[a[j],a[i]]=[a[i],a[j]];i=j;}}
+  pop(){const a=this.a,t=a[0][1],l=a.pop();if(a.length){a[0]=l;let i=0;for(;;){let L=2*i+1,R=2*i+2,s=i;if(L<a.length&&a[L][0]<a[s][0])s=L;if(R<a.length&&a[R][0]<a[s][0])s=R;if(s===i)break;[a[s],a[i]]=[a[i],a[s]];i=s;}}return t;} }
+function astar(src,dst){
+  if(src===dst) return [src];
+  const g=GRAPH[st.city], adj=buildAdj(), N=g.nodes.length;
+  const dist=new Float64Array(N).fill(Infinity), prev=new Int32Array(N).fill(-1), done=new Uint8Array(N);
+  const dl=g.nodes[dst][0], dn=g.nodes[dst][1], k=Math.cos(dl*Math.PI/180)*111320;
+  const H=n=>{const a=g.nodes[n];return Math.hypot((a[0]-dl)*111320,(a[1]-dn)*k);};
+  dist[src]=0; const heap=new MinHeap(); heap.push(src,H(src));
+  while(heap.size){ const u=heap.pop(); if(done[u])continue; done[u]=1; if(u===dst)break;
+    for(const [v,len] of adj[u]){ const nd=dist[u]+len; if(nd<dist[v]){dist[v]=nd;prev[v]=u;heap.push(v,nd+H(v));} } }
+  if(!done[dst]) return null;
+  const path=[]; let c=dst; while(c!==-1){ path.push(c); if(c===src)break; c=prev[c]; } return path.reverse();
+}
+function edgeGeom(u,v){ for(const e of buildAdj()[u]) if(e[0]===v) return e[2]; return -1; }
+function pairPath(a,b){                 // road polyline [[lat,lon],...] between habitats a,b (memoised)
+  const key=a+"_"+b; if(pairCache[key]) return pairCache[key];
+  const d=dat(), g=GRAPH[st.city], na=d.habNode[a], nb=d.habNode[b];
+  let poly; const np=astar(na,nb);
+  if(!np||np.length<2){ poly=[[g.nodes[na][0],g.nodes[na][1]],[g.nodes[nb][0],g.nodes[nb][1]]]; }
+  else{ poly=[g.nodes[np[0]].slice()];
+    for(let i=1;i<np.length;i++){ const gi=edgeGeom(np[i-1],np[i]); if(gi>=0) for(const p of g.geom[gi]) poly.push(p); poly.push(g.nodes[np[i]].slice()); } }
+  pairCache[key]=poly; return poly;
+}
+function samePt(a,b){ return Math.abs(a[0]-b[0])<1e-9 && Math.abs(a[1]-b[1])<1e-9; }
+function routePoly(seq){                 // seq = habitat indices (incl. depot first); concatenated road polyline
+  let poly=[];
+  for(let i=1;i<seq.length;i++){ const pp=pairPath(seq[i-1],seq[i]);
+    for(let j=0;j<pp.length;j++){ if(poly.length&&j===0&&samePt(poly[poly.length-1],pp[0])) continue; poly.push(pp[j]); } }
+  return poly;
+}
+// For datasets shipped WITHOUT a distance matrix (e.g. the 1518-site Predicted set), build the
+// habitat x habitat road-distance matrix in the browser via Dijkstra from each habitat node.
+function ensureMatrix(d){
+  if(d.lm) return;
+  const g=GRAPH[st.city], adj=buildAdj(), N=g.nodes.length, H=d.habNode, n=H.length, BIG=1e12;
+  const nodeHabs={}; H.forEach((nd,i)=>{ (nodeHabs[nd]=nodeHabs[nd]||[]).push(i); });
+  const lm=Array.from({length:n},()=>new Float64Array(n).fill(BIG));
+  const dist=new Float64Array(N), done=new Uint8Array(N);
+  for(const sStr of Object.keys(nodeHabs)){
+    const src=+sStr; dist.fill(Infinity); done.fill(0); dist[src]=0;
+    const heap=new MinHeap(); heap.push(src,0);
+    while(heap.size){ const u=heap.pop(); if(done[u])continue; done[u]=1; const du=dist[u];
+      for(const [v,len] of adj[u]){ const nd=du+len; if(nd<dist[v]){dist[v]=nd;heap.push(v,nd);} } }
+    for(const hi of nodeHabs[src]){ const row=lm[hi]; for(let j=0;j<n;j++){ const dv=dist[H[j]]; row[j]= dv<BIG?dv:BIG; } }
+  }
+  d.lm=lm;
+}
+
+/* ===================== MAP ===================== */
+function initMap(){
+  map=L.map("map",{preferCanvas:true,zoomControl:true});
+  baseDark=L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=cb1_3hz0_1_6edd0f4ed3a54f45ad217495",
+    {subdomains:"abcd",maxZoom:20,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>'}).addTo(map);
+  baseSat=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    {maxZoom:20,attribution:"Tiles &copy; Esri"});
+  L.control.layers({"Dark":baseDark,"Satellite":baseSat},null,{position:"bottomright"}).addTo(map);
+  habLayer=L.layerGroup().addTo(map); routeLayer=L.layerGroup().addTo(map); carLayer=L.layerGroup().addTo(map);
+}
+let curHabKey=null;
+function buildHab(){
+  const k=st.city+"|"+st.camp; if(k===curHabKey) return; curHabKey=k; pairCache={}; zoneCache={};
+  const d=dat(); habLayer.clearLayers(); habMarkers=[];
+  const maxL=Math.max(1,...d.hab.map(h=>h[2])), cap=larvCap(maxL);
+  $("rampMid").textContent=Math.round(cap/2); $("rampMax").textContent="≥"+Math.round(cap);
+  d.hab.forEach((h,i)=>{
+    const r=3+5*Math.sqrt(Math.min(1,h[2]/maxL));
+    const m=L.circleMarker([h[1],h[0]],{radius:r*dotScale,weight:DOT_W,color:"#222",fillColor:"#39424e",fillOpacity:.55});
+    m.bindPopup(`site #${i} · sector ${d.sectors[h[3]]} · <b>${h[2]}</b> larvae`);
+    m._base=r; habLayer.addLayer(m); habMarkers.push(m);
+  });
+  const lats=d.hab.map(h=>h[1]),lons=d.hab.map(h=>h[0]);
+  map.fitBounds([[Math.min(...lats),Math.min(...lons)],[Math.max(...lats),Math.max(...lons)]],{padding:[24,24]});
+}
+function drawRoutes(){
+  const d=dat(); routeLayer.clearLayers();
+  if(st.algo==="blind"){                     // draw the actual street sweep (every street), not pit-to-pit
+    computeRoutes("blind",st.teams); const plan=blindPlan(st.city,st.teams), g=GRAPH[st.city];
+    const treated=new Array(d.hab.length).fill(-1);
+    plan.teamPlans.forEach((tp,ti)=>{ let vimax=0;
+      (tp.stops||[]).forEach(s=>{ if(s.day<=st.day){ if(s.vi>vimax)vimax=s.vi; if(treated[s.site]<0)treated[s.site]=ti; } });
+      if(vimax>0) routeLayer.addLayer(L.polyline(tp.poly.slice(0,vimax+1),{color:TEAM_COL[ti],weight:ROUTE_W*.75,opacity:.6})); });
+    plan.starts.forEach((sn,ti)=>{ const n=g.nodes[sn];
+      routeLayer.addLayer(L.marker([n[0],n[1]],{icon:L.divIcon({className:"",iconSize:[0,0],
+        html:`<div style="color:${TEAM_COL[ti]};font-size:16px;text-shadow:0 0 2px #000,0 0 4px #000;transform:translate(-8px,-10px)">◆</div>`})})); });
+    const maxL=Math.max(1,...d.hab.map(h=>h[2]));
+    habMarkers.forEach((m,i)=>{ const h=d.hab[i];
+      if(treated[i]>=0) m.setStyle({fillColor:ylord(h[2]/larvCap(maxL)),fillOpacity:.95,color:TEAM_COL[treated[i]],weight:DOT_W_T});
+      else m.setStyle({fillColor:"#39424e",fillOpacity:.28,color:"#222",weight:DOT_W}); });
+    return;
+  }
+  const r=computeRoutes(st.algo,st.teams),depots=zonesFor(d,st.teams).depots;
+  const treated=new Array(d.hab.length).fill(-1);
+  r.forEach((team,ti)=>{ const seq=[depots[ti]];   // each team starts at its own zone
+    team.forEach(([s,day])=>{ if(day<=st.day){ seq.push(s); if(treated[s]<0)treated[s]=ti; } });
+    if(seq.length>1){ const poly=routePoly(seq);   // follows the road network
+      if(poly.length>1) routeLayer.addLayer(L.polyline(poly,{color:TEAM_COL[ti],weight:ROUTE_W,opacity:.85})); }
+  });
+  depots.forEach((dp,ti)=>{ const h=d.hab[dp];     // per-team start markers
+    routeLayer.addLayer(L.marker([h[1],h[0]],{icon:L.divIcon({className:"",iconSize:[0,0],
+      html:`<div style="color:${TEAM_COL[ti]};font-size:16px;text-shadow:0 0 2px #000,0 0 4px #000;transform:translate(-8px,-10px)">◆</div>`})})); });
+  const maxL=Math.max(1,...d.hab.map(h=>h[2]));
+  habMarkers.forEach((m,i)=>{ const h=d.hab[i];
+    if(treated[i]>=0) m.setStyle({fillColor:ylord(h[2]/larvCap(maxL)),fillOpacity:.95,color:TEAM_COL[treated[i]],weight:DOT_W_T});
+    else m.setStyle({fillColor:"#39424e",fillOpacity:.28,color:"#222",weight:DOT_W}); });
+}
+
+/* ===================== coverage curve ===================== */
+const CW=560,CH=236,mL=42,mR=12,mT=14,mB=30,ALGOLIST=["blind","random","nn","zigzag","cluster","greedy","sector"];
+const shownAlgos=()=>ALGOLIST.filter(a=>showRandom||a!=="random");   // Random is optional (see #showRandom)
+const cy=p=>(CH-mB)-(p/100)*(CH-mT-mB);
+function drawCurve(){
+  const AL=shownAlgos(), covs={}; for(const a of AL) covs[a]=coverage(a,st.teams);
+  // adaptive x-axis: span the longest finish day among shown algorithms (and the viewed day)
+  let m=8; for(const a of AL) m=Math.max(m, endDay(covs[a]));
+  const XD=Math.max(m, st.day);
+  const ps=Math.max(1,Math.ceil(XD/400)), days=[];   // at most ~400 vertices per curve, however long the horizon
+  for(let i=0;i<XD;i+=ps) days.push(i); days.push(XD);
+  const cx=d=>mL+(Math.min(d,XD)/XD)*(CW-mL-mR);
+  const step=Math.max(1, Math.round(XD/6));
+  let g="";
+  for(let p=0;p<=100;p+=25){ g+=`<line class="gln" x1="${mL}" y1="${cy(p)}" x2="${cx(XD)}" y2="${cy(p)}"/>`;
+    g+=`<text class="axt" x="${mL-5}" y="${cy(p)+3}" text-anchor="end">${p}</text>`; }
+  for(const mp of [50,80]){        // knock-down milestones
+    g+=`<line x1="${mL}" y1="${cy(mp)}" x2="${cx(XD)}" y2="${cy(mp)}" stroke="#d6b06a" stroke-width="1" stroke-dasharray="4 4" opacity=".45"/>`;
+    g+=`<text class="axt" x="${cx(XD)-1}" y="${cy(mp)-3}" text-anchor="end" fill="#d6b06a">${mp}%</text>`; }
+  for(let dd=0;dd<=XD;dd+=step){ g+=`<text class="axt" x="${cx(dd)}" y="${CH-14}" text-anchor="middle">${dd}</text>`; }
+  g+=`<text class="axl" x="${cx(XD/2)}" y="${CH-2}" text-anchor="middle">working day</text>`;
+  g+=`<text class="axl" x="11" y="${cy(50)}" text-anchor="middle" transform="rotate(-90 11 ${cy(50)})">larvae treated (%)</text>`;
+  for(const a of AL){ const cov=covs[a],sel=a===st.algo; let pts="";
+    for(const i of days) pts+=`${cx(i).toFixed(1)},${cy(cov.larvPct[i]).toFixed(1)} `;
+    g+=`<polyline points="${pts}" fill="none" stroke="${ALGO_COL[a]}" stroke-width="${sel?2.6:1}" opacity="${sel?1:.3}"/>`; }
+  const cs=covs[st.algo]; let hp="";
+  for(const i of days) hp+=`${cx(i).toFixed(1)},${cy(cs.habPct[i]).toFixed(1)} `;
+  g+=`<polyline points="${hp}" fill="none" stroke="#c6d0da" stroke-width="1.3" stroke-dasharray="3 3" opacity=".8"/>`;
+  g+=`<line x1="${cx(Math.min(st.day,XD))}" y1="${cy(0)}" x2="${cx(Math.min(st.day,XD))}" y2="${cy(100)}" stroke="#fff" stroke-width="1" stroke-dasharray="2 3" opacity=".55"/>`;
+  $("covsvg").innerHTML=g;
+}
+function buildCurveLegend(){
+  const el=$("covleg"); el.innerHTML="";
+  ALGOLIST.forEach(a=>{ const s=document.createElement("span"); s.className="li"; s.dataset.algo=a;
+    s.innerHTML=`<i class="sw" style="border-color:${ALGO_COL[a]}"></i>${ALGO_LAB[a]}`;
+    s.addEventListener("click",()=>{ st.algo=a; const r=document.querySelector(`input[name=algo][value="${a}"]`); if(r)r.checked=true; update(); });
+    el.appendChild(s); });
+  el.insertAdjacentHTML("beforeend",
+    `<span class="li on" style="cursor:default"><i class="sw dash" style="border-color:#c6d0da"></i>habitats visited</span>`+
+    `<span class="li on" style="cursor:default;color:#d6b06a"><i class="sw dash" style="border-color:#d6b06a"></i>50% / 80% milestones</span>`);
+}
+function applyRandomToggle(){
+  $("randRow").hidden=!showRandom;
+  const li=$("covleg").querySelector('.li[data-algo="random"]'); if(li) li.hidden=!showRandom;
+  if(!showRandom && st.algo==="random"){ st.algo="sector"; document.querySelector('input[name=algo][value="sector"]').checked=true; }
+}
+function markLegend(){ $("covleg").querySelectorAll(".li[data-algo]").forEach(s=>s.classList.toggle("on", s.dataset.algo===st.algo)); }
+
+/* ===================== readouts ===================== */
+function update(){
+  if(anim) stopAnim();
+  const d0=dat();
+  if(!d0.lm){   // large dataset (e.g. Predicted 1518) — build its road-distance matrix once, with feedback
+    $("busy").textContent="computing road distances…"; $("busy").classList.add("on");
+    setTimeout(()=>{ ensureMatrix(d0); $("busy").classList.remove("on"); $("busy").textContent="recomputing…"; update(); },30); return;
+  }
+  if(!blindCache[st.city+"|"+st.teams]){   // one-time street-coverage plan for the "search every street" baseline
+    $("busy").textContent="mapping every street…"; $("busy").classList.add("on");
+    setTimeout(()=>{ blindPlan(st.city,st.teams); $("busy").classList.remove("on"); $("busy").textContent="recomputing…"; update(); },30); return;
+  }
+  const dmax=endDay(coverage(st.algo,st.teams)), dr=$("dayRange");   // slider = 1 .. this plan's last day
+  dr.max=dmax; if(st.day>dmax) st.day=dmax; dr.value=st.day;
+  buildHab(); drawRoutes(); drawCurve(); markLegend();
+  const d=dat(),cov=coverage(st.algo,st.teams),day=st.day;
+  $("dayVal").textContent=day; $("dDay").textContent=day;
+  $("vLarv").textContent=cov.larvPct[Math.min(day,SIMD)].toFixed(0)+"%";
+  $("vHab").textContent=`${cov.habCum[Math.min(day,SIMD)]} / ${cov.total_hab} (${cov.habPct[Math.min(day,SIMD)].toFixed(0)}%)`;
+  const d50=daysToPct(cov,50),d80=daysToPct(cov,80),fin=finishDay(cov);
+  $("v50").textContent=d50==null?"> "+SIMD+" d":d50+" d";
+  $("v80").textContent=d80==null?"> "+SIMD+" d":d80+" d";
+  $("vFinish").textContent=fin==null?"> "+SIMD+" d":fin+" d";
+  $("vTd").textContent=`${teamDaysUsed(st.algo,st.teams,day)} of ${st.teams*day}`;
+  $("covTitle").innerHTML=`${st.city} · ${st.camp} — <span style="color:${ALGO_COL[st.algo]}">${ALGO_LAB[st.algo]}</span>, ${st.teams} team${st.teams>1?"s":""}`;
+  $("tdNote").innerHTML=`${st.hours}h/day · ${st.service}min/site + walk-in · ${st.speed}km/h driving. Routes recompute live.`;
+  const fmt=v=>v==null?`>${SIMD}d`:`${v}d`;
+  const fd=[1,2,3].map(t=>fmt(finishDay(coverage(st.algo,t))));
+  $("verdict").innerHTML=`<b>More teams = fewer days, not less work.</b> With <b style="color:${ALGO_COL[st.algo]}">${ALGO_LAB[st.algo]}</b>, `+
+    `treating all sites takes 1 team <b>${fd[0]}</b> · 2 <b>${fd[1]}</b> · 3 <b>${fd[2]}</b> (calendar days). `+
+    `Change driving speed / service time / hours above to see the route + days update instantly.`;
+}
+function interp(){
+  $("interp").innerHTML=`Set <b>driving speed, service time, hours/day, teams</b> and the routes <b>recompute live</b>. `+
+    `Solid curves = larvae treated (bold = chosen algorithm); dashed grey = habitats visited. `+
+    `Routes <b>follow the real road network</b> (shortest road path between stops; travel time = road distance ÷ your speed). `+
+    `<b>▶ Drive route</b> animates a 🚗 per team. `+
+    `<span style="display:block;margin-top:6px;color:#c08a3a"><b>Search every street (no map)</b> is the no-information floor: with no prediction/detection the crew must sweep <i>every street</i> (a Chinese-Postman coverage tour) to find the sites — the gap up to the targeted methods is the <b>value of the prediction map</b> (it also mixes in the freedom to skip empty streets).</span>`+
+    `<span style="display:block;margin-top:6px;color:#d6b06a">Tip: service time usually matters more than driving speed — try it.</span>`;
+}
+
+/* ===================== car animation (straight connectors) ===================== */
+function buildAnimTeams(){
+  const d=dat();
+  if(st.algo==="blind"){                     // the car crawls EVERY street; sites light up as it passes them
+    computeRoutes("blind",st.teams); const plan=blindPlan(st.city,st.teams), out=[];
+    plan.teamPlans.forEach(tp=>{ if(tp.poly.length<2||tp.cumPoly[tp.cumPoly.length-1]<=0) return;
+      out.push({pts:tp.poly,cum:tp.cumPoly,stops:(tp.stops||[]).map(s=>({vi:s.vi,site:s.site,day:s.day})),total:tp.cumPoly[tp.cumPoly.length-1]}); });
+    return out;
+  }
+  const r=computeRoutes(st.algo,st.teams),depots=zonesFor(d,st.teams).depots,out=[];
+  r.forEach((team,ti)=>{ let poly=[]; const stops=[]; let prev=depots[ti];
+    team.forEach(([s,day])=>{ const pp=pairPath(prev,s);   // road-following leg
+      for(let j=0;j<pp.length;j++){ if(poly.length&&j===0&&samePt(poly[poly.length-1],pp[0])) continue; poly.push(pp[j]); }
+      stops.push({vi:poly.length-1,site:s,day}); prev=s; });
+    if(poly.length<2) return;
+    const cum=[0]; for(let i=1;i<poly.length;i++) cum[i]=cum[i-1]+L.latLng(poly[i-1]).distanceTo(L.latLng(poly[i]));
+    out.push({pts:poly,cum,stops,total:cum[cum.length-1]});
+  });
+  return out.filter(t=>t.total>0);
+}
+function stopAnim(){ if(!anim) return; cancelAnimationFrame(anim.raf); carLayer.clearLayers(); anim=null; $("play").textContent="▶ Drive route"; }
+function startAnim(){
+  const teams=buildAnimTeams(); if(!teams.length) return;
+  routeLayer.clearLayers(); carLayer.clearLayers();
+  const d=dat(),maxL=Math.max(1,...d.hab.map(h=>h[2]));
+  habMarkers.forEach(m=>m.setStyle({fillColor:"#39424e",fillOpacity:.28,color:"#222",weight:DOT_W}));
+  teams.forEach((t,ti)=>{ t.k=0; t.sp=0;
+    t.trail=L.polyline([t.pts[0]],{color:TEAM_COL[ti],weight:ROUTE_W*1.25,opacity:.92});
+    t.car=L.marker(t.pts[0],{zIndexOffset:1000,icon:L.divIcon({className:"",iconSize:[24,24],iconAnchor:[12,12],
+      html:`<div class="carico" style="background:${TEAM_COL[ti]}">🚗</div>`})});
+    carLayer.addLayer(t.trail); carLayer.addLayer(t.car); });
+  anim={teams,speed:Math.max(...teams.map(t=>t.total),1)/26,start:performance.now(),treated:new Set(),maxDay:0,d,maxL,paused:false};
+  $("play").textContent="⏸ Pause"; anim.raf=requestAnimationFrame(animStep);
+}
+function animStep(ts){
+  if(!anim) return; const dd=(ts-anim.start)/1000*anim.speed*playMult; let alldone=true,tre=false,dayCh=false;
+  anim.teams.forEach((t,ti)=>{ const target=Math.min(dd,t.total); if(dd<t.total) alldone=false;
+    while(t.k<t.cum.length-1 && t.cum[t.k+1]<=target) t.k++;
+    let pos; if(t.k>=t.pts.length-1) pos=t.pts[t.pts.length-1];
+    else{ const seg=t.cum[t.k+1]-t.cum[t.k]||1,f=(target-t.cum[t.k])/seg;
+      pos=[t.pts[t.k][0]+f*(t.pts[t.k+1][0]-t.pts[t.k][0]),t.pts[t.k][1]+f*(t.pts[t.k+1][1]-t.pts[t.k][1])]; }
+    t.car.setLatLng(pos); t.trail.setLatLngs(t.pts.slice(0,t.k+1).concat([pos]));
+    while(t.sp<t.stops.length && t.stops[t.sp].vi<=t.k){ const s=t.stops[t.sp]; t.sp++;
+      if(!anim.treated.has(s.site)){ anim.treated.add(s.site); tre=true; const m=habMarkers[s.site],h=anim.d.hab[s.site];
+        if(m) m.setStyle({fillColor:ylord(h[2]/larvCap(anim.maxL)),fillOpacity:.95,color:TEAM_COL[ti],weight:DOT_W_T}); }
+      if(s.day>anim.maxDay){anim.maxDay=s.day;dayCh=true;} }
+  });
+  if(tre){ let tl=0; anim.treated.forEach(si=>tl+=anim.d.hab[si][2]);
+    $("vLarv").textContent=(tl/(anim.d.hab.reduce((a,h)=>a+h[2],0)||1)*100).toFixed(0)+"%";
+    $("vHab").textContent=`${anim.treated.size} / ${anim.d.hab.length} (${(anim.treated.size/anim.d.hab.length*100).toFixed(0)}%)`; }
+  if(dayCh){ st.day=anim.maxDay; $("dayVal").textContent=anim.maxDay; $("dDay").textContent=anim.maxDay; $("dayRange").value=anim.maxDay;
+    $("vTd").textContent=`${teamDaysUsed(st.algo,st.teams,anim.maxDay)} of ${st.teams*anim.maxDay}`; drawCurve(); }
+  if(alldone){ stopAnim(); update(); return; }
+  anim.raf=requestAnimationFrame(animStep);
+}
+function driveToggle(){
+  if(!anim){ startAnim(); return; }
+  if(anim.paused){                                   // RESUME from where it was paused
+    anim.start=performance.now()-anim.pausedElapsed*1000; anim.paused=false;
+    $("play").textContent="⏸ Pause"; anim.raf=requestAnimationFrame(animStep);
+  } else {                                           // PAUSE — freeze, keep state (cars, trail, treated)
+    cancelAnimationFrame(anim.raf); anim.pausedElapsed=(performance.now()-anim.start)/1000;
+    anim.paused=true; $("play").textContent="▶ Resume";
+  }
+}
+
+/* ===================== controls ===================== */
+function debounce(fn,ms){ let h; return ()=>{ clearTimeout(h); $("busy").classList.add("on"); h=setTimeout(()=>{ fn(); $("busy").classList.remove("on"); },ms); }; }
+const recompute=debounce(()=>{ cache={}; curKey=null; update(); },120);
+const CAMP_ORDER=["Dry24","Rainy24","Malaria24","Dry25","Predicted"];
+function buildCampSeg(){                  // campaigns available for the current city (Jigjiga also has 'Predicted')
+  const avail=Object.keys(SIM[st.city]);
+  const order=CAMP_ORDER.filter(c=>avail.includes(c)).concat(avail.filter(c=>!CAMP_ORDER.includes(c)));
+  if(!avail.includes(st.camp)) st.camp = order.includes("Malaria24")?"Malaria24":order[0];
+  const cs=$("campSeg"); cs.innerHTML="";
+  order.forEach(cm=>{ const b=document.createElement("button"); b.textContent=cm; if(cm===st.camp)b.classList.add("on"); cs.appendChild(b);
+    b.addEventListener("click",()=>{ cs.querySelectorAll("button").forEach(x=>x.classList.remove("on")); b.classList.add("on"); st.camp=cm; update(); }); });
+}
+function buildControls(){
+  const cl=$("cityList");
+  CITIES.forEach(c=>{ const w=document.createElement("div");
+    w.innerHTML=`<label class="r"><input type="radio" name="city" value="${c}" ${c===st.city?"checked":""}>${c}</label>`;
+    cl.appendChild(w); w.querySelector("input").addEventListener("change",()=>{st.city=c;buildCampSeg();update();notifyParent();}); });
+  buildCampSeg();
+  const ts=$("teamSeg");
+  [1,2,3].forEach(t=>{ const b=document.createElement("button"); b.textContent=t+(t>1?" teams":" team"); if(t===st.teams)b.classList.add("on"); ts.appendChild(b);
+    b.addEventListener("click",()=>{ ts.querySelectorAll("button").forEach(x=>x.classList.remove("on")); b.classList.add("on"); st.teams=t; update(); }); });
+  document.querySelectorAll("input[name=algo]").forEach(r=>r.addEventListener("change",e=>{st.algo=e.target.value;update();}));
+  $("dayRange").addEventListener("input",e=>{st.day=+e.target.value;if(anim)stopAnim();update();});
+  const bind=(id,key,min,max)=>$(id).addEventListener("change",e=>{ let v=+e.target.value; if(isNaN(v))v=st[key];
+    v=Math.max(min,Math.min(max,v)); e.target.value=v; st[key]=v; recompute(); });
+  $("ramp").style.background=`linear-gradient(to right,${YL.join(",")})`;
+  $("showRandom").addEventListener("change",e=>{ showRandom=e.target.checked; applyRandomToggle(); update(); });
+  $("dotRange").addEventListener("input",e=>{ dotScale=+e.target.value; $("dotVal").textContent=dotScale.toFixed(1)+"×";
+    habMarkers.forEach(m=>m.setRadius(m._base*dotScale)); });
+  bind("pSpeed","speed",0,80); bind("pService","service",1,120); bind("pHours","hours",1,24);
+  $("play").addEventListener("click",driveToggle);
+  $("gifBtn").addEventListener("click",recordGif);
+  const sp=$("spdSeg");
+  [[1,"1×"],[2,"2×"],[4,"4×"]].forEach(([v,lab])=>{ const b=document.createElement("button"); b.textContent=lab; if(v===playMult)b.classList.add("on"); sp.appendChild(b);
+    b.addEventListener("click",()=>{ sp.querySelectorAll("button").forEach(x=>x.classList.remove("on")); b.classList.add("on"); playMult=v; }); });
+}
+
+/* ===================== GIF export: screen-records this view while the drive plays ===================== */
+const GIFENC_URL="https://cdn.jsdelivr.net/npm/gifenc@1.0.3/dist/gifenc.esm.js", GIF_FPS=10, GIF_OPEN=1200, GIF_HOLD=3000;
+let gifRec=false;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const nextPaint=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+function nextVideoFrame(v,n=2,timeout=250){          // wait until the capture has delivered frames painted after our step
+  if(!v.requestVideoFrameCallback) return sleep(80);
+  return new Promise(res=>{ let c=0,done=false; const fin=()=>{ if(!done){done=true;res();} };
+    setTimeout(fin,timeout); const cb=()=>{ if(++c>=n) fin(); else v.requestVideoFrameCallback(cb); }; v.requestVideoFrameCallback(cb); });
+}
+async function recordGif(){
+  if(gifRec) return;
+  let stream;
+  try{ stream=await navigator.mediaDevices.getDisplayMedia({video:{cursor:"never",frameRate:30},audio:false,
+         preferCurrentTab:true,selfBrowserSurface:"include",surfaceSwitching:"exclude"}); }
+  catch(e){ $("gifNote").textContent="GIF cancelled (screen sharing was not allowed)."; return; }
+  // only ever record THIS view: refuse a shared window, screen or other tab before reading a single pixel.
+  // Cropping to #wrap succeeds only on a capture of this very tab (Chrome/Edge); elsewhere require a tab surface.
+  const track=stream.getVideoTracks()[0], surf=track.getSettings().displaySurface; let own=false;
+  if(surf!=="monitor"&&surf!=="window"){
+    try{ if(window.CropTarget&&track.cropTo){ await track.cropTo(await CropTarget.fromElement($("wrap"))); own=true; } else own=surf==="browser"; }catch(e){}
+  }
+  if(!own){ stream.getTracks().forEach(t=>t.stop());
+    $("gifNote").textContent="Only this tab can be recorded: please choose \"This tab\" in the share dialog."; return; }
+  gifRec=true; const title0=document.title, shield=$("gifShield");
+  let cancelled=false; const cancel=()=>{cancelled=true;};
+  track.addEventListener("ended",cancel); const onKey=e=>{ if(e.key==="Escape") cancel(); }; addEventListener("keydown",onKey);
+  shield.hidden=false;                                  // invisible click-guard: the view must not change mid-recording
+  try{
+    const G=await import(GIFENC_URL);
+    const v=document.createElement("video"); v.muted=true; v.playsInline=true; v.srcObject=stream; await v.play();
+    await sleep(700);                                   // let the browser's "sharing this tab" bar settle the layout
+    const W0=v.videoWidth,H0=v.videoHeight, W=Math.min(+$("gifW").value||W0,W0), H=Math.round(H0*W/W0);
+    const cv=document.createElement("canvas"); cv.width=W; cv.height=H; const g2=cv.getContext("2d",{willReadFrequently:true});
+    const enc=G.GIFEncoder(); let prev=null,pending=null,frames=0;
+    const flush=()=>{ if(pending){ enc.writeFrame(pending.idx,W,H,pending.opt); pending=null; frames++; } };
+    const grab=async delay=>{
+      await nextPaint(); await nextVideoFrame(v);
+      g2.drawImage(v,0,0,W,H); const cur=g2.getImageData(0,0,W,H).data;
+      if(!prev){ const pal=G.quantize(cur,256); pending={idx:G.applyPalette(cur,pal),opt:{palette:pal,delay,dispose:1}}; prev=cur; return; }
+      const ch=[];                                      // store only pixels that changed; the rest stay transparent
+      for(let i=0,q=0;i<cur.length;i+=4,q++) if(cur[i]!==prev[i]||cur[i+1]!==prev[i+1]||cur[i+2]!==prev[i+2]) ch.push(q);
+      if(!ch.length){ pending.opt.delay+=delay; return; }
+      const px=new Uint8Array(ch.length*4); ch.forEach((q,j)=>px.set(cur.subarray(q*4,q*4+4),j*4));
+      const pal=G.quantize(px,255), ci=G.applyPalette(px,pal), ti=pal.length; pal.push([0,0,0]);
+      const idx=new Uint8Array(W*H).fill(ti); ch.forEach((q,j)=>{idx[q]=ci[j];});
+      flush(); pending={idx,opt:{palette:pal,delay,transparent:true,transparentIndex:ti,dispose:1}}; prev=cur;
+    };
+    // drive the animation clock by hand so frames are evenly spaced however long each capture takes
+    stopAnim(); startAnim(); if(!anim) throw new Error("nothing to animate");
+    cancelAnimationFrame(anim.raf);
+    const span=Math.max(...anim.teams.map(t=>t.total))/anim.speed/playMult*1000;   // ms the drive lasts at this play speed
+    const n=Math.max(2,Math.round(span/1000*GIF_FPS)), dt=1000/GIF_FPS;
+    animStep(anim.start); if(anim) cancelAnimationFrame(anim.raf);   // t=0: readouts restart at day 1, not the previously viewed day
+    await grab(GIF_OPEN);
+    for(let k=1;k<=n&&anim&&!cancelled;k++){
+      animStep(anim.start+k/n*span); if(anim) cancelAnimationFrame(anim.raf);   // last step finishes the drive and redraws the result
+      document.title=`● REC ${Math.round(k/n*100)}% · ${title0}`;
+      await grab(dt);
+    }
+    if(cancelled){ stopAnim(); update(); $("gifNote").textContent="GIF cancelled."; return; }
+    pending.opt.delay+=GIF_HOLD; flush(); enc.finish(); track.stop();
+    const blob=new Blob([enc.bytes()],{type:"image/gif"}), name=`route_${st.city}_${st.camp}_${st.algo}_${st.teams}team.gif`;
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),60000);
+    $("gifNote").textContent=`Saved ${name} · ${W}×${H} px · ${frames} frames · ${(blob.size/1e6).toFixed(1)} MB`;
+  }catch(e){ $("gifNote").textContent="GIF failed: "+e.message; console.error(e); }
+  finally{ stream.getTracks().forEach(t=>t.stop()); removeEventListener("keydown",onKey);
+    shield.hidden=true; document.title=title0; gifRec=false; }
+}
+
+/* ===================== dashboard integration ===================== */
+function notifyParent(){ try{ parent.postMessage({type:"larvSel",city:st.city},"*"); }catch(e){} }
+window.addEventListener("message",e=>{ const d=e.data||{};
+  if(d.type==="larvResize" && map) setTimeout(()=>map.invalidateSize(),50);
+  if(d.type==="larvSetSel" && d.city && SIM[d.city] && d.city!==st.city){
+    st.city=d.city; const r=document.querySelector(`input[name=city][value="${d.city}"]`); if(r)r.checked=true; update(); }
+});
+
+/* ===================== go ===================== */
+initMap(); buildControls(); buildCurveLegend(); applyRandomToggle(); interp(); update(); setTimeout(()=>map.invalidateSize(),200);
+window.__route={st,coverage,teamDaysUsed,computeRoutes,routePoly,pairPath,astar,blindPlan,daysToPct};   // test hook
+</script>
+</body>
+</html>

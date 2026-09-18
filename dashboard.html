@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Larval Survey Webmaps</title>
+<style>
+  :root{ --bg:#0b0e13; --bar:#161b22; --txt:#e6edf3; --mut:#9aa6b2; --accent:#58a6ff; --line:#30363d; }
+  *{box-sizing:border-box;}
+  html,body{height:100%;margin:0;background:var(--bg);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--txt);}
+
+  /* ---- top tab bar ---- */
+  #bar{position:absolute;top:0;left:0;right:0;height:48px;display:flex;align-items:stretch;
+    background:var(--bar);border-bottom:1px solid var(--line);z-index:10;
+    box-shadow:0 1px 8px rgba(0,0,0,.4);}
+  #brand{display:flex;align-items:center;gap:8px;padding:0 18px;font-weight:600;font-size:14px;
+    border-right:1px solid var(--line);white-space:nowrap;}
+  #brand .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);}
+  #brand small{color:var(--mut);font-weight:400;font-size:11px;}
+  .tabs{display:flex;align-items:stretch;}
+  .tab{display:flex;align-items:center;gap:8px;padding:0 20px;cursor:pointer;font-size:13.5px;
+    color:var(--mut);border:none;background:none;border-bottom:3px solid transparent;
+    transition:.12s;white-space:nowrap;}
+  .tab:hover{color:var(--txt);background:rgba(255,255,255,.04);}
+  .tab.on{color:var(--txt);border-bottom-color:var(--accent);background:rgba(88,166,255,.08);}
+  .tab .ic{font-size:15px;}
+  #hint{margin-left:auto;display:flex;align-items:center;padding:0 16px;color:var(--mut);font-size:11.5px;}
+  #hint a{color:var(--accent);text-decoration:none;}
+
+  /* ---- content: stacked full-size iframes ---- */
+  #stage{position:absolute;top:48px;left:0;right:0;bottom:0;}
+  .frame{position:absolute;inset:0;width:100%;height:100%;border:0;
+    opacity:0;pointer-events:none;z-index:1;transition:opacity .15s;}
+  .frame.on{opacity:1;pointer-events:auto;z-index:2;}
+
+  @media (max-width:640px){ #brand small,#hint{display:none;} .tab{padding:0 14px;} }
+</style>
+</head>
+<body>
+<div id="bar">
+  <div id="brand"><span class="dot"></span>Larval Survey&nbsp;<small>Jigjiga · Logiya · Semera</small></div>
+  <div class="tabs">
+    <button class="tab on" data-f="0"><span class="ic">🛰️</span>Survey Trajectory</button>
+    <button class="tab"    data-f="1"><span class="ic">🔥</span>Spatial Hotspots</button>
+    <button class="tab"    data-f="2"><span class="ic">🌡️</span>Heatmap</button>
+    <button class="tab"    data-f="3"><span class="ic">🗂️</span>Sector density</button>
+    <button class="tab"    data-f="4"><span class="ic">🎲</span>Monte Carlo</button>
+    <button class="tab"    data-f="5"><span class="ic">🚐</span>Route planning</button>
+  </div>
+  <div id="hint">An. stephensi larval surveillance</div>
+</div>
+
+<div id="stage">
+  <iframe id="f0" class="frame on" src="survey_trajectory_animation.html" title="Survey trajectory animation"></iframe>
+  <iframe id="f1" class="frame"    src="spatial_analysis_hotspots.html"  title="Spatial hotspot analysis"></iframe>
+  <iframe id="f2" class="frame"    src="larval_heatmap.html"             title="Larval density heatmap"></iframe>
+  <iframe id="f3" class="frame"    src="sector_density_maps.html"        title="Sector larval density maps"></iframe>
+  <iframe id="f4" class="frame"    src="monte_carlo_simulation.html"     title="Monte Carlo survey-order simulation"></iframe>
+  <iframe id="f5" class="frame"    src="route_simulation.html"           title="Road-network treatment routing" allow="display-capture *"></iframe>
+</div>
+
+<script>
+  const tabs=document.querySelectorAll(".tab");
+  const frames=Array.from(document.querySelectorAll(".frame"));
+  let cur=0;
+  // shared selection — each map posts {type:"larvSel",city,camp} on user change.
+  // (file:// frames are cross-origin "null", so we relay via postMessage only.)
+  const sel={city:null,camp:null};
+  window.addEventListener("message",e=>{ const d=e.data||{};
+    if(d.type==="larvSel"){ if(d.city) sel.city=d.city; if(d.camp!=null) sel.camp=d.camp; }
+  });
+  function post(i,msg){ try{ frames[i].contentWindow.postMessage(msg,"*"); }catch(e){} }
+  function show(i){
+    if(i<0||i>=frames.length||i===cur) return;
+    tabs.forEach(t=>t.classList.toggle("on",+t.dataset.f===i));
+    frames.forEach((f,j)=>f.classList.toggle("on",j===i));
+    if(sel.city||sel.camp!=null) post(i,{type:"larvSetSel",city:sel.city,camp:sel.camp}); // carry over
+    setTimeout(()=>post(i,{type:"larvResize"}),60);                       // fix Leaflet sizing
+    cur=i;
+  }
+  tabs.forEach(t=>t.addEventListener("click",()=>show(+t.dataset.f)));
+  // keyboard: number keys switch tabs
+  document.addEventListener("keydown",e=>{ const n=parseInt(e.key,10); if(n>=1&&n<=frames.length) show(n-1); });
+</script>
+</body>
+</html>
