@@ -100,7 +100,7 @@
     <div class="grp">
       <b>Field parameters<button type="button" class="tip" aria-label="What is Field parameters?" data-tip="The working conditions of the treatment teams. Change any number and every plan updates straight away.">?</button></b>
       <div class="pr"><label>driving speed<button type="button" class="tip" aria-label="What is driving speed?" data-tip="The average speed of a team&#x27;s vehicle on the town&#x27;s roads, in kilometres per hour. Setting it to 0 shows what happens if teams cannot drive at all.">?</button></label><input id="pSpeed" type="number" min="0" max="80" step="1" value="25"><span class="u">km/h</span></div>
-      <div class="pr"><label>service / site<button type="button" class="tip" aria-label="What is service / site?" data-tip="Minutes a team spends treating each breeding site once it gets there. The time to walk from the road to the site and back is added on top automatically.">?</button></label><input id="pService" type="number" min="1" max="120" step="1" value="20"><span class="u">min</span></div>
+      <div class="pr"><label>service / site<button type="button" class="tip" aria-label="What is service / site?" data-tip="Minutes a team spends treating each breeding site once it gets there. The time to walk from the road to the site and back is added on top automatically.">?</button></label><input id="pService" type="number" min="1" max="120" step="1" value="10"><span class="u">min</span></div>
       <div class="pr"><label>working hours / day<button type="button" class="tip" aria-label="What is working hours / day?" data-tip="How many hours each team works per day, counting both driving and treating.">?</button></label><input id="pHours" type="number" min="1" max="24" step="0.5" value="8"><span class="u">h</span></div>
       <div class="note">Driving uses these road distances ÷ your speed; each site also adds a road→site walk-in.</div>
     </div>
@@ -188,7 +188,7 @@ const SIMD=3650;                // simulation horizon (days): long enough for mi
 const DOT_W=0.5, DOT_W_T=0.8;  // habitat dot outline width (px): untreated / treated (team-coloured)
 const ROUTE_W=1.2;             // route line width (px); street sweep draws at .75x, animated trail at 1.25x
 const IMMOBILE=1e12;            // sec/metre used at 0 km/h: large but finite, so 0*fac stays 0 instead of NaN
-let st={city:CITIES[0],camp:"Predicted",algo:"sector",teams:2,day:1,speed:25,service:20,hours:8};
+let st={city:CITIES[0],camp:"Predicted",algo:"sector",teams:2,day:1,speed:25,service:10,hours:8};
 let map,baseDark,baseSat,habLayer,routeLayer,carLayer,habMarkers=[],curKey=null,anim=null,playMult=1,dotScale=1,showRandom=false;
 let cache={};   // routesKey -> {algo->teams->routes}
 
