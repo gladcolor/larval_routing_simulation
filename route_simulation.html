@@ -44,6 +44,12 @@
   #gifBtn:hover{border-color:#2b4a73;}
   #gifW{background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:7px;font-size:11.5px;padding:0 4px;}
   #gifShield{position:fixed;inset:0;z-index:9999;cursor:progress;}
+  .tip{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;flex:0 0 14px;margin-left:5px;padding:0;
+    border-radius:50%;border:1px solid #4a5563;background:transparent;color:var(--mut);font:700 9.5px/1 -apple-system,"Segoe UI",sans-serif;
+    letter-spacing:0;text-transform:none;cursor:help;vertical-align:1px;}
+  .tip:hover,.tip:focus-visible,.tip.on{border-color:var(--accent);color:var(--accent);outline:none;}
+  #tipBox{position:fixed;z-index:10000;max-width:290px;background:#1f2630;color:var(--txt);border:1px solid #3a4553;border-radius:8px;
+    padding:8px 10px;font-size:12px;line-height:1.45;box-shadow:0 6px 20px rgba(0,0,0,.5);pointer-events:none;}
   .note{color:var(--mut);font-size:10.5px;line-height:1.4;margin-top:6px;}
   .lgrow{display:flex;align-items:center;gap:8px;font-size:11.5px;color:#c6d0da;padding:2px 0;}
   .lgrow .dot{width:11px;height:11px;border-radius:50%;flex:0 0 11px;}
@@ -88,50 +94,50 @@
     <p class="lead">Plan <span class="em">An. stephensi</span> larval treatment on the real
       <b>road network</b>. Set the field constraints below — routes <b>recompute live</b>.</p>
 
-    <div class="grp"><b>City</b><div id="cityList"></div></div>
-    <div class="grp"><b>Campaign</b><div id="campSeg" class="seg"></div></div>
+    <div class="grp"><b>City<button type="button" class="tip" aria-label="What is City?" data-tip="The town to plan for. Each town has its own road map and its own breeding sites.">?</button></b><div id="cityList"></div></div>
+    <div class="grp"><b>Campaign<button type="button" class="tip" aria-label="What is Campaign?" data-tip="Which set of breeding sites to plan for. Dry24, Rainy24, Malaria24 and Dry25 are field surveys: the dry season of 2024, the rainy season of 2024, the 2024 malaria season, and the dry season of 2025. Predicted (Jigjiga only) is 1,518 likely breeding sites, with larvae counts estimated by a computer model instead of a survey.">?</button></b><div id="campSeg" class="seg"></div></div>
 
     <div class="grp">
-      <b>Field parameters</b>
-      <div class="pr"><label>driving speed</label><input id="pSpeed" type="number" min="0" max="80" step="1" value="25"><span class="u">km/h</span></div>
-      <div class="pr"><label>service / site</label><input id="pService" type="number" min="1" max="120" step="1" value="20"><span class="u">min</span></div>
-      <div class="pr"><label>working hours / day</label><input id="pHours" type="number" min="1" max="24" step="0.5" value="8"><span class="u">h</span></div>
+      <b>Field parameters<button type="button" class="tip" aria-label="What is Field parameters?" data-tip="The working conditions of the treatment teams. Change any number and every plan updates straight away.">?</button></b>
+      <div class="pr"><label>driving speed<button type="button" class="tip" aria-label="What is driving speed?" data-tip="The average speed of a team&#x27;s vehicle on the town&#x27;s roads, in kilometres per hour. Setting it to 0 shows what happens if teams cannot drive at all.">?</button></label><input id="pSpeed" type="number" min="0" max="80" step="1" value="25"><span class="u">km/h</span></div>
+      <div class="pr"><label>service / site<button type="button" class="tip" aria-label="What is service / site?" data-tip="Minutes a team spends treating each breeding site once it gets there. The time to walk from the road to the site and back is added on top automatically.">?</button></label><input id="pService" type="number" min="1" max="120" step="1" value="20"><span class="u">min</span></div>
+      <div class="pr"><label>working hours / day<button type="button" class="tip" aria-label="What is working hours / day?" data-tip="How many hours each team works per day, counting both driving and treating.">?</button></label><input id="pHours" type="number" min="1" max="24" step="0.5" value="8"><span class="u">h</span></div>
       <div class="note">Driving uses these road distances ÷ your speed; each site also adds a road→site walk-in.</div>
     </div>
 
     <div class="grp">
-      <b>Routing algorithm</b>
-      <div style="font-size:10px;color:var(--mut);margin:2px 0 1px">— optimized (target methods) —</div>
-      <label class="r"><input type="radio" name="algo" value="sector" checked> Sector sweep (clear sector by sector)</label>
-      <label class="r"><input type="radio" name="algo" value="greedy"> Greedy hotspot (richest sites first)</label>
-      <label class="r"><input type="radio" name="algo" value="cluster"> Cluster + greedy (split by area)</label>
-      <div style="font-size:10px;color:var(--mut);margin:6px 0 1px">— current-practice baselines —</div>
-      <label class="r"><input type="radio" name="algo" value="zigzag"> Zig-zag sweep (systematic, by area)</label>
-      <label class="r"><input type="radio" name="algo" value="nn"> Nearest (start &amp; treat nearby)</label>
-      <label class="r" id="randRow" hidden><input type="radio" name="algo" value="random"> Random order</label>
-      <label class="r tog"><input type="checkbox" id="showRandom"> show Random order (slowest baseline)</label>
-      <div style="font-size:10px;color:var(--mut);margin:6px 0 1px">— no map at all (must find the sites) —</div>
-      <label class="r"><input type="radio" name="algo" value="blind"> Search every street (no detection / prediction)</label>
+      <b>Routing algorithm<button type="button" class="tip" aria-label="What is Routing algorithm?" data-tip="The rule each team uses to decide which breeding site to go to next. Pick one to see its routes on the map. The chart below the map compares all of them.">?</button></b>
+      <div style="font-size:10px;color:var(--mut);margin:2px 0 1px">— optimized (target methods) —<button type="button" class="tip" aria-label="What is optimized?" data-tip="Plans that use a map of the breeding sites and how many larvae each one has.">?</button></div>
+      <label class="r"><input type="radio" name="algo" value="sector" checked> Sector sweep (clear sector by sector)<button type="button" class="tip" aria-label="What is Sector sweep?" data-tip="Works through the town one neighbourhood at a time. Each team picks the neighbourhood that gives the most larvae for the effort, treats every site in it (always going to the closest one next), then moves on to the next neighbourhood. Teams rarely have to double back.">?</button></label>
+      <label class="r"><input type="radio" name="algo" value="greedy"> Greedy hotspot (richest sites first)<button type="button" class="tip" aria-label="What is Greedy hotspot?" data-tip="Always goes next to the site that gives the most larvae for the time it takes to drive there and treat it. The biggest sites get treated early, but teams criss-cross the town.">?</button></label>
+      <label class="r"><input type="radio" name="algo" value="cluster"> Cluster + greedy (split by area)<button type="button" class="tip" aria-label="What is Cluster + greedy?" data-tip="Splits the town into one area per team, and each team stays in its own area. Inside its area, a team always goes next to the site that gives the most larvae for the time. With 1 team this is the same as Greedy hotspot.">?</button></label>
+      <div style="font-size:10px;color:var(--mut);margin:6px 0 1px">— current-practice baselines —<button type="button" class="tip" aria-label="What is current practice?" data-tip="Simpler ways of working, closer to how teams often work today. Useful for comparison.">?</button></div>
+      <label class="r"><input type="radio" name="algo" value="zigzag"> Zig-zag sweep (systematic, by area)<button type="button" class="tip" aria-label="What is Zig-zag sweep?" data-tip="Each team covers its part of town in strips, back and forth like mowing a lawn, and treats every site in that order. Easy to organise, but it ignores where most of the larvae are.">?</button></label>
+      <label class="r"><input type="radio" name="algo" value="nn"> Nearest (start &amp; treat nearby)<button type="button" class="tip" aria-label="What is Nearest?" data-tip="Always drives to the closest untreated site next. Very little driving, but big sites that are far away can wait a long time.">?</button></label>
+      <label class="r" id="randRow" hidden><input type="radio" name="algo" value="random"> Random order<button type="button" class="tip" aria-label="What is Random order?" data-tip="Visits the sites in a random order. A worst case to compare the other plans against.">?</button></label>
+      <label class="r tog"><input type="checkbox" id="showRandom"> show Random order (slowest baseline)<button type="button" class="tip" aria-label="What is show Random order?" data-tip="Adds the Random order plan to the list and to the chart. It is usually by far the slowest, so it is hidden to keep the chart easy to read.">?</button></label>
+      <div style="font-size:10px;color:var(--mut);margin:6px 0 1px">— no map at all (must find the sites) —<button type="button" class="tip" aria-label="What is no map?" data-tip="What happens if nobody knows in advance where the breeding sites are.">?</button></div>
+      <label class="r"><input type="radio" name="algo" value="blind"> Search every street (no detection / prediction)<button type="button" class="tip" aria-label="What is Search every street?" data-tip="The teams have no list of sites, so they drive down every street in their part of town and treat breeding sites as they come across them. This shows how much time a map of the sites saves.">?</button></label>
     </div>
 
     <div class="grp">
-      <b>Teams</b><div id="teamSeg" class="seg"></div>
-      <b style="margin-top:11px">Working days</b>
+      <b>Teams<button type="button" class="tip" aria-label="What is Teams?" data-tip="How many teams work at the same time. Each team starts in its own part of town. More teams finish in fewer days, but the total amount of work stays about the same.">?</button></b><div id="teamSeg" class="seg"></div>
+      <b style="margin-top:11px">Working days<button type="button" class="tip" aria-label="What is Working days?" data-tip="Drag the slider to see what has been treated by the end of each day. The slider ends on the day the last site is treated.">?</button></b>
       <div id="dayRow"><input id="dayRange" type="range" min="1" max="30" step="1" value="1"><span id="dayVal">1</span></div>
       <button id="play">▶ Drive route</button>
       <div id="spdRow" style="display:flex;align-items:center;gap:6px;margin-top:8px">
-        <span class="note" style="margin:0">▶ play speed</span><div id="spdSeg" class="seg" style="flex:1"></div>
+        <span class="note" style="margin:0">▶ play speed<button type="button" class="tip" aria-label="What is Drive route and play speed?" data-tip="Drive route plays an animation of each team&#x27;s car driving its route, day by day. Sites change colour as they are treated. Play speed sets how fast it plays, and how long a saved GIF is.">?</button></span><div id="spdSeg" class="seg" style="flex:1"></div>
       </div>
       <div id="gifRow">
         <button id="gifBtn" title="Screen-record this whole view while the drive plays, and download it as an animated GIF">⏺ Save GIF of this view</button>
-        <select id="gifW" title="GIF width (px)"><option value="960">960 px</option><option value="1280" selected>1280 px</option><option value="1600">1600 px</option><option value="0">full</option></select>
+        <select id="gifW" title="GIF width (px)"><option value="960">960 px</option><option value="1280" selected>1280 px</option><option value="1600">1600 px</option><option value="0">full</option></select><button type="button" class="tip" aria-label="What is Save GIF?" data-tip="Records this whole screen while the animation plays, then downloads it as a GIF you can share. Your browser will ask to share this tab: choose This tab. The menu sets the GIF width: bigger is sharper but makes a larger file.">?</button>
       </div>
       <div class="note" id="gifNote">Records ▶ Drive route at the play speed above. Your browser will ask to share this tab; Esc cancels.</div>
       <div class="note" id="tdNote"></div>
     </div>
 
     <div class="grp">
-      <b>Site dot size</b>
+      <b>Site dot size<button type="button" class="tip" aria-label="What is Site dot size?" data-tip="Makes every site dot on the map bigger or smaller. Bigger dots still mean more larvae.">?</button></b>
       <div id="dotRow"><input id="dotRange" type="range" min="0.2" max="4" step="0.1" value="1"><span id="dotVal">1.0×</span></div>
       <div class="note">Scales every habitat dot; relative size still ∝ larvae.</div>
     </div>
@@ -157,12 +163,12 @@
       <svg id="covsvg" viewBox="0 0 560 236" preserveAspectRatio="xMidYMid meet"></svg>
       <div id="covside">
         <h3 id="covTitle">Coverage</h3>
-        <div class="stat"><span class="k">larvae treated by day <span id="dDay">1</span></span><span class="v big" id="vLarv">—</span></div>
-        <div class="stat"><span class="k">habitats visited</span><span class="v" id="vHab">—</span></div>
-        <div class="stat"><span class="k">days to knock down 50% larvae</span><span class="v" id="v50">—</span></div>
-        <div class="stat"><span class="k">days to knock down 80% larvae</span><span class="v" id="v80">—</span></div>
-        <div class="stat"><span class="k">treat ALL sites — calendar days</span><span class="v" id="vFinish">—</span></div>
-        <div class="stat"><span class="k">team-days (total effort)</span><span class="v" id="vTd">—</span></div>
+        <div class="stat"><span class="k">larvae treated by day <span id="dDay">1</span><button type="button" class="tip" aria-label="What is larvae treated?" data-tip="The share of all the larvae in town that were in sites treated by the end of this day.">?</button></span><span class="v big" id="vLarv">—</span></div>
+        <div class="stat"><span class="k">habitats visited<button type="button" class="tip" aria-label="What is habitats visited?" data-tip="Breeding sites treated so far, out of all the breeding sites in town.">?</button></span><span class="v" id="vHab">—</span></div>
+        <div class="stat"><span class="k">days to knock down 50% larvae<button type="button" class="tip" aria-label="What is 50% of larvae?" data-tip="How many days it takes until the treated sites held half of all the larvae.">?</button></span><span class="v" id="v50">—</span></div>
+        <div class="stat"><span class="k">days to knock down 80% larvae<button type="button" class="tip" aria-label="What is 80% of larvae?" data-tip="How many days it takes until the treated sites held 80% of all the larvae.">?</button></span><span class="v" id="v80">—</span></div>
+        <div class="stat"><span class="k">treat ALL sites — calendar days<button type="button" class="tip" aria-label="What is all sites?" data-tip="How many days it takes to treat every site, with all teams working at the same time.">?</button></span><span class="v" id="vFinish">—</span></div>
+        <div class="stat"><span class="k">team-days (total effort)<button type="button" class="tip" aria-label="What is team-days?" data-tip="Days worked by all teams added together, out of the days available so far. For example, 2 teams working 5 days is 10 team-days.">?</button></span><span class="v" id="vTd">—</span></div>
         <div class="verdict" id="verdict"></div>
       </div>
     </div>
@@ -572,7 +578,8 @@ function buildCurveLegend(){
     el.appendChild(s); });
   el.insertAdjacentHTML("beforeend",
     `<span class="li on" style="cursor:default"><i class="sw dash" style="border-color:#c6d0da"></i>habitats visited</span>`+
-    `<span class="li on" style="cursor:default;color:#d6b06a"><i class="sw dash" style="border-color:#d6b06a"></i>50% / 80% milestones</span>`);
+    `<span class="li on" style="cursor:default;color:#d6b06a"><i class="sw dash" style="border-color:#d6b06a"></i>50% / 80% milestones</span>`+
+    `<button type="button" class="tip" aria-label="What is chart?" data-tip="Each line shows how fast larvae get treated, day by day, with one plan. Higher and steeper is better. The bold line is the plan you picked. The dotted line shows the share of sites visited, the gold dashed lines mark 50% and 80% of larvae treated, and the upright dotted line marks the day on the slider.">?</button>`);
 }
 function applyRandomToggle(){
   $("randRow").hidden=!showRandom;
@@ -796,6 +803,27 @@ async function recordGif(){
     shield.hidden=true; document.title=title0; gifRec=false; }
 }
 
+/* ===================== plain-English tips: "?" badges ===================== */
+function initTips(){      // one floating box, shown on hover, keyboard focus or tap; opens over the map so the sidebar never clips it
+  const box=document.createElement("div"); box.id="tipBox"; box.setAttribute("role","tooltip"); box.hidden=true; document.body.appendChild(box);
+  let cur=null;
+  const show=el=>{ if(cur&&cur!==el) cur.classList.remove("on"); cur=el; el.classList.add("on");
+    box.textContent=el.dataset.tip; box.hidden=false;
+    const r=el.getBoundingClientRect(), bw=box.offsetWidth, bh=box.offsetHeight, m=8;
+    let x=r.right+m; if(x+bw>innerWidth-m) x=Math.max(m,r.left-m-bw);
+    const y=Math.max(m,Math.min(innerHeight-bh-m,r.top+r.height/2-bh/2));
+    box.style.left=x+"px"; box.style.top=y+"px"; };
+  const hide=()=>{ box.hidden=true; if(cur) cur.classList.remove("on"); cur=null; };
+  document.addEventListener("mouseover",e=>{ const t=e.target.closest(".tip"); if(t) show(t); });
+  document.addEventListener("mouseout",e=>{ const t=e.target.closest(".tip"); if(t&&!t.contains(e.relatedTarget)) hide(); });
+  document.addEventListener("focusin",e=>{ if(e.target.classList.contains("tip")) show(e.target); });
+  document.addEventListener("focusout",e=>{ if(e.target.classList.contains("tip")) hide(); });
+  // a tap shows the tip without touching the option it sits next to; tapping anywhere else closes it
+  document.addEventListener("click",e=>{ const t=e.target.closest(".tip"); if(t){ e.preventDefault(); e.stopPropagation(); show(t); } else hide(); },true);
+  addEventListener("keydown",e=>{ if(e.key==="Escape") hide(); });
+  $("side").addEventListener("scroll",hide); addEventListener("resize",hide);
+}
+
 /* ===================== dashboard integration ===================== */
 function notifyParent(){ try{ parent.postMessage({type:"larvSel",city:st.city},"*"); }catch(e){} }
 window.addEventListener("message",e=>{ const d=e.data||{};
@@ -805,7 +833,7 @@ window.addEventListener("message",e=>{ const d=e.data||{};
 });
 
 /* ===================== go ===================== */
-initMap(); buildControls(); buildCurveLegend(); applyRandomToggle(); interp(); update(); setTimeout(()=>map.invalidateSize(),200);
+initMap(); buildControls(); buildCurveLegend(); applyRandomToggle(); initTips(); interp(); update(); setTimeout(()=>map.invalidateSize(),200);
 window.__route={st,coverage,teamDaysUsed,computeRoutes,routePoly,pairPath,astar,blindPlan,daysToPct};   // test hook
 </script>
 </body>
