@@ -701,7 +701,8 @@ function startAnim(){
     t.car=L.marker(t.pts[0],{zIndexOffset:1000,icon:L.divIcon({className:"",iconSize:[24,24],iconAnchor:[12,12],
       html:`<div class="carico" style="background:${TEAM_COL[ti]}">🚗</div>`})});
     carLayer.addLayer(t.trail); carLayer.addLayer(t.car); });
-  anim={teams,speed:Math.max(...teams.map(t=>t.total),1)/26,start:performance.now(),treated:new Set(),maxDay:0,d,maxL,paused:false};
+  // 52 seconds at 1x: half the former playback speed. Simulation clocks are unchanged.
+  anim={teams,speed:Math.max(...teams.map(t=>t.total),1)/52,start:performance.now(),treated:new Set(),maxDay:0,d,maxL,paused:false};
   $("play").textContent="⏸ Pause"; anim.raf=requestAnimationFrame(animStep);
 }
 function animStep(ts){

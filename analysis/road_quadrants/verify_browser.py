@@ -61,6 +61,10 @@ try:
           st.algo=initial;drawRoutes();
           startAnim();
           if(!anim) throw Error('Animation did not start');
+          const distance=Math.max(...anim.teams.map(t=>t.total));
+          for(const [mult,seconds] of [[1,52],[2,26],[4,13]]){
+            if(Math.abs(distance/anim.speed/mult-seconds)>1e-9) throw Error('Playback duration mismatch');
+          }
           cancelAnimationFrame(anim.raf);animStep(anim.start);cancelAnimationFrame(anim.raf);
           if(st.day!==0 || anim.treated.size!==0 || document.getElementById('vLarv').textContent!=='0%') throw Error('Animation initial frame is not day zero');
           animStep(anim.start+1000);checkMarkers();
