@@ -175,7 +175,8 @@
   </div>
 </div>
 
-<script src="route_sim_data.js"></script>
+<script src="route_sim_data_four_quadrants.js"></script>
+<script src="route_quadrants.js"></script>
 <script src="route_graph.js"></script>
 <script>
 const $=id=>document.getElementById(id);
@@ -482,6 +483,15 @@ function ensureMatrix(d){
 }
 
 /* ===================== MAP ===================== */
+let quadrantLayer;
+function drawQuadrants(){
+  if(quadrantLayer){map.removeLayer(quadrantLayer);quadrantLayer=null;}
+  if(st.city!=="Jigjiga"||st.camp!=="Predicted")return;
+  const colors={NE:"#238c8b",NW:"#4b79be",SE:"#d89239",SW:"#af649b"};
+  quadrantLayer=L.layerGroup().addTo(map);
+  L.geoJSON(ROAD_QUADRANTS,{interactive:false,style:f=>({color:colors[f.properties.quadrant],weight:.7,opacity:.4,fillOpacity:.06})}).addTo(quadrantLayer);
+  L.geoJSON(ROAD_QUADRANT_DIVIDERS,{interactive:false,style:f=>({color:"#d2a8ff",weight:2,opacity:.85,dashArray:f.properties.kind==="local_road"?"5 4":null})}).addTo(quadrantLayer);
+}
 function initMap(){
   map=L.map("map",{preferCanvas:true,zoomControl:true});
   baseDark=L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=cb1_3hz0_1_6edd0f4ed3a54f45ad217495",
@@ -602,7 +612,7 @@ function update(){
   }
   const dmax=endDay(coverage(st.algo,st.teams)), dr=$("dayRange");   // slider = 1 .. this plan's last day
   dr.max=dmax; if(st.day>dmax) st.day=dmax; dr.value=st.day;
-  buildHab(); drawRoutes(); drawCurve(); markLegend();
+  drawQuadrants(); buildHab(); drawRoutes(); drawCurve(); markLegend();
   const d=dat(),cov=coverage(st.algo,st.teams),day=st.day;
   $("dayVal").textContent=day; $("dDay").textContent=day;
   $("vLarv").textContent=cov.larvPct[Math.min(day,SIMD)].toFixed(0)+"%";
@@ -614,6 +624,7 @@ function update(){
   $("vTd").textContent=`${teamDaysUsed(st.algo,st.teams,day)} of ${st.teams*day}`;
   $("covTitle").innerHTML=`${st.city} · ${st.camp} — <span style="color:${ALGO_COL[st.algo]}">${ALGO_LAB[st.algo]}</span>, ${st.teams} team${st.teams>1?"s":""}`;
   $("tdNote").innerHTML=`${st.hours}h/day · ${st.service}min/site + walk-in · ${st.speed}km/h driving. Routes recompute live.`;
+  if(st.city==="Jigjiga"&&st.camp==="Predicted")$("tdNote").innerHTML+='<br>Four road-aligned planning quadrants (NE/NW/SE/SW). Purple boundaries: solid = major road; dashed = local road / track. Priorities are predicted, not measured treatment outcomes.';
   const fmt=v=>v==null?`>${SIMD}d`:`${v}d`;
   const fd=[1,2,3].map(t=>fmt(finishDay(coverage(st.algo,t))));
   $("verdict").innerHTML=`<b>More teams = fewer days, not less work.</b> With <b style="color:${ALGO_COL[st.algo]}">${ALGO_LAB[st.algo]}</b>, `+

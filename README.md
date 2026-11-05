@@ -6,6 +6,9 @@ Interactive visualizations of larval-site surveys in **Jigjiga, Logiya, and Seme
 (campaigns: Dry24 → Rainy24 → Malaria24 → Dry25).
 
 ## How to use
+
+The Jigjiga **Predicted** routing scenario now uses four road-aligned planning quadrants (NE, NW, SE, SW), not nearest-reference assignments to the 21 small survey areas. Major-road dividers are solid purple; local-road and track continuations are dashed. Historical campaigns retain their original labels. See [the map, construction method and tests](analysis/road_quadrants/README.md). Previous manuscript sector-sweep figures were not regenerated and describe the old grouping.
+
 1. **Unzip** this folder, keeping all files together.
 2. Open **`dashboard.html`** in a web browser (Chrome, Edge, or Firefox — just double-click).
 3. Use the tabs at the top to switch views.
@@ -35,8 +38,7 @@ Interactive visualizations of larval-site surveys in **Jigjiga, Logiya, and Seme
   routing algorithm, number of teams (1–3) and working days; **▶ Drive route** animates a car per
   team along the actual streets, treating habitats as it passes, with a **cumulative larvae-treated
   curve**. Compares scenarios (e.g. 2 teams × 5 days vs 1 team × 10 days). Algorithms:
-  - **Sector sweep** (default) — clear every habitat in one administrative sector before driving to
-    the next (sectors ordered by larvae). Realistic and efficient (~3× less driving; routes don't backtrack).
+  - **Sector sweep** (default): complete one planning group before moving to another, using priority per approximate effort to choose the group and nearest-neighbour road travel within it. Jigjiga Predicted uses four road-aligned quadrants; this is a heuristic, not a proven optimum.
   - **Greedy hotspot** — chase the richest *individual* sites: most larvae earliest, but it zig-zags
     across town (prize-collecting / orienteering). **Key finding:** because larvae are highly
     concentrated, this treats far more larvae per day than nearest-neighbour "shortest-route" logic.

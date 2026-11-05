@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "javascript_errors": [],
+  "initial_state": {
+    "sectors": [
+      "NE",
+      "NW",
+      "SE",
+      "SW"
+    ],
+    "groups": 2,
+    "points": 1518,
+    "note": "8h/day \u00b7 10min/site + walk-in \u00b7 25km/h driving. Routes recompute live.Four road-aligned planning quadrants (NE/NW/SE/SW). Purple boundaries: solid = major road; dashed = local road / track. Priorities are predicted, not measured treatment outcomes."
+  },
+  "historical_overlay_hidden": true
+}
