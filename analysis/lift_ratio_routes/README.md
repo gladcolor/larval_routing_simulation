@@ -14,7 +14,7 @@ Do not treat lift-ratio as a routing optimality gap or a measure of lives, money
 
 ![Site-based and time-based evaluation](figures/01_policy_order_and_time.png)
 
-**Caption.** Site-based prioritization and resource-based coverage for four routing heuristics applied to the same 1,518 mapped candidate sites in Jigjiga. The left panel uses complete visit sequences, with mapped priority as the evaluation weight. Lift-ratio is the area advantage over uniform random site-order expectation divided by the area advantage of ideal priority ordering. The dashed ideal reference ignores road constraints and is not a feasible-route optimum. The right panel credits priority only when site service is completed, using the same depot, one team, 25 km/h driving, 4.3 km/h walk-in, ten minutes of service per site and eight working hours per team-day. Curves use the original computed points, not smoothing. Both panels evaluate legacy mapped priorities, not independently observed larval burden or treatment effects.
+**Caption.** Visit-based prioritization and resource-based coverage for four routing heuristics applied to the same 1,518 mapped candidate habitats in Jigjiga. The left panel compares complete visit sequences, with mapped priority as the evaluation weight. The middle panel isolates priority-per-minute, the highest-lift strategy here, and shades its gain above random as A and its remaining gap to ideal as B. Lift-ratio is A/(A+B). The dashed ideal reference ignores road constraints and is not a feasible-route optimum. The right panel credits priority only when habitat service is completed, using the same depot, one team, 25 km/h driving, 4.3 km/h walk-in, ten minutes of service per habitat and eight working hours per team-day. Curves use the original computed points, not smoothing. All panels evaluate legacy mapped priorities, not independently observed larval burden or treatment effects.
 
 | Policy | Lift-ratio | Full-list NDCG | Priority at 50% of sites | Priority after 20 team-days | Team-days to 80% priority |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -71,7 +71,7 @@ python analysis/lift_ratio_routes/verify_route_paths.py
 
 Local repository: `code/CDC_survey_simulation/CDC_Ethiopia_larval_webmaps/CDC_Ethiopia_larval_webmaps`, with Git origin `https://github.com/gladcolor/larval_routing_simulation.git`. This rerun loads `route_sim_data_four_quadrants.js`, with road-aligned NE, NW, SE and SW groups containing 555, 534, 154 and 275 candidates. It retains the same priority values and travel graph. The source hashes in the generated JSON identify the exact local version used.
 
-Figure 1 shades A and B for four-quadrant sweep. The ideal curve accumulates the top-k predicted priorities, not an optimized road route. A = 0.011101236848050977; B = 0.12215841719122433; A/(A+B) = 0.08330531043386272. Geographic regrouping changes this policy's results; the other three policies are unchanged from the previous run.
+Figure 1 has three panels: all strategies by visit order, the highest-lift strategy alone, and all strategies by working time. The middle panel shades A and B for priority-per-minute. The ideal curve accumulates the top-k predicted priorities, not an optimized road route. A = 0.12613342642490977; B = 0.007126227614365543; A/(A+B) = 0.9465237421953291. Geographic regrouping changes four-quadrant sweep's results; the other three policies are unchanged from the previous run.
 
 From the repository root:
 

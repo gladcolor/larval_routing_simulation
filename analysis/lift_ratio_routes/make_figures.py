@@ -65,12 +65,12 @@ def heading(fig, title, subtitle):
     fig.text(.065, .965, title, fontsize=22, weight='bold', va='top')
     fig.text(.065, .912, subtitle, fontsize=12, color=MUTED, va='top')
 
-def reference_curves(ax, x, ideal, label):
+def reference_curves(ax, x, ideal, label, suffix=''):
     """Unconstrained top-k reference, only on habitat-share axes, never time."""
     ax.plot([0,100],[0,100],color='#78838e',lw=1.4,ls=(0,(4,4)),
-            label='Random ordering (expected)',zorder=3,gid='random-order-reference')
+            label='Random ordering (expected)',zorder=3,gid='random-order-reference'+suffix)
     line,=ax.plot(x*100,ideal*100,color='#202c36',lw=2.2,ls=(0,(6,4)),
-                 label=label,zorder=6,gid='ideal-top-k-reference')
+                 label=label,zorder=6,gid='ideal-top-k-reference'+suffix)
     # White edging keeps the dashed ideal visible where a policy nearly matches it.
     line.set_path_effects([pe.Stroke(linewidth=3.6,foreground='white'),pe.Normal()])
 
@@ -91,44 +91,53 @@ for key, rows in D['routes'].items():
     RESULTS[key] = {'metrics':m, 'x':x, 'c':c, 'ideal':ideal, 't':t}
 
 def policy_figure():
-    fig, axes = plt.subplots(1,2,figsize=(14,6.6))
-    fig.subplots_adjust(left=.075,right=.97,bottom=.29,top=.78,wspace=.25)
+    fig, axes = plt.subplots(1,3,figsize=(18,7.2))
+    fig.subplots_adjust(left=.055,right=.98,bottom=.29,top=.77,wspace=.29)
     heading(fig,'Two questions for every routing policy',
             'Jigjiga | 1,518 mapped candidates | one common start | one team | 25 km/h | 10 min/site + walk-in')
-    q=RESULTS['sector'];qx=q['x']*100;qc=q['c']*100;qi=q['ideal']*100
-    axes[0].fill_between(qx,qx,qc,where=qc>=qx,interpolate=True,color='#d5e8f7',zorder=0)
-    axes[0].fill_between(qx,qx,qc,where=qc<qx,interpolate=True,color='#d5e8f7',hatch='///',zorder=0)
-    axes[0].fill_between(qx,qc,qi,color='#fbe6bf',zorder=0)
+    best=max(RESULTS,key=lambda k:RESULTS[k]['metrics']['lift'])
+    q=RESULTS[best];qx=q['x']*100;qc=q['c']*100;qi=q['ideal']*100
+    a,b,c=axes
     for key,r in RESULTS.items():
-        axes[0].plot(r['x']*100,r['c']*100,color=COL[key],lw=2.6,
+        a.plot(r['x']*100,r['c']*100,color=COL[key],lw=2.6,
                      label=f"{LAB[key]}   L = {r['metrics']['lift']:.3f}")
-        axes[1].step(r['t'],r['c']*100,where='post',color=COL[key],lw=2.4)
-    a,b=axes
+        c.step(r['t'],r['c']*100,where='post',color=COL[key],lw=2.4)
     reference_curves(a,q['x'],q['ideal'],'Ideal (top-k predicted priorities)')
-    a.annotate('Ideal: top-k predicted priorities\nTravel constraints ignored',
-               xy=(32,float(np.interp(32,qx,qi))),xytext=(5,91),
-               fontsize=10,color='#202c36',va='top',linespacing=1.4,
-               arrowprops={'arrowstyle':'-','color':'#202c36','lw':1,
-                           'connectionstyle':'angle3,angleA=0,angleB=90'})
-    a.set_title('a   Which habitats are visited first?',loc='left',pad=16,fontsize=15,weight='bold')
-    b.set_title('b   How quickly is priority reached?',loc='left',pad=16,fontsize=15,weight='bold')
+    b.fill_between(qx,qx,qc,where=qc>=qx,interpolate=True,color='#a9d2ef',zorder=0,gid='best-strategy-area-a')
+    b.fill_between(qx,qx,qc,where=qc<qx,interpolate=True,color='#a9d2ef',hatch='///',zorder=0)
+    b.fill_between(qx,qc,qi,color='#f3c77e',zorder=0,gid='best-strategy-area-b')
+    b.plot(qx,qc,color=COL[best],lw=2.8,label=LAB[best],gid='best-strategy-curve')
+    reference_curves(b,q['x'],q['ideal'],'Ideal (top-k predicted priorities)',suffix='-best')
+    ax=48;ay=float(np.interp(ax,qx,(qx+qc)/2))
+    b.text(ax,ay,'A',fontsize=28,weight='bold',color='#07578c',ha='center',va='center')
+    bx=25;by=float(np.interp(bx,qx,(qc+qi)/2))
+    b.annotate('B: remaining gain',xy=(bx,by),xytext=(5,91),fontsize=12,
+               color='#905800',weight='bold',va='top',
+               arrowprops={'arrowstyle':'-','color':'#905800','lw':1.2,'connectionstyle':'angle3,angleA=0,angleB=90'})
+    m=q['metrics']
+    b.text(96,10,f"A = {m['area_a']:.4f}    B = {m['area_b']:.4f}\nA / (A + B) = {m['lift']:.3f}",
+           ha='right',fontsize=11,linespacing=1.7,color=INK,
+           bbox={'boxstyle':'round,pad=.55','facecolor':'#f2f6fa','edgecolor':'none'})
+    a.set_title('a   Compare all strategies',loc='left',pad=16,fontsize=15,weight='bold')
+    b.set_title('b   Highest lift: priority per minute',loc='left',pad=16,fontsize=14,weight='bold')
+    c.set_title('c   Compare working time',loc='left',pad=16,fontsize=15,weight='bold')
     a.set_xlabel('Habitats visited (%)')
     a.set_ylabel('Mapped-priority coverage (%)')
-    b.set_xlabel('Cumulative working time (team-days)')
+    b.set_xlabel('Habitats visited (%)')
     b.set_ylabel('Mapped-priority coverage (%)')
-    style(a);style(b,True);b.set_xlim(0,50)
-    a.axvline(50,color=GRID,lw=1,zorder=0)
-    b.axhline(80,color='#aab4bd',ls=(0,(2,3)),lw=1)
+    c.set_xlabel('Cumulative working time (team-days)')
+    c.set_ylabel('Mapped-priority coverage (%)')
+    style(a);style(b);style(c,True);c.set_xlim(0,50)
+    c.axhline(80,color='#aab4bd',ls=(0,(2,3)),lw=1)
     handles,labels=a.get_legend_handles_labels()
     order=[5,4,0,1,2,3]
     a.legend([handles[i] for i in order],[labels[i] for i in order],
              loc='lower right',fontsize=9,frameon=False,labelspacing=.6,handlelength=3)
-    bx=50;by=float(np.interp(bx,qx,(qc+qi)/2))
-    a.text(bx,by,'B',color='#9c660d',fontsize=22,weight='bold',ha='center',va='center')
-    b.text(1,82,'80% target',fontsize=10,color=MUTED)
-    fig.text(.075,.125,'Shading for four-quadrant sweep: blue A; amber B.\nIdeal: top-k predicted priorities, ignoring travel constraints.',fontsize=10.5,color=MUTED,linespacing=1.5)
-    fig.text(.57,.125,'Time-based coverage includes travel, walk-in and service.\nA random diagonal is not a time-matched routing baseline.',fontsize=11,color=MUTED,linespacing=1.5)
-    fig.text(.075,.035,'Planning scenario only: legacy predicted priorities, not observed treatment effects or held-out prediction validation.',fontsize=10.5,color=MUTED)
+    c.text(1,82,'80% target',fontsize=10,color=MUTED)
+    fig.text(.055,.12,'Black dashed: ideal top-k priorities.\nGrey dashed: random ordering in expectation.',fontsize=11,color=MUTED,linespacing=1.5)
+    fig.text(.385,.12,'Blue A: gain above random; amber B: gap to ideal.\nHighest lift among these four strategies, not a proven optimum.',fontsize=10.5,color=MUTED,linespacing=1.5)
+    fig.text(.715,.12,'Travel, walking and service time included.\nVisit-based ideal has no feasible time schedule.',fontsize=10.5,color=MUTED,linespacing=1.5)
+    fig.text(.055,.035,'Planning scenario only: legacy predicted priorities, not observed treatment effects or held-out prediction validation.',fontsize=10.5,color=MUTED)
     save(fig,'01_policy_order_and_time')
 
 def maps_figure():

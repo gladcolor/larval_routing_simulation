@@ -33,9 +33,9 @@
   .pr input[type=number]{width:70px;background:var(--panel2);color:var(--txt);border:1px solid var(--line);
     border-radius:6px;padding:5px 7px;font-size:12.5px;text-align:right;}
   .pr .u{color:var(--mut);font-size:11px;width:42px;}
-  #dayRow,#dotRow{display:flex;align-items:center;gap:8px;}
-  #dayRange,#dotRange{flex:1;accent-color:var(--accent);}
-  #dayVal,#dotVal{width:64px;text-align:right;color:var(--txt);font-size:12px;}
+  #dayRow,#dotRow,#playSpeedRow{display:flex;align-items:center;gap:8px;}
+  #dayRange,#dotRange,#playSpeedRange{flex:1;min-width:0;accent-color:var(--accent);}
+  #dayVal,#dotVal,#playSpeedValue{width:64px;text-align:right;color:var(--txt);font-size:12px;}
   #play{width:100%;margin-top:8px;background:rgba(88,166,255,.12);color:var(--accent);
     border:1px solid #2b4a73;border-radius:7px;padding:7px;font-size:12.5px;cursor:pointer;font-weight:600;}
   #play:hover{background:rgba(88,166,255,.22);}
@@ -129,6 +129,11 @@
       <div id="spdRow" style="display:flex;align-items:center;gap:6px;margin-top:8px">
         <span class="note" style="margin:0">▶ play speed<button type="button" class="tip" aria-label="What is Drive route and play speed?" data-tip="Drive route plays an animation of each team&#x27;s car driving its route, day by day. Sites change colour as they are treated. Play speed sets how fast it plays, and how long a saved GIF is.">?</button></span><div id="spdSeg" class="seg" style="flex:1"></div>
       </div>
+      <div id="playSpeedRow" style="margin-top:6px">
+        <input id="playSpeedRange" type="range" min="0.25" max="4" step="0.25" value="1" aria-label="Animation playback speed" aria-valuetext="1 times">
+        <output id="playSpeedValue" for="playSpeedRange">1×</output>
+      </div>
+      <div class="note">Slower 0.25× to faster 4×. At 1×, playback takes about 104 seconds. Simulation times do not change.</div>
       <div id="gifRow">
         <button id="gifBtn" title="Screen-record this whole view while the drive plays, and download it as an animated GIF">⏺ Save GIF of this view</button>
         <select id="gifW" title="GIF width (px)"><option value="960">960 px</option><option value="1280" selected>1280 px</option><option value="1600">1600 px</option><option value="0">full</option></select><button type="button" class="tip" aria-label="What is Save GIF?" data-tip="Records this whole screen while the animation plays, then downloads it as a GIF you can share. Your browser will ask to share this tab: choose This tab. The menu sets the GIF width: bigger is sharper but makes a larger file.">?</button>
@@ -701,8 +706,8 @@ function startAnim(){
     t.car=L.marker(t.pts[0],{zIndexOffset:1000,icon:L.divIcon({className:"",iconSize:[24,24],iconAnchor:[12,12],
       html:`<div class="carico" style="background:${TEAM_COL[ti]}">🚗</div>`})});
     carLayer.addLayer(t.trail); carLayer.addLayer(t.car); });
-  // 52 seconds at 1x: half the former playback speed. Simulation clocks are unchanged.
-  anim={teams,speed:Math.max(...teams.map(t=>t.total),1)/52,start:performance.now(),treated:new Set(),maxDay:0,d,maxL,paused:false};
+  // 104 seconds at 1x: half the previous playback speed. Simulation clocks are unchanged.
+  anim={teams,speed:Math.max(...teams.map(t=>t.total),1)/104,start:performance.now(),treated:new Set(),maxDay:0,d,maxL,paused:false};
   $("play").textContent="⏸ Pause"; anim.raf=requestAnimationFrame(animStep);
 }
 function animStep(ts){
@@ -738,6 +743,22 @@ function driveToggle(){
 }
 
 /* ===================== controls ===================== */
+function setPlaybackSpeed(value,now=performance.now()){
+  if(!Number.isFinite(value))return;
+  const next=Math.max(.25,Math.min(4,Math.round(value*4)/4));
+  // Preserve progress when switching speeds, both while playing and paused.
+  if(anim){
+    const elapsed=anim.paused?anim.pausedElapsed:(now-anim.start)/1000;
+    const adjusted=elapsed*playMult/next;
+    anim.start=now-adjusted*1000;
+    if(anim.paused)anim.pausedElapsed=adjusted;
+  }
+  playMult=next;
+  $("playSpeedRange").value=next;
+  $("playSpeedRange").setAttribute("aria-valuetext",`${next} times`);
+  $("playSpeedValue").textContent=next+"×";
+  $("spdSeg").querySelectorAll("button").forEach(b=>b.classList.toggle("on",+b.dataset.speed===next));
+}
 function debounce(fn,ms){ let h; return ()=>{ clearTimeout(h); $("busy").classList.add("on"); h=setTimeout(()=>{ fn(); $("busy").classList.remove("on"); },ms); }; }
 const recompute=debounce(()=>{ cache={}; curKey=null; update(); },120);
 const CAMP_ORDER=["Dry24","Rainy24","Malaria24","Dry25","Predicted"];
@@ -770,8 +791,9 @@ function buildControls(){
   $("play").addEventListener("click",driveToggle);
   $("gifBtn").addEventListener("click",recordGif);
   const sp=$("spdSeg");
-  [[1,"1×"],[2,"2×"],[4,"4×"]].forEach(([v,lab])=>{ const b=document.createElement("button"); b.textContent=lab; if(v===playMult)b.classList.add("on"); sp.appendChild(b);
-    b.addEventListener("click",()=>{ sp.querySelectorAll("button").forEach(x=>x.classList.remove("on")); b.classList.add("on"); playMult=v; }); });
+  [[1,"1×"],[2,"2×"],[4,"4×"]].forEach(([v,lab])=>{ const b=document.createElement("button"); b.textContent=lab; b.dataset.speed=v; if(v===playMult)b.classList.add("on"); sp.appendChild(b);
+    b.addEventListener("click",()=>setPlaybackSpeed(v)); });
+  $("playSpeedRange").addEventListener("input",e=>setPlaybackSpeed(+e.target.value));
 }
 
 /* ===================== GIF export: screen-records this view while the drive plays ===================== */

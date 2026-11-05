@@ -63,4 +63,8 @@ for name in ['01_policy_order_and_time','03_same_lift_different_efficiency','04_
     assert sum(node.get('id')=='ideal-top-k-reference' for node in nodes)==1
     assert sum(node.get('id')=='random-order-reference' for node in nodes)==1
     assert any('Ideal (' in (node.text or '') for node in nodes),name+' needs a visible ideal legend'
+    if name=='01_policy_order_and_time':
+        for ident in ['best-strategy-area-a','best-strategy-area-b','best-strategy-curve','ideal-top-k-reference-best']:
+            assert sum(node.get('id')==ident for node in nodes)==1,ident
+        assert max(M['routes'],key=lambda k:M['routes'][k]['lift'])=='greedy'
 print('PASS: source hashes, complete common population, timestamps, independent lift/NDCG calculations, budgets, synthetic examples, four SVG and 300-dpi PNG exports.')

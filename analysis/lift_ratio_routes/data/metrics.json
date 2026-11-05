@@ -169,7 +169,7 @@
       }
     }
   },
-  "input_sha256": "95b9f10ce847a0f84b0ab0544538588c5f32b78b016c4a0dccf0a1a55a010cc6",
+  "input_sha256": "b7e50a3ae5e01882878827c419e787f26d85879b57517cf522bd28791878c3d9",
   "ndcg_convention": "Linear gain equal to counts/priorities; discount 1/log2(rank+1); k=n; no score ties in visit order.",
   "checks": [
     "All 1518 sites visited once by every strategy",
@@ -179,7 +179,7 @@
   ],
   "limits": {
     "source_files": {
-      "route_simulation.html": "485fa5c0fb7bc6a7555c459164a25d6dda976378270b497aa2ed7a5e4aa22b34",
+      "route_simulation.html": "48dfcd68a4bec9c2e1fd0cf8efa62a50b12064e65c45bc801d9a6d890e96f441",
       "route_sim_data_four_quadrants.js": "6cdf8dfe39eda6554938a169693009ad56a94d0b78772b23da5eafa4d0622dc8",
       "route_graph.js": "efbde5468ed32b78b2f51baa316e1bc4baa66f1b9adca339b09ce4d67960d99c"
     },

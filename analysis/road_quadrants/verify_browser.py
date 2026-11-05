@@ -62,9 +62,23 @@ try:
           startAnim();
           if(!anim) throw Error('Animation did not start');
           const distance=Math.max(...anim.teams.map(t=>t.total));
-          for(const [mult,seconds] of [[1,52],[2,26],[4,13]]){
+          for(const [mult,seconds] of [[.25,416],[1,104],[2,52],[4,26]]){
             if(Math.abs(distance/anim.speed/mult-seconds)>1e-9) throw Error('Playback duration mismatch');
           }
+          const now=performance.now();anim.start=now-10000;
+          const progress=(now-anim.start)*playMult;
+          setPlaybackSpeed(2,now);
+          if(Math.abs((now-anim.start)*playMult-progress)>1e-6) throw Error('Speed change jumps');
+          anim.paused=true;anim.pausedElapsed=(now-anim.start)/1000;
+          const pausedProgress=anim.pausedElapsed*playMult;
+          const slider=document.getElementById('playSpeedRange');
+          slider.value=.25;slider.dispatchEvent(new Event('input'));
+          if(playMult!==.25 || document.getElementById('playSpeedValue').textContent!=='0.25×') throw Error('Slider not applied');
+          if(Math.abs(anim.pausedElapsed*playMult-pausedProgress)>1e-9) throw Error('Paused progress jumps');
+          document.querySelector('#spdSeg button[data-speed="4"]').click();
+          if(playMult!==4 || slider.value!=='4') throw Error('Preset not synced');
+          if(Math.abs(anim.pausedElapsed*playMult-pausedProgress)>1e-9) throw Error('Preset jumps');
+          setPlaybackSpeed(1,now);anim.paused=false;anim.start=now;
           cancelAnimationFrame(anim.raf);animStep(anim.start);cancelAnimationFrame(anim.raf);
           if(st.day!==0 || anim.treated.size!==0 || document.getElementById('vLarv').textContent!=='0%') throw Error('Animation initial frame is not day zero');
           animStep(anim.start+1000);checkMarkers();
@@ -80,6 +94,7 @@ try:
         page.wait_for_function('quadrantLayer!==null',timeout=20000)
         assert page.locator('#priorityLabel').inner_text()=='predicted priority'
         assert page.locator('#covleg [data-algo="sector"]').inner_text()=='Four-quadrant sweep'
+        page.locator('#playSpeedRow').scroll_into_view_if_needed()
         page.screenshot(path=str(HERE/'outputs/browser_preview.png'),full_page=True)
         assert not errors,errors
         (HERE/'outputs/browser_validation.json').write_text(json.dumps({'passed':True,'javascript_errors':errors,'initial_state':result,'historical_overlay_hidden':True,'day_zero':zero,'opacity':opacity},indent=2),encoding='utf8')
