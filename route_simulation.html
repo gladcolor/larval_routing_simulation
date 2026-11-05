@@ -108,7 +108,7 @@
     <div class="grp">
       <b>Routing algorithm<button type="button" class="tip" aria-label="What is Routing algorithm?" data-tip="The rule each team uses to decide which breeding site to go to next. Pick one to see its routes on the map. The chart below the map compares all of them.">?</button></b>
       <div style="font-size:10px;color:var(--mut);margin:2px 0 1px">— optimized (target methods) —<button type="button" class="tip" aria-label="What is optimized?" data-tip="Plans that use a map of the breeding sites and how many larvae each one has.">?</button></div>
-      <label class="r"><input type="radio" name="algo" value="sector" checked> Sector sweep (clear sector by sector)<button type="button" class="tip" aria-label="What is Sector sweep?" data-tip="Works through the town one neighbourhood at a time. Each team picks the neighbourhood that gives the most larvae for the effort, treats every site in it (always going to the closest one next), then moves on to the next neighbourhood. Teams rarely have to double back.">?</button></label>
+      <label class="r"><input type="radio" name="algo" value="sector" checked> <span id="quadrantLabel">Four-quadrant sweep (one quadrant at a time)</span><button id="quadrantTip" type="button" class="tip" aria-label="What is Four-quadrant sweep?" data-tip="For Jigjiga predicted habitats, work through four road-aligned planning quadrants: NE, NW, SE and SW. Choose a quadrant by total priority relative to estimated entry, walking and service time, then visit nearby habitats within it. These are planning areas, not administrative districts.">?</button></label>
       <label class="r"><input type="radio" name="algo" value="greedy"> Greedy hotspot (richest sites first)<button type="button" class="tip" aria-label="What is Greedy hotspot?" data-tip="Always goes next to the site that gives the most larvae for the time it takes to drive there and treat it. The biggest sites get treated early, but teams criss-cross the town.">?</button></label>
       <label class="r"><input type="radio" name="algo" value="cluster"> Cluster + greedy (split by area)<button type="button" class="tip" aria-label="What is Cluster + greedy?" data-tip="Splits the town into one area per team, and each team stays in its own area. Inside its area, a team always goes next to the site that gives the most larvae for the time. With 1 team this is the same as Greedy hotspot.">?</button></label>
       <div style="font-size:10px;color:var(--mut);margin:6px 0 1px">— current-practice baselines —<button type="button" class="tip" aria-label="What is current practice?" data-tip="Simpler ways of working, closer to how teams often work today. Useful for comparison.">?</button></div>
@@ -122,8 +122,9 @@
 
     <div class="grp">
       <b>Teams<button type="button" class="tip" aria-label="What is Teams?" data-tip="How many teams work at the same time. Each team starts in its own part of town. More teams finish in fewer days, but the total amount of work stays about the same.">?</button></b><div id="teamSeg" class="seg"></div>
-      <b style="margin-top:11px">Working days<button type="button" class="tip" aria-label="What is Working days?" data-tip="Drag the slider to see what has been treated by the end of each day. The slider ends on the day the last site is treated.">?</button></b>
-      <div id="dayRow"><input id="dayRange" type="range" min="1" max="30" step="1" value="1"><span id="dayVal">1</span></div>
+      <b style="margin-top:11px">Working days<button type="button" class="tip" aria-label="What is Working days?" data-tip="Day 0 is the starting point, before any visits. Day 1 shows completed visits by the end of the first working day. The slider ends on the day the last habitat is treated.">?</button></b>
+      <div id="dayRow"><input id="dayRange" type="range" min="0" max="30" step="1" value="0"><span id="dayVal">0</span></div>
+      <div class="note">Day 0: before visits. Day 1: end of the first working day.</div>
       <button id="play">▶ Drive route</button>
       <div id="spdRow" style="display:flex;align-items:center;gap:6px;margin-top:8px">
         <span class="note" style="margin:0">▶ play speed<button type="button" class="tip" aria-label="What is Drive route and play speed?" data-tip="Drive route plays an animation of each team&#x27;s car driving its route, day by day. Sites change colour as they are treated. Play speed sets how fast it plays, and how long a saved GIF is.">?</button></span><div id="spdSeg" class="seg" style="flex:1"></div>
@@ -145,9 +146,10 @@
     <div class="grp">
       <b>Legend</b>
       <div class="lgrow"><span class="dot" style="background:#39424e"></span>not yet treated</div>
-      <div class="lgrow"><span class="dot" style="background:#fd8d3c"></span>treated · fill colour = larvae per site</div>
+      <div class="lgrow"><span class="dot" style="background:#fd8d3c"></span>treated · colour + opacity = <span id="priorityLabel">predicted priority</span></div>
       <div id="ramp" class="ramp"></div>
       <div class="rampLab"><span>0</span><span id="rampMid"></span><span id="rampMax"></span></div>
+      <div class="note" style="margin:0 0 5px 19px">Lower productivity is more transparent; higher productivity is more visible. Faint habitats remain clickable.</div>
       <div class="lgrow"><span class="dot" style="background:none;border:1px solid #9aa6b2"></span>dot size also ∝ larvae</div>
       <div class="lgrow"><span class="ln" style="border-color:#58a6ff"></span>team 1 &nbsp;<span class="ln" style="border-color:#f9a620"></span>2 &nbsp;<span class="ln" style="border-color:#1f9e89"></span>3</div>
       <div class="note" style="margin:0 0 3px">Team colour marks both its route line and the outline of the sites it treated.</div>
@@ -163,7 +165,7 @@
       <svg id="covsvg" viewBox="0 0 560 236" preserveAspectRatio="xMidYMid meet"></svg>
       <div id="covside">
         <h3 id="covTitle">Coverage</h3>
-        <div class="stat"><span class="k">larvae treated by day <span id="dDay">1</span><button type="button" class="tip" aria-label="What is larvae treated?" data-tip="The share of all the larvae in town that were in sites treated by the end of this day.">?</button></span><span class="v big" id="vLarv">—</span></div>
+        <div class="stat"><span class="k">larvae treated by day <span id="dDay">0</span><button type="button" class="tip" aria-label="What is larvae treated?" data-tip="The share of all the larvae in town that were in sites treated by the end of this day.">?</button></span><span class="v big" id="vLarv">—</span></div>
         <div class="stat"><span class="k">habitats visited<button type="button" class="tip" aria-label="What is habitats visited?" data-tip="Breeding sites treated so far, out of all the breeding sites in town.">?</button></span><span class="v" id="vHab">—</span></div>
         <div class="stat"><span class="k">days to knock down 50% larvae<button type="button" class="tip" aria-label="What is 50% of larvae?" data-tip="How many days it takes until the treated sites held half of all the larvae.">?</button></span><span class="v" id="v50">—</span></div>
         <div class="stat"><span class="k">days to knock down 80% larvae<button type="button" class="tip" aria-label="What is 80% of larvae?" data-tip="How many days it takes until the treated sites held 80% of all the larvae.">?</button></span><span class="v" id="v80">—</span></div>
@@ -183,13 +185,13 @@ const $=id=>document.getElementById(id);
 const CAMPS=SIM_CAMPS, CITIES=SIM_CITIES;
 const TEAM_COL=["#58a6ff","#f9a620","#1f9e89"];
 const ALGO_COL={blind:"#c08a3a",random:"#e0529c",nn:"#f9a620",zigzag:"#8b949e",greedy:"#1f9e89",cluster:"#58a6ff",sector:"#d2a8ff"};
-const ALGO_LAB={blind:"Search every street (no map)",random:"Random",nn:"Nearest (treat nearby)",zigzag:"Zig-zag sweep",greedy:"Greedy hotspot",cluster:"Cluster + greedy",sector:"Sector sweep"};
+const ALGO_LAB={blind:"Search every street (no map)",random:"Random",nn:"Nearest (treat nearby)",zigzag:"Zig-zag sweep",greedy:"Greedy hotspot",cluster:"Cluster + greedy",sector:"Four-quadrant sweep"};
 const WALK_KMH=4.3;
 const SIMD=3650;                // simulation horizon (days): long enough for milestones and the day slider to reach the real finish
 const DOT_W=0.5, DOT_W_T=0.8;  // habitat dot outline width (px): untreated / treated (team-coloured)
 const ROUTE_W=1.2;             // route line width (px); street sweep draws at .75x, animated trail at 1.25x
 const IMMOBILE=1e12;            // sec/metre used at 0 km/h: large but finite, so 0*fac stays 0 instead of NaN
-let st={city:CITIES[0],camp:"Predicted",algo:"sector",teams:2,day:1,speed:25,service:10,hours:8};
+let st={city:CITIES[0],camp:"Predicted",algo:"sector",teams:2,day:0,speed:25,service:10,hours:8};
 let map,baseDark,baseSat,habLayer,routeLayer,carLayer,habMarkers=[],curKey=null,anim=null,playMult=1,dotScale=1,showRandom=false;
 let cache={};   // routesKey -> {algo->teams->routes}
 
@@ -197,6 +199,17 @@ let cache={};   // routesKey -> {algo->teams->routes}
 const YL=["#ffffcc","#ffeda0","#fed976","#feb24c","#fd8d3c","#fc4e2a","#e31a1c","#bd0026","#800026"];
 const _h=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
 const larvCap=maxL=>Math.max(40,maxL*.5);   // larvae/site at which the fill colour saturates (darkest red)
+// Use the same capped scale for colour and opacity. Keep outlines faint too,
+// otherwise a dark/high-contrast outline would obscure the transparency signal.
+function habitatOpacity(value,cap,treated=true){
+  const t=Math.max(0,Math.min(1,value/cap));
+  return treated ? .04+.91*t : .02+.35*t;
+}
+function habitatStyle(value,maxL,team=-1){
+  const cap=larvCap(maxL),treated=team>=0,alpha=habitatOpacity(value,cap,treated);
+  return {fillColor:treated?ylord(value/cap):"#39424e",fillOpacity:alpha,
+    color:treated?TEAM_COL[team]:"#222",opacity:alpha,weight:treated?DOT_W_T:DOT_W};
+}
 function ylord(t){t=Math.max(0,Math.min(1,t));const x=t*(YL.length-1),i=Math.floor(x);
   if(i>=YL.length-1)return YL[i];const f=x-i,a=_h(YL[i]),b=_h(YL[i+1]);
   return`rgb(${a.map((v,k)=>Math.round(v+(b[k]-v)*f)).join(",")})`;}
@@ -507,10 +520,11 @@ function buildHab(){
   const d=dat(); habLayer.clearLayers(); habMarkers=[];
   const maxL=Math.max(1,...d.hab.map(h=>h[2])), cap=larvCap(maxL);
   $("rampMid").textContent=Math.round(cap/2); $("rampMax").textContent="≥"+Math.round(cap);
+  $("priorityLabel").textContent=st.camp==="Predicted"?"predicted priority":"larvae per habitat";
   d.hab.forEach((h,i)=>{
     const r=3+5*Math.sqrt(Math.min(1,h[2]/maxL));
-    const m=L.circleMarker([h[1],h[0]],{radius:r*dotScale,weight:DOT_W,color:"#222",fillColor:"#39424e",fillOpacity:.55});
-    m.bindPopup(`site #${i} · sector ${d.sectors[h[3]]} · <b>${h[2]}</b> larvae`);
+    const m=L.circleMarker([h[1],h[0]],{radius:r*dotScale,...habitatStyle(h[2],maxL)});
+    m.bindPopup(`habitat #${i} · ${st.city==="Jigjiga"&&st.camp==="Predicted"?"quadrant":"planning area"} ${d.sectors[h[3]]} · <b>${h[2]}</b> ${st.camp==="Predicted"?"predicted priority":"larvae"}`);
     m._base=r; habLayer.addLayer(m); habMarkers.push(m);
   });
   const lats=d.hab.map(h=>h[1]),lons=d.hab.map(h=>h[0]);
@@ -529,8 +543,7 @@ function drawRoutes(){
         html:`<div style="color:${TEAM_COL[ti]};font-size:16px;text-shadow:0 0 2px #000,0 0 4px #000;transform:translate(-8px,-10px)">◆</div>`})})); });
     const maxL=Math.max(1,...d.hab.map(h=>h[2]));
     habMarkers.forEach((m,i)=>{ const h=d.hab[i];
-      if(treated[i]>=0) m.setStyle({fillColor:ylord(h[2]/larvCap(maxL)),fillOpacity:.95,color:TEAM_COL[treated[i]],weight:DOT_W_T});
-      else m.setStyle({fillColor:"#39424e",fillOpacity:.28,color:"#222",weight:DOT_W}); });
+      m.setStyle(habitatStyle(h[2],maxL,treated[i])); });
     return;
   }
   const r=computeRoutes(st.algo,st.teams),depots=zonesFor(d,st.teams).depots;
@@ -545,8 +558,7 @@ function drawRoutes(){
       html:`<div style="color:${TEAM_COL[ti]};font-size:16px;text-shadow:0 0 2px #000,0 0 4px #000;transform:translate(-8px,-10px)">◆</div>`})})); });
   const maxL=Math.max(1,...d.hab.map(h=>h[2]));
   habMarkers.forEach((m,i)=>{ const h=d.hab[i];
-    if(treated[i]>=0) m.setStyle({fillColor:ylord(h[2]/larvCap(maxL)),fillOpacity:.95,color:TEAM_COL[treated[i]],weight:DOT_W_T});
-    else m.setStyle({fillColor:"#39424e",fillOpacity:.28,color:"#222",weight:DOT_W}); });
+    m.setStyle(habitatStyle(h[2],maxL,treated[i])); });
 }
 
 /* ===================== coverage curve ===================== */
@@ -599,8 +611,23 @@ function applyRandomToggle(){
 function markLegend(){ $("covleg").querySelectorAll(".li[data-algo]").forEach(s=>s.classList.toggle("on", s.dataset.algo===st.algo)); }
 
 /* ===================== readouts ===================== */
+function updateAreaLabels(){
+  const four=st.city==="Jigjiga"&&st.camp==="Predicted";
+  // Historical datasets retain their original groups, not the new four quadrants.
+  const label=four?"Four-quadrant sweep":"Planning-area sweep";
+  ALGO_LAB.sector=label;
+  $("quadrantLabel").textContent=label+(four?" (one quadrant at a time)":" (historical groups)");
+  $("quadrantTip").setAttribute("aria-label",`What is ${label}?`);
+  $("quadrantTip").dataset.tip=(four?
+    "Work through four road-aligned planning quadrants: NE, NW, SE and SW. ":
+    "This historical dataset uses its original planning areas, not the four-quadrant division. ")+
+    "Choose an area by total priority relative to estimated entry, walking and service time, then visit nearby habitats within it. These are planning areas, not administrative districts.";
+  const legend=$("covleg").querySelector('[data-algo="sector"]');
+  if(legend)legend.innerHTML=`<i class="sw" style="border-color:${ALGO_COL.sector}"></i>${label}`;
+}
 function update(){
   if(anim) stopAnim();
+  updateAreaLabels();
   const d0=dat();
   if(!d0.lm){   // large dataset (e.g. Predicted 1518) — build its road-distance matrix once, with feedback
     $("busy").textContent="computing road distances…"; $("busy").classList.add("on");
@@ -610,8 +637,8 @@ function update(){
     $("busy").textContent="mapping every street…"; $("busy").classList.add("on");
     setTimeout(()=>{ blindPlan(st.city,st.teams); $("busy").classList.remove("on"); $("busy").textContent="recomputing…"; update(); },30); return;
   }
-  const dmax=endDay(coverage(st.algo,st.teams)), dr=$("dayRange");   // slider = 1 .. this plan's last day
-  dr.max=dmax; if(st.day>dmax) st.day=dmax; dr.value=st.day;
+  const dmax=endDay(coverage(st.algo,st.teams)), dr=$("dayRange");   // slider = 0 .. this plan's last day
+  dr.min=0; dr.max=dmax; st.day=Math.max(0,Math.min(st.day,dmax)); dr.value=st.day;
   drawQuadrants(); buildHab(); drawRoutes(); drawCurve(); markLegend();
   const d=dat(),cov=coverage(st.algo,st.teams),day=st.day;
   $("dayVal").textContent=day; $("dDay").textContent=day;
@@ -665,7 +692,10 @@ function startAnim(){
   const teams=buildAnimTeams(); if(!teams.length) return;
   routeLayer.clearLayers(); carLayer.clearLayers();
   const d=dat(),maxL=Math.max(1,...d.hab.map(h=>h[2]));
-  habMarkers.forEach(m=>m.setStyle({fillColor:"#39424e",fillOpacity:.28,color:"#222",weight:DOT_W}));
+  habMarkers.forEach((m,i)=>m.setStyle(habitatStyle(d.hab[i][2],maxL)));
+  st.day=0; $("dayVal").textContent="0"; $("dDay").textContent="0"; $("dayRange").value=0;
+  $("vLarv").textContent="0%"; $("vHab").textContent=`0 / ${d.hab.length} (0%)`; $("vTd").textContent="0 of 0";
+  drawCurve();
   teams.forEach((t,ti)=>{ t.k=0; t.sp=0;
     t.trail=L.polyline([t.pts[0]],{color:TEAM_COL[ti],weight:ROUTE_W*1.25,opacity:.92});
     t.car=L.marker(t.pts[0],{zIndexOffset:1000,icon:L.divIcon({className:"",iconSize:[24,24],iconAnchor:[12,12],
@@ -682,9 +712,9 @@ function animStep(ts){
     else{ const seg=t.cum[t.k+1]-t.cum[t.k]||1,f=(target-t.cum[t.k])/seg;
       pos=[t.pts[t.k][0]+f*(t.pts[t.k+1][0]-t.pts[t.k][0]),t.pts[t.k][1]+f*(t.pts[t.k+1][1]-t.pts[t.k][1])]; }
     t.car.setLatLng(pos); t.trail.setLatLngs(t.pts.slice(0,t.k+1).concat([pos]));
-    while(t.sp<t.stops.length && t.stops[t.sp].vi<=t.k){ const s=t.stops[t.sp]; t.sp++;
+    while(dd>0 && t.sp<t.stops.length && t.stops[t.sp].vi<=t.k){ const s=t.stops[t.sp]; t.sp++;
       if(!anim.treated.has(s.site)){ anim.treated.add(s.site); tre=true; const m=habMarkers[s.site],h=anim.d.hab[s.site];
-        if(m) m.setStyle({fillColor:ylord(h[2]/larvCap(anim.maxL)),fillOpacity:.95,color:TEAM_COL[ti],weight:DOT_W_T}); }
+        if(m) m.setStyle(habitatStyle(h[2],anim.maxL,ti)); }
       if(s.day>anim.maxDay){anim.maxDay=s.day;dayCh=true;} }
   });
   if(tre){ let tl=0; anim.treated.forEach(si=>tl+=anim.d.hab[si][2]);
@@ -731,7 +761,7 @@ function buildControls(){
   $("dayRange").addEventListener("input",e=>{st.day=+e.target.value;if(anim)stopAnim();update();});
   const bind=(id,key,min,max)=>$(id).addEventListener("change",e=>{ let v=+e.target.value; if(isNaN(v))v=st[key];
     v=Math.max(min,Math.min(max,v)); e.target.value=v; st[key]=v; recompute(); });
-  $("ramp").style.background=`linear-gradient(to right,${YL.join(",")})`;
+  $("ramp").style.background=`linear-gradient(to right,${YL.map((c,i)=>`rgba(${_h(c).join(",")},${habitatOpacity(i,YL.length-1)})`).join(",")})`;
   $("showRandom").addEventListener("change",e=>{ showRandom=e.target.checked; applyRandomToggle(); update(); });
   $("dotRange").addEventListener("input",e=>{ dotScale=+e.target.value; $("dotVal").textContent=dotScale.toFixed(1)+"×";
     habMarkers.forEach(m=>m.setRadius(m._base*dotScale)); });
@@ -796,7 +826,7 @@ async function recordGif(){
     cancelAnimationFrame(anim.raf);
     const span=Math.max(...anim.teams.map(t=>t.total))/anim.speed/playMult*1000;   // ms the drive lasts at this play speed
     const n=Math.max(2,Math.round(span/1000*GIF_FPS)), dt=1000/GIF_FPS;
-    animStep(anim.start); if(anim) cancelAnimationFrame(anim.raf);   // t=0: readouts restart at day 1, not the previously viewed day
+    animStep(anim.start); if(anim) cancelAnimationFrame(anim.raf);   // t=0: no visits completed; readouts restart at day 0
     await grab(GIF_OPEN);
     for(let k=1;k<=n&&anim&&!cancelled;k++){
       animStep(anim.start+k/n*span); if(anim) cancelAnimationFrame(anim.raf);   // last step finishes the drive and redraws the result

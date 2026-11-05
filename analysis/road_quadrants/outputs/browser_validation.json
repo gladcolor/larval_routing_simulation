@@ -12,5 +12,23 @@
     "points": 1518,
     "note": "8h/day \u00b7 10min/site + walk-in \u00b7 25km/h driving. Routes recompute live.Four road-aligned planning quadrants (NE/NW/SE/SW). Purple boundaries: solid = major road; dashed = local road / track. Priorities are predicted, not measured treatment outcomes."
   },
-  "historical_overlay_hidden": true
+  "historical_overlay_hidden": true,
+  "day_zero": {
+    "policy_team_combinations": 21,
+    "habitats": "0 / 1518 (0%)",
+    "priority": "0%"
+  },
+  "opacity": {
+    "treated": [
+      0.04,
+      0.495,
+      0.9500000000000001
+    ],
+    "untreated": [
+      0.02,
+      0.19499999999999998,
+      0.37
+    ],
+    "ramp": "linear-gradient(to right, rgba(255, 255, 204, 0.04), rgba(255, 237, 160, 0.153), rgba(254, 217, 118, 0.267), rgba(254, 178, 76, 0.38), rgba(253, 141, 60, 0.494), rgba(252, 78, 42, 0.608), rgba(227, 26, 28, 0.72), rgba(189, 0, 38, 0.835), rgba(128, 0, 38, 0.95))"
+  }
 }
