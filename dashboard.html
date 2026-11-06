@@ -4,28 +4,31 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Larval Survey Webmaps</title>
+<meta name="description" content="Interactive maps of larval habitat surveys and treatment-route planning in Jigjiga, Logiya and Semera, Ethiopia."/>
 <style>
   :root{ --bg:#0b0e13; --bar:#161b22; --txt:#e6edf3; --mut:#9aa6b2; --accent:#58a6ff; --line:#30363d; }
   *{box-sizing:border-box;}
-  html,body{height:100%;margin:0;background:var(--bg);
+  html,body{height:100%;margin:0;overflow:hidden;background:var(--bg);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--txt);}
 
   /* ---- top tab bar ---- */
   #bar{position:absolute;top:0;left:0;right:0;height:48px;display:flex;align-items:stretch;
     background:var(--bar);border-bottom:1px solid var(--line);z-index:10;
     box-shadow:0 1px 8px rgba(0,0,0,.4);}
-  #brand{display:flex;align-items:center;gap:8px;padding:0 18px;font-weight:600;font-size:14px;
+  #brand{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:0 18px;font-weight:600;font-size:14px;
     border-right:1px solid var(--line);white-space:nowrap;}
   #brand .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);}
   #brand small{color:var(--mut);font-weight:400;font-size:11px;}
-  .tabs{display:flex;align-items:stretch;}
+  .tabs{flex:1 1 auto;min-width:0;display:flex;align-items:stretch;overflow-x:auto;scrollbar-width:none;}
+  .tabs::-webkit-scrollbar{display:none;}
   .tab{display:flex;align-items:center;gap:8px;padding:0 20px;cursor:pointer;font-size:13.5px;
     color:var(--mut);border:none;background:none;border-bottom:3px solid transparent;
     transition:.12s;white-space:nowrap;}
   .tab:hover{color:var(--txt);background:rgba(255,255,255,.04);}
   .tab.on{color:var(--txt);border-bottom-color:var(--accent);background:rgba(88,166,255,.08);}
-  .tab .ic{font-size:15px;}
-  #hint{margin-left:auto;display:flex;align-items:center;padding:0 16px;color:var(--mut);font-size:11.5px;}
+  .tab .ic{width:15px;height:15px;flex:0 0 15px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;}
+  .tab:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+  #hint{flex:0 0 auto;margin-left:auto;display:flex;align-items:center;padding:0 16px;color:var(--mut);font-size:11.5px;}
   #hint a{color:var(--accent);text-decoration:none;}
 
   /* ---- content: stacked full-size iframes ---- */
@@ -34,21 +37,22 @@
     opacity:0;pointer-events:none;z-index:1;transition:opacity .15s;}
   .frame.on{opacity:1;pointer-events:auto;z-index:2;}
 
-  @media (max-width:640px){ #brand small,#hint{display:none;} .tab{padding:0 14px;} }
+  @media (max-width:1180px){ #hint,#brand small{display:none;} .tab{padding:0 12px;} }
+  @media (max-width:640px){ #brand small{display:none;} #brand{padding:0 12px;} .tab{padding:0 12px;} }
 </style>
 </head>
 <body>
 <div id="bar">
   <div id="brand"><span class="dot"></span>Larval Survey&nbsp;<small>Jigjiga · Logiya · Semera</small></div>
-  <div class="tabs">
-    <button class="tab on" data-f="0"><span class="ic">🛰️</span>Survey Trajectory</button>
-    <button class="tab"    data-f="1"><span class="ic">🔥</span>Spatial Hotspots</button>
-    <button class="tab"    data-f="2"><span class="ic">🌡️</span>Heatmap</button>
-    <button class="tab"    data-f="3"><span class="ic">🗂️</span>Sector density</button>
-    <button class="tab"    data-f="4"><span class="ic">🎲</span>Monte Carlo</button>
-    <button class="tab"    data-f="5"><span class="ic">🚐</span>Route planning</button>
+  <div class="tabs" role="tablist" aria-label="Dashboard views">
+    <button class="tab on" role="tab" aria-selected="true" data-f="0"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 13c2-6 4 1 6-4s3-5 6-6"/><circle cx="2.5" cy="13" r="1"/><circle cx="13.5" cy="3" r="1"/></svg>Survey Trajectory</button>
+    <button class="tab" role="tab" aria-selected="false" data-f="1"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><circle cx="8" cy="8" r="3"/><circle cx="8" cy="8" r=".7"/></svg>Spatial Hotspots</button>
+    <button class="tab" role="tab" aria-selected="false" data-f="2"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2c3 2 5 4 5 7a5 5 0 0 1-10 0c0-3 2-5 5-7z"/><path d="M8 7c1 1 2 2 2 3a2 2 0 0 1-4 0c0-1 1-2 2-3z"/></svg>Heatmap</button>
+    <button class="tab" role="tab" aria-selected="false" data-f="3"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2" width="12" height="12" rx="1"/><path d="M8 2v12M2 8h12"/></svg>Sector density</button>
+    <button class="tab" role="tab" aria-selected="false" data-f="4"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 14L14 2"/><path d="M2 10c4-1 7-4 8-8M6 14c4-1 7-4 8-8"/></svg>Monte Carlo</button>
+    <button class="tab" role="tab" aria-selected="false" data-f="5"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="4" cy="12.5" r="1.6"/><path d="M5.6 12.5H10a2.6 2.6 0 0 0 0-5.2H6a2.4 2.4 0 0 1 0-4.8h5"/><circle cx="12.6" cy="2.5" r="1.2"/></svg>Route planning</button>
   </div>
-  <div id="hint">An. stephensi larval surveillance</div>
+  <div id="hint"><span><i>An. stephensi</i> larval surveillance</span></div>
 </div>
 
 <div id="stage">
@@ -63,6 +67,7 @@
 <script>
   const tabs=document.querySelectorAll(".tab");
   const frames=Array.from(document.querySelectorAll(".frame"));
+  const names=["trajectory","hotspots","heatmap","sectors","monte-carlo","routes"];
   let cur=0;
   // shared selection — each map posts {type:"larvSel",city,camp} on user change.
   // (file:// frames are cross-origin "null", so we relay via postMessage only.)
@@ -73,15 +78,23 @@
   function post(i,msg){ try{ frames[i].contentWindow.postMessage(msg,"*"); }catch(e){} }
   function show(i){
     if(i<0||i>=frames.length||i===cur) return;
-    tabs.forEach(t=>t.classList.toggle("on",+t.dataset.f===i));
+    tabs.forEach(t=>{ const on=+t.dataset.f===i; t.classList.toggle("on",on); t.setAttribute("aria-selected",on?"true":"false"); });
     frames.forEach((f,j)=>f.classList.toggle("on",j===i));
     if(sel.city||sel.camp!=null) post(i,{type:"larvSetSel",city:sel.city,camp:sel.camp}); // carry over
     setTimeout(()=>post(i,{type:"larvResize"}),60);                       // fix Leaflet sizing
     cur=i;
+    tabs[i].scrollIntoView({inline:"center",block:"nearest"});            // keep the open tab in view on a phone
+    history.replaceState(null,"","#"+names[i]);                           // each view has its own link
   }
   tabs.forEach(t=>t.addEventListener("click",()=>show(+t.dataset.f)));
   // keyboard: number keys switch tabs
-  document.addEventListener("keydown",e=>{ const n=parseInt(e.key,10); if(n>=1&&n<=frames.length) show(n-1); });
+  document.addEventListener("keydown",e=>{ const n=parseInt(e.key,10); if(n>=1&&n<=frames.length) show(n-1);
+    if(e.target.classList&&e.target.classList.contains("tab")&&(e.key==="ArrowRight"||e.key==="ArrowLeft")){
+      show(cur+(e.key==="ArrowRight"?1:-1)); tabs[cur].focus(); } });
+  // open the view named in the address, such as dashboard.html#routes
+  const fromAddress=()=>show(names.indexOf(location.hash.slice(1)));
+  window.addEventListener("hashchange",fromAddress);
+  fromAddress();
 </script>
 </body>
 </html>

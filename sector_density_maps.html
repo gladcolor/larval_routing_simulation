@@ -35,6 +35,11 @@
   .slab .sv{display:block;font-size:10px;font-weight:800;color:#101418;text-shadow:0 0 2px #fff,0 0 2px #fff;}
   #grid.hidevals .slab{display:none;}
   .leaflet-tooltip{font-size:12px;}
+  @media (max-width:760px){
+    html,body{height:auto;overflow:auto;}
+    #top{position:static;height:auto;padding:8px 12px;gap:8px 14px;}
+    #grid{position:static;width:780px;height:760px;grid-template-columns:38px 1fr 1fr 1fr 1fr;}
+  }
 </style>
 </head>
 <body>

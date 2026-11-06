@@ -20,7 +20,7 @@
   #side .lead{color:var(--mut);font-size:11.5px;line-height:1.45;margin:0 0 12px;}
   .grp{border-top:1px solid var(--line);padding:11px 0 4px;}
   .grp:first-of-type{border-top:none;}
-  .grp b{display:block;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--mut);margin-bottom:7px;}
+  .grp > b{display:block;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--mut);margin-bottom:7px;}
   label.r{display:flex;align-items:center;gap:7px;padding:3px 0;cursor:pointer;}
   label.r input{accent-color:var(--accent);}
   .citymeta{color:var(--mut);font-size:10.5px;margin:-1px 0 5px 23px;}
@@ -109,7 +109,17 @@
   #tip .row{display:flex;justify-content:space-between;gap:14px;}
   .vline{stroke:#ffffff;stroke-width:1;stroke-dasharray:3 3;opacity:.5;}
 
-  @media (max-width:760px){ #side{width:210px;flex-basis:210px;} }
+  @media (max-width:760px){
+    html,body{height:auto;overflow:auto;}
+    #wrap{position:static;flex-direction:column;}
+    #main{order:-1;flex:none;}
+    #side{width:100%;flex:none;overflow:visible;border-right:0;border-top:1px solid var(--line);}
+    #grid{flex:none;grid-template-columns:1fr;grid-template-rows:none;grid-auto-rows:330px;}
+  }
+  @media (max-width:760px){
+    #legendbar,#lgbar,#topbar,.hint,#hint{white-space:normal;flex-wrap:wrap;height:auto;}
+    #main *{min-width:0;}
+  }
 </style>
 </head>
 <body>
@@ -138,7 +148,7 @@
         <input id="simRange" type="range" min="100" max="10000" step="100" value="2000">
       </div>
       <button id="rerun">↻ Re-run simulation</button>
-      <div class="note" id="simNote">More runs &rarr; smoother bands. Bands stabilise around
+      <div class="note" id="simNote">Habitats without a survey date are left out, so totals can differ slightly from other tabs. More runs &rarr; smoother bands. Bands stabilize around
         2000 runs; below ~500 the edges visibly jitter on re-run.</div>
     </div>
 
@@ -294,14 +304,14 @@ function drawCell(cell, cm, st){
   const xs=st.xs, N=st.N;
   // header
   // Descriptive RANK of the actual order vs the random-order null — NOT a significance test.
-  // Wide neutral zone (>=85 / <=15) keeps the label from flipping on Re-run; about 2 in 5 random
+  // Wide neutral zone (>=85 / <=15) keeps the label from flipping on Re-run; about 3 in 10 random
   // orders also land outside the middle band, so we use curve-shape wording, not causal "found early/late".
   const pctRank=Math.round(st.aucPct*100);
   const verdict = N<10 ? "" : pctRank>=85 ? "front-loaded" : pctRank<=15 ? "back-loaded" : "≈ random";
   hd.innerHTML=
     `<span class="nm"><span class="dot" style="background:${col}"></span>${cm}</span>`+
     `<span class="mt">${N} habitats · ${st.T.toLocaleString()} larvae</span>`+
-    `<span class="badge" title="Where the actual survey order ranks among ${nSim.toLocaleString()} random orders, by accumulation-curve area — a descriptive percentile, not a significance test (about 2 in 5 random orders also fall outside the middle 'typical' zone).">`+
+    `<span class="badge" title="Where the actual survey order ranks among ${nSim.toLocaleString()} random orders, by accumulation-curve area — a descriptive percentile, not a significance test (about 3 in 10 random orders also fall outside the middle 'typical' zone).">`+
       `actual order · <b>${pctRank}<sup>th</sup></b> pct${verdict?` · ${verdict}`:""}</span>`+
     `<span class="zoomic" aria-hidden="true" title="Click the title strip to enlarge / restore this panel"></span>`;
 
@@ -404,7 +414,7 @@ function updateInterp(stats){
     `Its mean is <b>exactly the diagonal</b> (y&nbsp;=&nbsp;x), so the <b>spread</b> — not the average — is the story: `+
     `a wide band means survey <b>order matters a lot</b>, because larvae sit in a few habitats. `+
     `The <b>white line</b> is the real field order; above the band it ran ahead of most random orders, below, behind. `+
-    `<span class="cav">Random orders vary widely (≈2 in 5 land outside the band), so a panel's rank describes <i>this</i> survey — `+
+    `<span class="cav">Random orders vary widely (≈3 in 10 land outside the band), so a panel's rank describes <i>this</i> survey — `+
     `not proof of strategy. The shuffle ignores road/route &amp; travel distance; that comes later.</span> `+
     (city==="All"
       ? `<span class="cav" style="color:#d6b06a">⚠ <b>All cities:</b> the white line follows the <b>combined cross-city timeline</b>. `+

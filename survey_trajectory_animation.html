@@ -110,6 +110,13 @@
     border-top:1px solid #30363d;padding-top:6px;}
   #cnote b{color:#cdd6df;}
   @media (max-width:900px){ #chart{display:none;} }
+  @media (max-width:760px){
+    #title{display:none;}
+    #cities,#legend{padding:7px 10px;max-height:calc(100vh - 230px);overflow:auto;}
+    .panel-closed > :not(:first-child){display:none!important;}
+    .panel-toggle{cursor:pointer;}
+    .panel-toggle::after{content:" +";}
+  }
 
   /* pulsing head marker */
   .head{position:relative;}
@@ -125,13 +132,13 @@
 <body>
 <div id="map"></div>
 
-<div id="title">Larval-site Survey Trajectory
+<div id="title">Larval Habitat Survey Trajectory
   <small id="subtitle">CDC larval surveys &middot; Ethiopia</small></div>
 
 <div id="cities"><b>City</b><div id="cityList"></div></div>
 
 <div id="legend">
-  <b>Colour sites by</b>
+  <b>Color habitats by</b>
   <div id="colorseg">
     <button data-c="anoph" class="on">Anopheles</button>
     <button data-c="campaign">Campaign</button>
@@ -172,19 +179,19 @@
     <g id="cgrid"></g>
     <line id="cdiag"></line>
     <g id="ccurves"></g>
-    <text id="cxlab" class="caxis" text-anchor="middle">CUM_HAB</text>
-    <text id="cylab" class="caxis" text-anchor="middle">CUM_prp</text>
+    <text id="cxlab" class="caxis" text-anchor="middle">Share of habitats surveyed</text>
+    <text id="cylab" class="caxis" text-anchor="middle">Share of larvae found</text>
   </svg>
   <div id="cread">&mdash;</div>
   <div id="cnote">Curve <b>above</b> the diagonal = larvae found <b>early</b> along that
-    campaign's route; <b>below</b> = found late; the diagonal = spread evenly across sites.</div>
+    campaign's route; <b>below</b> = found late; the diagonal = spread evenly across habitats.</div>
 </div>
 
 <div id="bar">
   <div id="readout">
     <span id="curdate">&mdash;</span>
     <span id="curcamp" style="background:#888">&mdash;</span>
-    <span id="count">0 / 0 sites</span>
+    <span id="count">0 / 0 habitats</span>
   </div>
   <input id="slider" type="range" min="0" max="1" value="0" step="1"/>
   <div id="taxis"><div id="tband"></div><div id="tticks"></div></div>
@@ -208,7 +215,7 @@
       </select>
     </span>
   </div>
-  <div class="hint">Drag the slider to scrub &middot; switch cities top-left &middot; click a site for details.</div>
+  <div class="hint">Drag the slider to scrub &middot; switch cities top-left &middot; click a habitat for details. Pale dots are habitats not yet reached. Habitats without a survey date are left out.</div>
 </div>
 
 <script>
@@ -256,6 +263,7 @@ let lineW=1;                             // trajectory line width (user-adjustab
 let smoothMethod="loess", smoothSpan=0.45;   // cumulative-chart curve smoothing
 let playing=false, lastTS=null, rafId=null;
 const layer = L.layerGroup().addTo(map);
+let ghost = null;                        // pale dots for habitats not yet reached
 
 const $=id=>document.getElementById(id);
 
@@ -348,7 +356,7 @@ function drawChart(k){
     const id="city_"+i;
     const wrap=document.createElement("div");
     wrap.innerHTML=`<label><input type="radio" name="city" id="${id}" value="${c}" ${i===0?"checked":""}>${c}</label>`+
-      `<div class="meta">${d.n} sites &middot; ${d.n_anoph} Anopheles+<br>${d.date_min} &rarr; ${d.date_max}</div>`;
+      `<div class="meta">${d.n} habitats &middot; ${d.n_anoph} Anopheles+<br>${d.date_min} &rarr; ${d.date_max}</div>`;
     cl.appendChild(wrap);
     wrap.querySelector("input").addEventListener("change",()=>{ loadCity(c); notifyParent(); });
   });
@@ -418,7 +426,7 @@ function makeMarker(p){
     }
     m=L.marker([p.lat,p.lon],{icon:L.divIcon({className:"sym",html:html,iconSize:sz,iconAnchor:anc})});
   }
-  let h=`<b>${p.info.Site||"site"}</b> <span style="color:#888">${p.city}</span>`+
+  let h=`<b>${p.info.Site||"habitat"}</b> <span style="color:#888">${p.city}</span>`+
     `<br><span style="color:#666">${p.date}</span><hr style="margin:4px 0">`;
   for(const k in p.info){ if(k==="Site") continue; h+=`<b>${k}:</b> ${p.info[k]}<br>`; }
   m.bindPopup(h,{maxWidth:240});
@@ -437,6 +445,8 @@ function loadCity(c){
   stop();
   city=c; const d=DATA[c]; pts=d.points; N=d.n;
   layer.clearLayers(); markers=[]; lines={}; headMarker=null; shown=0;
+  if(ghost) map.removeLayer(ghost);
+  ghost=L.layerGroup(pts.map(p=>L.circleMarker([p.lat,p.lon],{radius:2.2,stroke:false,fillColor:"#aeb9c4",fillOpacity:.32,interactive:false}))).addTo(map);
 
   // trajectory polylines, keyed by city|campaign so paths never cross cities
   // (matters for the "All" view; in a single city it's one line per campaign)
@@ -520,7 +530,7 @@ function render(k){
   // readouts
   $("curdate").textContent=cur.date;
   const cc=$("curcamp"); cc.textContent=cur.camp; cc.style.background=campColor(cur.camp);
-  $("count").textContent=(city==="All"?cur.city+" · ":"")+`${want} / ${N} sites`;
+  $("count").textContent=(city==="All"?cur.city+" · ":"")+`${want} / ${N} habitats`;
   drawChart(k);
   if(+$("slider").value!==k) $("slider").value=k;
 }
@@ -595,6 +605,14 @@ window.addEventListener("message",e=>{ const d=e.data||{};
 // ---- go --------------------------------------------------------------------
 drawChartAxes();
 loadCity(CITY_ORDER[0]);
+// On a phone the two panels start folded, so the map stays visible.
+if(window.matchMedia("(max-width:760px)").matches){
+  for(const id of ["cities","legend"]){
+    const box=$(id), head=box.firstElementChild;
+    box.classList.add("panel-closed"); head.classList.add("panel-toggle");
+    head.addEventListener("click",()=>box.classList.toggle("panel-closed"));
+  }
+}
 </script>
 </body>
 </html>

@@ -48,6 +48,13 @@
   .leaflet-bar a{background:#21262d;color:#e6edf3;border-bottom-color:#30363d;}
   .leaflet-bar a:hover{background:#30363d;}
   .note{color:var(--mut);font-size:10.5px;margin-top:8px;line-height:1.45;}
+  @media (max-width:760px){
+    #title{display:none;}
+    #ctrl,#stats{max-width:min(62vw,240px);max-height:calc(100vh - 210px);overflow:auto;padding:7px 10px;}
+    .panel-closed > :not(:first-child){display:none!important;}
+    .panel-toggle{cursor:pointer;display:block;}
+    .panel-toggle::after{content:" +";}
+  }
 </style>
 </head>
 <body>
@@ -80,9 +87,9 @@
     <p><b>Moran's I</b> &mdash; one number for the whole town. &gt;0 = larval counts are
       <b>clustered</b> (similar values sit together); &asymp;0 = random; &lt;0 = checkerboard.
       <b>p</b> &lt; 0.05 means the pattern is real, not chance.</p>
-    <p><b>Gi* hot spot</b> &mdash; a site whose neighbourhood has unusually <b>high</b> counts
-      (red); <b>cold spot</b> = unusually <b>low</b> (blue). 90/95/99% = confidence.</p>
-    <p><b>LISA</b> &mdash; labels each site: <b>High-High</b> = high among high (cluster core),
+    <p><b>Gi* hot spot</b> &mdash; a habitat whose neighborhood has unusually <b>high</b> counts
+      (red); <b>cold spot</b> = unusually <b>low</b> (blue). 90/95/99% = one-sided confidence.</p>
+    <p><b>LISA</b> &mdash; labels each habitat: <b>High-High</b> = high among high (cluster core),
       <b>Low-Low</b> = low among low, <b>High-Low / Low-High</b> = outliers (odd one out).</p>
     <p>The <b>&#127777; Heatmap</b> tab shows the smooth density of larvae for context;
       this tab shows where that pattern is <b>statistically significant</b>.</p>
@@ -177,7 +184,7 @@ function updateStats(g){
       `<span id="miVerdict" style="color:${sig?(s.moran_I>0?'#f08a7a':'#7ab8e0'):'#9aa6b2'}">${verdict}</span>`;
   }
   $("miLine").innerHTML=v;
-  $("cnts").innerHTML=`n = <span>${s.n}</span> sites &middot; positive = <span>${s.n_pos}</span><br>`+
+  $("cnts").innerHTML=`n = <span>${s.n}</span> habitats &middot; positive = <span>${s.n_pos}</span><br>`+
     `Gi*: <span style="color:#d6604d">${s.hot} hot</span> &middot; <span style="color:#4393c3">${s.cold} cold</span><br>`+
     `LISA: <span style="color:#b2182b">${s.hh} HH</span> &middot; <span style="color:#2166ac">${s.ll} LL</span> `+
     `&middot; ${s.hl} HL &middot; ${s.lh} LH`;
@@ -187,25 +194,25 @@ function updateStats(g){
 // plain-English read-out of THIS group's results
 function interpret(s){
   if(s.moran_I===null)
-    return `Too few sites (or no variation) to test clustering for <b>${city} &middot; ${camp}</b>.`;
+    return `Too few habitats (or no variation) to test clustering for <b>${city} &middot; ${camp}</b>.`;
   const where=`<b>${city} &middot; ${camp}</b>`, sig=s.moran_p<=0.05;
   let m;
   if(sig && s.moran_I>0)
     m=`In ${where}, stephensi larvae are <b>significantly clustered</b> (I=${s.moran_I}, p=${s.moran_p}) &mdash; `+
-      `sites with similar counts sit together rather than scattered at random.`;
+      `habitats with similar counts sit together rather than scattered at random.`;
   else if(sig && s.moran_I<0)
     m=`In ${where}, counts form a <b>checkerboard</b> pattern (I=${s.moran_I}, p=${s.moran_p}) &mdash; `+
-      `neighbouring sites tend to differ.`;
+      `neighboring habitats tend to differ.`;
   else
     m=`In ${where}, there is <b>no town-wide clustering</b> (I=${s.moran_I}, p=${s.moran_p}) &mdash; `+
       `high and low counts are spread roughly at random.`;
   let loc = (s.hot||s.cold)
-    ? ` Locally, Gi* flags <b>${s.hot}</b> hot-spot site(s) &mdash; clusters of high counts, the priority areas for control &mdash; and <b>${s.cold}</b> cold-spot site(s).`
+    ? ` Locally, Gi* flags <b>${s.hot}</b> hot-spot habitat(s) &mdash; clusters of high counts, the priority areas for control &mdash; and <b>${s.cold}</b> cold-spot habitat(s).`
     : ` Gi* finds no significant local hot or cold spots.`;
   let li="";
   const cores=s.hh+s.ll, out=s.hl+s.lh;
   if(cores) li+=` LISA confirms ${s.hh} High-High and ${s.ll} Low-Low cluster core(s)`;
-  if(out) li+=(li?`, plus `:` LISA flags `)+`${out} spatial outlier(s) (a high site amid lows or vice-versa)`;
+  if(out) li+=(li?`, plus `:` LISA flags `)+`${out} spatial outlier(s) (a high habitat amid lows or vice-versa)`;
   if(li) li+=".";
   return m+loc+li;
 }
@@ -224,8 +231,8 @@ function updateLegend(g){
   $("legBody").innerHTML=items.map(([c,l])=>`<div class="lrow"><span class="lsw" style="background:${c}"></span>${l}</div>`).join("");
 }
 
-$("wnote").innerHTML=`Weights: ${K}-nearest neighbours &middot; ${PERM} permutations. `+
-  `Gi* uses self (star); 90/95/99% confidence.`;
+$("wnote").innerHTML=`Weights: ${K}-nearest neighbors &middot; ${PERM} permutations. `+
+  `Gi* uses self (star); 90/95/99% one-sided confidence, so more habitats are flagged than these levels suggest.`;
 $("infoBtn").addEventListener("click",()=>{ const d=$("info");
   const open=d.style.display==="none"; d.style.display=open?"block":"none";
   $("infoBtn").innerHTML=(open?"▾":"ⓘ")+" How to read this"; });
@@ -248,6 +255,21 @@ window.addEventListener("message",e=>{ const d=e.data||{};
 // ---- go --------------------------------------------------------------------
 radios($("cityR"), CITIES, city, setCity);
 setCity(city);
+// On a phone the two panels start folded, so the map stays visible. Opening one closes the other.
+if(window.matchMedia("(max-width:760px)").matches){
+  const label=document.createElement("b"); label.textContent="Filters";
+  document.getElementById("ctrl").prepend(label);
+  const boxes=["ctrl","stats"].map(id=>document.getElementById(id));
+  boxes.forEach(box=>{
+    const head=box.firstElementChild;
+    box.classList.add("panel-closed"); head.classList.add("panel-toggle");
+    head.addEventListener("click",()=>{
+      const opening=box.classList.contains("panel-closed");
+      boxes.forEach(other=>other.classList.add("panel-closed"));
+      if(opening) box.classList.remove("panel-closed");
+    });
+  });
+}
 </script>
 </body>
 </html>

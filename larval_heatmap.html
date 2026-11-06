@@ -42,6 +42,13 @@
   .leaflet-bar a{background:#21262d;color:#e6edf3;border-bottom-color:#30363d;}
   .leaflet-bar a:hover{background:#30363d;}
   .note{color:var(--mut);font-size:10.5px;margin-top:9px;line-height:1.45;}
+  @media (max-width:760px){
+    #title{display:none;}
+    #ctrl,#stats{max-width:min(62vw,240px);max-height:calc(100vh - 210px);overflow:auto;padding:7px 10px;}
+    .panel-closed > :not(:first-child){display:none!important;}
+    .panel-toggle{cursor:pointer;display:block;}
+    .panel-toggle::after{content:" +";}
+  }
 </style>
 </head>
 <body>
@@ -56,7 +63,7 @@
   <b>Weight</b>
   <div class="seg" id="seg">
     <button data-m="abundance" class="on">Larval abundance</button>
-    <button data-m="density">Site density</button>
+    <button data-m="density">Habitat density</button>
   </div>
   <div id="radwrap">Radius: <span id="radVal">26</span> px
     <input id="radius" type="range" min="10" max="50" value="26"/></div>
@@ -126,24 +133,24 @@ function draw(){
   if(pts.length){ const la=pts.map(p=>p[0]), lo=pts.map(p=>p[1]);
     map.fitBounds([[Math.min(...la),Math.min(...lo)],[Math.max(...la),Math.max(...lo)]],{padding:[60,60]}); }
   updateStats(pts);
-  $("legTitle").textContent = mode==="abundance" ? "Larval abundance" : "Site density";
+  $("legTitle").textContent = mode==="abundance" ? "Larval abundance" : "Habitat density";
 }
 function updateStats(pts){
   const n=pts.length, pos=pts.filter(p=>p[2]>0).length, tot=pts.reduce((s,p)=>s+p[2],0);
   const rate=n?Math.round(pos/n*100):0;
   $("sBody").innerHTML=`<span class="v">${city}</span> &middot; ${camp}<br>`+
-    `sites: <span class="v">${n}</span> &middot; positive: <span class="v">${pos}</span> (${rate}%)<br>`+
+    `habitats: <span class="v">${n}</span> &middot; positive: <span class="v">${pos}</span> (${rate}%)<br>`+
     `total larvae: <span class="v">${tot.toLocaleString()}</span>`;
   const what = mode==="abundance"
-    ? `bright red areas are where <b>An. stephensi larvae pile up</b> (most larvae per site within the radius); blue = sparse.`
-    : `bright red areas are where <b>survey sites cluster densely</b> (more visits), regardless of larvae found.`;
+    ? `bright red areas are where <b>An. stephensi larvae pile up</b> (most larvae per habitat within the radius); blue = sparse.`
+    : `bright red areas are where <b>surveyed habitats cluster densely</b> (more visits), regardless of larvae found.`;
   $("interp").innerHTML=`In <b>${city} &middot; ${camp}</b>, ${what} `+
     `This is a smoothed <b>visual density</b>, not a statistical test &mdash; for where clustering `+
     `is <b>statistically significant</b>, see the <b>&#128293; Spatial Hotspots</b> tab.`;
 }
 
-$("note").innerHTML="<b>Abundance</b> weights each site by &radic;(StepLarv); "+
-  "<b>density</b> weights every site equally. Heat sums overlapping sites &mdash; "+
+$("note").innerHTML="<b>Abundance</b> weights each habitat by &radic;(StepLarv); "+
+  "<b>density</b> weights every habitat equally. Heat sums overlapping habitats &mdash; "+
   "use the radius slider to tune smoothing.";
 
 // ---- cross-tab selection sync via postMessage (file:// blocks direct access) -
@@ -163,6 +170,21 @@ window.addEventListener("message",e=>{ const d=e.data||{};
 
 radios($("cityR"), CITIES, city, setCity);
 setCity(city);
+// On a phone the two panels start folded, so the map stays visible. Opening one closes the other.
+if(window.matchMedia("(max-width:760px)").matches){
+  const label=document.createElement("b"); label.textContent="Filters";
+  document.getElementById("ctrl").prepend(label);
+  const boxes=["ctrl","stats"].map(id=>document.getElementById(id));
+  boxes.forEach(box=>{
+    const head=box.firstElementChild;
+    box.classList.add("panel-closed"); head.classList.add("panel-toggle");
+    head.addEventListener("click",()=>{
+      const opening=box.classList.contains("panel-closed");
+      boxes.forEach(other=>other.classList.add("panel-closed"));
+      if(opening) box.classList.remove("panel-closed");
+    });
+  });
+}
 </script>
 </body>
 </html>
