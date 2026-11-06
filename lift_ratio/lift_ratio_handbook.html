@@ -1,0 +1,1660 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="A practical reference for evaluating habitat priority rankings in larval source management: coverage lift ratio, worked examples, distribution-based simulations, an offline calculator and reusable Python package.">
+<meta name="color-scheme" content="light">
+<title>Lift ratio for larval source management | Practitioner handbook</title>
+<style>:root{--ink:#162c43;--muted:#556b7f;--blue:#1766d0;--teal:#009b9d;--amber:#b77000;--paper:#f7f9fb;--line:#dce4ec;--lightblue:#e9f2ff;--orange:#be6b37;--shadow:0 9px 32px #12375608}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:94px}body{margin:0;background:white;color:var(--ink);font:16px/1.65 Inter,"Segoe UI",Arial,sans-serif}a{color:var(--blue);text-underline-offset:4px}a:hover{color:#104f9d}button,input,select,textarea{font:inherit}button,a,input,select,textarea,summary{outline-offset:4px}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid #7db3fc}button{cursor:pointer}button:disabled{opacity:.4;cursor:not-allowed}h1,h2,h3,h4,p{margin-top:0}h1{font:500 clamp(40px,4.5vw,64px)/1.08 Georgia,"Times New Roman",serif;letter-spacing:-1.8px;margin-bottom:24px}h2{font:500 clamp(27px,2.8vw,38px)/1.2 Georgia,serif;letter-spacing:-.7px;margin-bottom:10px}h3{font-size:18px;line-height:1.35;margin-bottom:12px}h4{font-size:16px;margin-bottom:8px}p{margin-bottom:16px}small,.fine{font-size:12px;line-height:1.6;color:var(--muted)}.fine{margin:12px 0}.eyebrow{font-size:11px;line-height:1.6;letter-spacing:1.6px;font-weight:750;color:var(--muted);margin-bottom:16px}.topbar{min-height:83px;background:#fffffff5;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;padding:16px max(24px,calc((100vw - 1280px)/2));gap:24px;position:sticky;top:0;z-index:20;backdrop-filter:blur(12px)}.brand{display:flex;align-items:center;gap:12px;color:var(--ink);text-decoration:none;font-size:12px;letter-spacing:1px;font-weight:750;white-space:nowrap}.brand-mark{height:40px;width:40px;background:var(--ink);color:white;display:grid;place-items:center;border-radius:50%;font:italic 29px Georgia}.brand small{display:block;font-size:10px;font-weight:400;letter-spacing:.5px}nav{display:flex;gap:24px;align-items:center}nav a{text-decoration:none;color:var(--muted);font-size:13px}nav .offline{border:1px solid var(--line);padding:7px 13px;border-radius:5px}.skip{position:fixed;left:12px;top:-80px;z-index:100;background:white;padding:12px}.skip:focus{top:10px}main{max-width:1280px;margin:auto;padding:0 28px}.hero{display:grid;grid-template-columns:1fr 1fr;gap:70px;padding:74px 0 58px;align-items:center}.hero .lead{font-size:21px;line-height:1.5;color:var(--ink)}.hero p:not(.eyebrow):not(.lead){color:var(--muted)}.hero-actions{display:flex;align-items:center;gap:24px;margin-top:25px}.button{border:1px solid transparent;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;gap:20px;min-height:42px;padding:10px 17px;font-size:13px;font-weight:650;text-decoration:none;transition:.15s}.primary{background:var(--blue);color:white}.primary:hover{background:#1157b4;color:white}.secondary{background:white;border-color:#c5d4e3;color:var(--ink)}.secondary:hover{background:#eef5fb}.text-link{font-size:14px;font-weight:600;text-decoration:none}.full{width:100%}.hero-figure{background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:24px 23px 17px}.figure-kicker{font-size:10px;letter-spacing:1.8px;color:var(--muted);font-weight:750}.hero-figure svg{width:100%;display:block}.hero-equation{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding:16px 0 10px}.hero-equation>span{font-size:16px}.hero-equation strong{font:500 28px Georgia,serif}.blue{color:var(--blue)}.amber{color:var(--amber)}.area-key{display:flex;justify-content:space-between;gap:12px;font-size:11px;color:var(--muted);flex-wrap:wrap}.swatch{display:inline-block;width:10px;height:10px;margin-right:6px}.blue-fill{background:#bcd9ff}.amber-fill{background:#f4ddb0}.reading-strip{display:flex;justify-content:space-between;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:19px 0;font-size:12px;color:var(--muted);gap:15px}.reading-strip b{color:var(--blue);margin-right:12px}.laboratory{padding:62px 0}.section-head{display:flex;justify-content:space-between;gap:35px;align-items:end;margin-bottom:28px}.section-head p:last-child{font-size:13px;color:var(--muted);margin-bottom:8px}.section-head .eyebrow{margin-bottom:9px}.lab-grid{display:grid;grid-template-columns:287px minmax(0,1fr);border:1px solid var(--line);border-radius:9px;overflow:hidden;box-shadow:var(--shadow);align-items:stretch}.input-panel{background:var(--paper);padding:25px 22px;border-right:1px solid var(--line)}.control-title{display:flex;align-items:center;gap:9px;margin:26px 0 15px}.control-title:first-child{margin-top:0}.control-title h3{font-size:14px;margin:0}.step{display:grid;place-items:center;border:1px solid #b4c8dc;width:23px;height:23px;border-radius:50%;font-size:11px;color:var(--blue)}label{display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:#3c5268}select,input:not([type=checkbox]):not([type=range]):not([type=file]),textarea{width:100%;border:1px solid #c9d6e2;border-radius:5px;background:white;color:var(--ink);padding:8px 10px;min-height:38px;font-size:13px;margin-bottom:12px}select{height:39px}textarea{resize:vertical;line-height:1.5}#csv-input{font:11px/1.6 Consolas,monospace}.field-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}.file-label{border:1px dashed #9bb6d0;border-radius:5px;padding:13px 9px;background:white;color:var(--blue)}input[type=file]{display:block;width:100%;font-size:11px;margin-top:8px}details{border-top:1px solid var(--line);padding:14px 0}summary{cursor:pointer;font-weight:600;font-size:13px;color:var(--ink);padding:2px 0}details[open]>summary{margin-bottom:14px}.input-panel details:last-of-type{margin-bottom:10px}.results-panel{padding:28px 30px;background:white;min-width:0}.notice{padding:11px 14px;font-size:13px;border:1px solid #d4e4f1;background:#f0f6fb;border-radius:5px;margin-bottom:18px;white-space:pre-line}.notice:empty{display:none}.notice.error{border-color:#e5bfb5;background:#fff1ed;color:#8c3323}.result-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}.result-heading h3{font-size:21px;margin-bottom:6px}.result-heading .eyebrow{font-size:9px;margin-bottom:6px}.badge{border:1px solid var(--line);padding:4px 9px;font-size:11px;white-space:nowrap;border-radius:20px;color:var(--muted)}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:25px 0 20px;border-bottom:1px solid var(--line);gap:18px}.metrics>div{border-right:1px solid var(--line);padding-right:13px}.metrics>div:last-child{border:none;padding-right:0}.metrics span{font-size:11px;line-height:1.5;display:block;min-height:33px;color:var(--muted)}.metrics strong{display:block;font-size:35px;letter-spacing:-1.2px;line-height:1.4;color:var(--blue);font-weight:600}.metrics small{display:block;font-size:10px;line-height:1.4}.budget-control{padding:20px 0 5px}.budget-control>label{font-size:13px;display:flex;justify-content:space-between}.budget-control output{font-weight:750;color:var(--blue)}input[type=range]{width:100%;accent-color:var(--blue);cursor:pointer}.chart-options{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:8px}.chart-options label{font-size:11px;font-weight:400;margin:0}.chart-options>span{font-size:10px;color:var(--muted)}input[type=checkbox]{accent-color:var(--blue);vertical-align:middle}.chart-frame{width:100%;margin-top:10px;overflow:hidden}#coverage-chart{width:100%;display:block;height:auto;touch-action:pan-y}.chart-key{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;font-size:10px;color:var(--muted);margin:3px 0 14px}.line-swatch{display:inline-block;width:19px;border-top:2px solid;vertical-align:middle;margin-right:5px}.model{color:var(--blue)}.ideal{color:var(--teal)}.random{color:#7b8793;border-top-style:dashed}.compare{color:var(--orange);border-top-style:dashed}.chart-readout{min-height:31px;font-size:12px;text-align:center;color:var(--muted);margin-bottom:8px}.area-calculation{background:var(--paper);padding:13px 17px;font-size:12px;border-left:3px solid var(--blue);line-height:1.9}.area-calculation b{font-variant-numeric:tabular-nums}.comparison{margin:15px 0;border:1px solid #e2d0c4;background:#fffaf5;padding:13px;font-size:12px;border-radius:5px}.export-bar{border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:16px 0 9px}.export-bar>span{font-size:11px;color:var(--muted);margin-right:5px}.small-button{background:white;border:1px solid #d4dfe9;border-radius:4px;padding:6px 9px;font-size:11px;color:var(--ink)}.small-button:hover{background:#f0f5fa}.table-wrap{overflow-x:auto;margin:15px 0}table{border-collapse:collapse;width:100%;font-size:12px;text-align:left;white-space:normal}th,td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}th{background:var(--paper);font-weight:650}td.num{text-align:right;font-variant-numeric:tabular-nums}.chapter{border-top:1px solid var(--line);padding:55px 0}.chapter p,.chapter li{max-width:84ch;color:#3e5366;font-size:15px}.chapter h3{margin:22px 0 12px}.chapter .section-head{align-items:start}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:42px}.formula{font:22px/1.8 Georgia,serif;background:var(--paper);padding:20px 25px;border-left:3px solid var(--teal);margin:22px 0}.note{padding:17px 22px;background:#f0f5f9;border-left:3px solid #7ea4bd;font-size:14px;margin:20px 0}.note p:last-child{margin-bottom:0}.case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.case-card{padding:20px;border:1px solid var(--line);border-radius:6px}.case-card h3{margin:0 0 10px;font-size:16px}.case-card p{font-size:13px}.report-checklist{columns:2;column-gap:44px;padding-left:22px}.report-checklist li{break-inside:avoid;margin-bottom:12px}.chapter details{padding:18px 0}.chapter summary{font-size:16px}.chapter code{font-size:12px;padding:2px 4px;background:#edf2f6;overflow-wrap:anywhere}.chapter pre{background:#edf2f6;padding:18px;overflow-x:auto;font-size:12px}#references li{font-size:13px;margin-bottom:15px;overflow-wrap:anywhere}footer{background:var(--paper);border-top:1px solid var(--line);padding:25px max(28px,calc((100vw - 1224px)/2));display:flex;justify-content:space-between;align-items:center;gap:22px;font-size:12px;color:var(--muted)}[hidden]{display:none!important}
+@media(max-width:1050px){.hero{gap:35px}.topbar nav{gap:13px}.lab-grid{grid-template-columns:250px minmax(0,1fr)}.input-panel{padding:20px 16px}.results-panel{padding:22px 20px}.metrics{gap:10px}.metrics strong{font-size:30px}.chart-options>span{display:none}.hero-actions{gap:14px}.hero-equation strong{font-size:24px}}
+@media(max-width:800px){.topbar{position:relative;flex-wrap:wrap;padding:17px 22px;gap:16px}.topbar nav{width:100%;justify-content:space-between;gap:8px}.hero{grid-template-columns:1fr;padding:42px 0;gap:27px}.hero h1 br{display:none}.hero-figure{max-width:570px;width:100%;margin:auto}.reading-strip{display:grid;grid-template-columns:1fr 1fr}.section-head{display:block}.section-head>p{margin-top:15px}.lab-grid{grid-template-columns:1fr}.input-panel{border-right:0;border-bottom:1px solid var(--line);display:block;padding:24px}.results-panel{padding:24px 17px}.two-col{grid-template-columns:1fr;gap:15px}.case-grid{grid-template-columns:1fr 1fr}.report-checklist{columns:1}.chapter{padding:38px 0}.chapter .formula{font-size:18px}.topbar .brand{font-size:11px}footer{flex-wrap:wrap}.control-title{margin-top:24px}}
+@media(max-width:480px){main{padding:0 17px}.hero h1{font-size:39px}.hero .lead{font-size:19px}.hero-actions{flex-wrap:wrap}.reading-strip{font-size:10px;gap:12px}.reading-strip b{margin-right:7px}.metrics{gap:7px}.metrics strong{font-size:25px}.metrics small{font-size:9px}.metrics span{font-size:10px;min-height:45px}.result-heading h3{font-size:17px}.badge{font-size:9px}.case-grid{grid-template-columns:1fr}.formula{padding:16px}.hero-figure{padding:16px}.topbar nav a{font-size:11px}.chart-key{gap:10px}.chapter p,.chapter li{font-size:14px}}
+.chapter>.section-head{display:block}.case-card button,button[data-case]{background:white;border:1px solid #c5d4e3;border-radius:4px;color:#1766d0;padding:7px 10px;margin:4px 4px 0 0;font-size:12px}.case-card button:hover,button[data-case]:hover{background:#edf5ff}caption{text-align:left;font-size:13px;color:#556b7f;padding-bottom:10px}.chapter .formula{overflow-wrap:anywhere}
+@media print{.topbar{position:static}nav,.hero-actions,.input-panel,.export-bar,.small-button,#downloads,.budget-control,footer button,.offline,button[data-case]{display:none!important}.hero{padding:20px 0;gap:25px}.hero h1{font-size:35px}.lab-grid{display:block;border:none}.results-panel{padding:0}.chapter{padding:25px 0}.section-head{break-after:avoid}h2,h3,summary{break-after:avoid}p,li{orphans:3;widows:3}.chart-frame,.metrics,.hero-figure,.case-card{break-inside:avoid}details>*{display:block}main{padding:0;max-width:100%}body{font-size:11px}.chapter p,.chapter li{font-size:11px}.chapter{break-inside:auto}.hero .lead{font-size:16px}.reading-strip{display:none}a{color:inherit}#report-details{display:none}}
+
+/* Edition 02: editorial hierarchy and a task-led analysis workbench. */
+:root { --ink: #172d42; --muted: #52677a; --paper: #f5f7fa; --line: #dce3e9; }
+body { font-family: "Segoe UI", Arial, sans-serif; background: #fff; }
+main { max-width: 1344px; padding: 0 48px; }
+h1, h2 { font-family: Georgia, "Times New Roman", serif; }
+.topbar { padding: 18px max(32px, calc((100vw - 1248px)/2)); min-height: 86px; }
+.brand { font-size: 15px; letter-spacing: 2px; gap: 11px; }
+.brand-symbol { width: 38px; height: 38px; }
+.brand small { font-size: 11px; letter-spacing: .15px; margin-top: 3px; }
+nav a { font-size: 13px; }
+.hero { padding: 68px 0 56px; gap: 58px; grid-template-columns: 1.04fr 1fr; }
+.hero h1 { font-size: clamp(46px, 4.8vw, 68px); letter-spacing: -2.8px; line-height: 1.06; margin-bottom: 26px; }
+.hero h1 em { font-weight: 400; color: #1766d0; }
+.hero .lead { max-width: 25ch; font-size: 23px; line-height: 1.42; margin-bottom: 16px; }
+.hero-intro { max-width: 44ch; font-size: 16px; line-height: 1.75; }
+.hero .eyebrow { font-size: 10px; letter-spacing: 1.8px; margin-bottom: 27px; }
+.hero-actions { gap: 20px; flex-wrap: wrap; margin-top: 28px; }
+.button { border-radius: 4px; min-height: 44px; padding: 11px 17px; }
+.hero-footnote { font-size: 11px; line-height: 1.65; margin-top: 22px; }
+.hero-figure { margin: 0; padding: 24px 24px 18px; background: #f7f9fb; border-radius: 2px; box-shadow: none; }
+.figure-kicker { display: flex; justify-content: space-between; font-size: 9px; gap: 12px; letter-spacing: 1.25px; }
+.figure-kicker span:last-child { color: #7a8793; white-space: nowrap; }
+.hero-figure svg { margin: 16px 0 0; }
+.mini-legend { display: flex; justify-content: center; gap: 24px; color: var(--muted); font-size: 11px; margin: 2px 0 20px; }
+.hero-equation { padding: 20px 0 15px; }
+.hero-equation > span { font-size: 15px; line-height: 1.4; }
+.hero-equation small { font-size: 11px; }
+.hero-equation strong { font-size: 30px; }
+.hero-figure figcaption { font-size: 10px; line-height: 1.6; color: var(--muted); margin-top: 15px; }
+.reading-strip { margin-bottom: 0; padding: 21px 0; }
+.reading-strip a { font-size: 12px; color: var(--muted); text-decoration: none; }
+.reading-strip a:hover { color: var(--blue); }
+.section-head { margin-bottom: 30px; }
+.section-head .eyebrow { font-size: 10px; letter-spacing: 1.7px; }
+.section-head > p { max-width: 36ch; }
+.laboratory { border-top: 1px solid var(--line); padding: 65px 0 68px; }
+.privacy-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #07817d; margin-right: 6px; }
+.lab-grid { grid-template-columns: 278px minmax(0, 1fr); border-radius: 4px; box-shadow: 0 10px 35px #213b5007; }
+.input-panel { padding: 25px 20px; background: #f5f7fa; }
+.control-title { margin-top: 27px; margin-bottom: 17px; }
+.step { font-size: 10px; font-weight: 700; background: white; border-color: #c3d0dd; }
+.source-switch { display: grid; grid-template-columns: 1fr 1fr; padding: 3px; background: #e7edf3; border-radius: 5px; margin-bottom: 20px; gap: 3px; }
+.source-switch button { border: 0; padding: 8px; border-radius: 3px; font-size: 12px; color: var(--muted); background: transparent; }
+.source-switch [aria-pressed=true] { background: white; color: var(--blue); box-shadow: 0 1px 3px #14365812; font-weight: 650; }
+.compact-details { border: 0; padding: 0 0 13px; }
+.compact-details summary { font-size: 11px; font-weight: 400; color: var(--muted); }
+.metadata-controls { margin-top: -3px; border: 0; padding-top: 0; }
+.metadata-controls summary { font-size: 12px; line-height: 1.55; font-weight: 500; }
+.input-panel .fine { font-size: 11px; line-height: 1.7; }
+.file-label { padding: 17px 11px; }
+.results-panel { padding: 28px 30px; }
+.result-heading h3 { font-size: 23px; letter-spacing: -.6px; font-weight: 600; }
+.result-heading .eyebrow { letter-spacing: 1.4px; }
+.metrics { padding-top: 26px; padding-bottom: 23px; gap: 18px; }
+.metrics strong { font-size: 38px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.metrics > div:first-child strong { color: #163c6f; }
+.metrics small { font-size: 10px; }
+.budget-control { padding-top: 23px; }
+.budget-control > label { font-size: 13px; }
+input[type=range] { min-height: 28px; }
+.chart-readout { padding: 9px 12px; background: #f5f8fc; border-radius: 3px; text-align: left; font-size: 12px; }
+.area-calculation { background: #f7f9fb; padding: 15px 18px; border-left-width: 2px; }
+.insight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; border-top: 1px solid var(--line); margin-top: 23px; padding-top: 25px; }
+.insight-grid .eyebrow { font-size: 9px; letter-spacing: 1.1px; margin-bottom: 11px; }
+.insight-grid h4 { font-size: 15px; line-height: 1.4; margin-bottom: 15px; }
+.insight-grid .fine { font-size: 10px; line-height: 1.6; }
+.target-panel { padding-right: 22px; border-right: 1px solid var(--line); }
+.target-panel label { display: flex; justify-content: space-between; gap: 7px; font-weight: 400; font-size: 11px; }
+.target-panel output { color: var(--blue); font-weight: 700; }
+.target-number { display: block; font-size: 27px; letter-spacing: -.7px; color: #163c6f; line-height: 1.45; margin-bottom: 3px; }
+.target-number small { font-size: 12px; letter-spacing: 0; }
+.target-explainer { font-size: 11px; color: var(--muted); line-height: 1.65; margin: 5px 0; }
+.diagnostic-list { margin: 0; padding: 0; }
+.diagnostic-list > div { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 9px 0; }
+.diagnostic-list dt { font-size: 11px; color: var(--muted); }
+.diagnostic-list dd { font-size: 18px; margin: 0; font-variant-numeric: tabular-nums; color: #163c6f; }
+.budget-table-highlight { background: #eff5fe; }
+.export-bar { padding-top: 19px; }
+.small-button { font-size: 11px; padding: 7px 10px; }
+.chapter { padding: 58px 0; }
+.chapter > .section-head { margin-bottom: 25px; }
+.chapter p, .chapter li { font-size: 15px; line-height: 1.8; }
+.chapter .prose { max-width: 86ch; }
+.chapter .formula { border-radius: 0; font-size: 22px; }
+.chapter details { padding: 18px 0; }
+.chapter details > summary { font-weight: 550; font-size: 16px; }
+.chapter details[open] > summary { color: var(--blue); }
+.chapter details p { font-size: 14px; }
+.chapter .table-wrap { margin: 24px 0; }
+table { font-size: 12px; line-height: 1.65; }
+th, td { padding: 11px 12px; }
+.meaning-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 24px; margin: 30px 0; }
+.meaning-card { border-top: 3px solid #1766d0; padding: 20px 18px 8px; background: #f4f7fc; }
+.meaning-card:nth-child(2) { border-color: #009b9d; background: #f1f8f7; }
+.meaning-card:nth-child(3) { border-color: #b77000; background: #fbf7ef; }
+.meaning-card h3 { margin-top: 0; font-size: 18px; }
+.meaning-card p, .meaning-card li { font-size: 13px; line-height: 1.7; }
+.decision-guide { padding: 23px 26px 12px; background: #f5f7fa; margin: 24px 0; }
+.decision-guide h3 { margin-top: 0; }
+.decision-guide ol { padding-left: 21px; }
+.decision-guide li { padding: 0 0 12px 6px; font-size: 14px; }
+.glossary-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; }
+.glossary-term { margin: 0; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.glossary-term dt { font-size: 14px; font-weight: 650; color: var(--ink); }
+.glossary-term dd { margin: 6px 0 0; font-size: 13px; line-height: 1.7; color: var(--muted); }
+.case-grid { grid-template-columns: repeat(3, minmax(0,1fr)); gap: 0 26px; }
+.case-card { border: 0; border-top: 1px solid var(--line); border-radius: 0; padding: 21px 0; }
+.case-card h3 { font-size: 16px; }
+.case-card p { font-size: 13px; line-height: 1.75; }
+.note { border-left-width: 2px; background: #f4f7fa; }
+footer { padding: 30px max(48px, calc((100vw - 1248px)/2)); font-size: 11px; line-height: 1.8; }
+footer b { font-size: 16px; color: var(--ink); }
+@media (max-width: 1100px) {
+  main { padding: 0 30px; }
+  .hero { gap: 35px; }
+  .hero h1 { font-size: 53px; }
+  .hero .lead { font-size: 21px; }
+  .lab-grid { grid-template-columns: 250px minmax(0,1fr); }
+  .input-panel { padding: 24px 17px; }
+  .results-panel { padding: 25px 22px; }
+  .metrics strong { font-size: 32px; }
+  .insight-grid { gap: 16px; }
+  .target-panel { padding-right: 16px; }
+}
+@media (max-width: 850px) {
+  .hero { grid-template-columns: 1fr; gap: 35px; padding-top: 43px; }
+  .hero h1 { font-size: 60px; }
+  .hero h1 br { display: block; }
+  .hero .lead { max-width: 35ch; }
+  .hero-figure { width: 100%; max-width: 600px; margin: 0; }
+  .lab-grid { grid-template-columns: 1fr; }
+  .input-panel { border-right: 0; border-bottom: 1px solid var(--line); padding: 25px; }
+  .source-switch { max-width: 350px; }
+  .metrics strong { font-size: 38px; }
+  .meaning-grid { gap: 15px; }
+  .meaning-card { padding: 17px 14px 5px; }
+  .reading-strip { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+}
+@media (max-width: 600px) {
+  main { padding: 0 20px; }
+  .topbar { padding: 16px 20px; }
+  .brand { font-size: 13px; }
+  .hero h1 { font-size: 49px; letter-spacing: -1.8px; }
+  .hero .eyebrow { font-size: 9px; }
+  .hero .lead { font-size: 21px; }
+  .hero-intro { font-size: 15px; }
+  .hero-figure { padding: 21px 16px 18px; }
+  .figure-kicker { font-size: 8px; }
+  .reading-strip a { font-size: 11px; }
+  .laboratory, .chapter { padding: 42px 0; }
+  .results-panel { padding: 24px 15px; }
+  .metrics { gap: 11px; }
+  .metrics strong { font-size: clamp(22px, 6vw, 29px); }
+  .metrics span { min-height: 43px; font-size: 10px; }
+  .metrics > div { padding-right: 8px; }
+  .insight-grid, .meaning-grid, .glossary-grid { grid-template-columns: 1fr; }
+  .target-panel { border-right: 0; border-bottom: 1px solid var(--line); padding: 0 0 16px; }
+  .diagnostic-panel { padding-top: 4px; }
+  .case-grid { grid-template-columns: 1fr; }
+  .hero-equation strong { font-size: 28px; }
+  .hero-equation > span { font-size: 14px; }
+  .area-key { font-size: 10px; }
+  .target-number { font-size: 30px; }
+  .chapter p, .chapter li { font-size: 14px; }
+  .decision-guide { padding: 18px 18px 8px 31px; }
+  .brand small { font-size: 10px; }
+  .topbar nav a { font-size: 11px; }
+  .topbar nav .offline { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: 0s !important; animation-duration: 0s !important; }
+}
+@media print {
+  .hero { grid-template-columns: 1fr 1fr; padding: 15px 0 25px; gap: 30px; }
+  .hero h1 { font-size: 38px; letter-spacing: -1px; }
+  .hero .lead { font-size: 16px; }
+  .hero-intro { font-size: 11px; }
+  main { padding: 0; }
+  .lab-grid { display: block; }
+  .insight-grid { break-inside: avoid; }
+  .meaning-grid { gap: 16px; }
+  .chapter p, .chapter li, .meaning-card p { font-size: 11px; }
+  .source-switch, #download-budgets { display: none; }
+}
+
+.lesson{--lesson-blue:#1766d0;--lesson-teal:#009b9d;--lesson-amber:#b77000}.lesson-intro{max-width:91ch!important}.lesson-presets{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:24px 0 8px}.lesson-presets>span{font-size:12px;font-weight:650;margin-right:6px}.lesson-presets button{min-height:36px}.lesson-shuffle{display:flex;align-items:center;gap:8px;margin-left:auto}.lesson-shuffle label{margin:0;font-size:11px;white-space:nowrap}.lesson-shuffle input{width:96px!important;min-height:36px!important;margin:0!important;padding:6px 8px!important}.lesson-grid{display:grid;grid-template-columns:minmax(320px,.92fr) minmax(0,1.2fr);gap:32px;margin-top:20px;align-items:start}.lesson-list-panel{background:#f7f9fb;border:1px solid #dce4ec;border-radius:7px;padding:20px}.lesson-list-heading{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}.lesson-list-heading h3{margin:0!important;font-size:17px}.lesson-list-heading span{font-size:11px;color:#556b7f}.lesson-sites{padding:0;margin:0;list-style:none}.lesson-site{display:grid;grid-template-columns:24px minmax(70px,1fr) 39px auto;align-items:center;gap:10px;margin:8px 0;padding:12px 10px;background:white;border:1px solid #dce4ec;border-left:3px solid #bcc9d5;border-radius:5px;transition:background .15s,border-color .15s}.lesson-site.is-selected{border-color:#bad2f0;border-left-color:var(--lesson-blue);background:#edf4fe}.lesson-position{font-size:11px;color:#556b7f;font-variant-numeric:tabular-nums}.lesson-site-name{font-size:12px;font-weight:650;line-height:1.2}.lesson-site-name small{display:block;font-size:9px;font-weight:400;margin-top:4px;color:#556b7f}.lesson-count{font-size:19px;font-weight:600;line-height:1.1;text-align:right;font-variant-numeric:tabular-nums}.is-selected .lesson-count{color:var(--lesson-blue)}.lesson-move{display:flex;gap:5px}.lesson-move button{font-size:10px;min-width:46px;min-height:33px;padding:5px 6px;background:white;border:1px solid #ccd8e5;border-radius:4px;color:#2e4d69;cursor:pointer}.lesson-move button:hover:not(:disabled){background:#e2edfb;border-color:#9dbce1}.lesson-move button:disabled{opacity:.35;cursor:not-allowed}.lesson-chart-panel{min-width:0;padding-top:2px}.lesson-budget label{display:flex;align-items:center;justify-content:space-between;font-size:13px;margin-bottom:5px}.lesson-budget output{color:var(--lesson-blue);font-size:14px;font-weight:700}.lesson-budget input{width:100%;accent-color:var(--lesson-blue)}.lesson-budget-ticks{display:flex;justify-content:space-between;color:#6c7e8e;font-size:10px;margin-top:-2px}.lesson-scoreboard{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:15px;border-bottom:1px solid #dce4ec;padding:21px 0 16px}.lesson-scoreboard span{font-size:11px;color:#556b7f;line-height:1.4;display:block;min-height:31px}.lesson-scoreboard strong{font-size:24px;color:var(--lesson-blue);line-height:1.45;display:block;font-weight:600;font-variant-numeric:tabular-nums}.lesson-scoreboard>div:last-child strong{color:#657a8b}.lesson-chart{width:100%;height:auto;display:block;margin:14px 0 0}.lesson-legend{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;font-size:10px;color:#556b7f;margin:0 0 14px}.lesson-explanation{font-size:14px!important;color:#274866!important;line-height:1.65;background:#edf4fe;border-left:3px solid var(--lesson-blue);padding:13px 16px;margin-bottom:17px}.lesson-area{display:flex;gap:18px;align-items:center;border-top:1px solid #dce4ec;padding-top:15px}.lesson-area>div{min-width:120px}.lesson-area span{font-size:11px;color:#556b7f;display:block}.lesson-area strong{font-size:31px;line-height:1.3;color:var(--lesson-blue);font-weight:600;font-variant-numeric:tabular-nums}.lesson-area p{font-size:12px!important;line-height:1.65;margin:0!important;font-variant-numeric:tabular-nums}.lesson-takeaway{max-width:none!important;background:#f7f9fb;border:1px solid #dce4ec;border-radius:5px;padding:18px 22px;margin:26px 0 15px}.lesson-presets button:focus-visible,.lesson-move button:focus-visible,.lesson input:focus-visible{outline:3px solid #7db3fc;outline-offset:3px}@media(max-width:1050px){.lesson-grid{gap:20px;grid-template-columns:minmax(300px,.95fr) minmax(0,1.05fr)}.lesson-site{gap:7px;padding:11px 8px}.lesson-list-panel{padding:16px}.lesson-scoreboard{gap:8px}.lesson-scoreboard strong{font-size:21px}.lesson-move button{min-width:42px;font-size:9px}}@media(max-width:800px){.lesson-grid{grid-template-columns:1fr;gap:24px}.lesson-shuffle{margin-left:0}.lesson-presets{gap:8px}.lesson-list-panel{padding:20px}.lesson-site{grid-template-columns:25px minmax(90px,1fr) 45px auto;gap:12px}.lesson-move button{font-size:11px;min-width:58px;min-height:36px}.lesson-scoreboard strong{font-size:27px}.lesson-chart-panel{padding:0 5px}}@media(max-width:480px){.lesson-list-panel{padding:14px 10px}.lesson-site{grid-template-columns:20px minmax(62px,1fr) 31px auto;gap:8px;padding:11px 7px}.lesson-move{gap:4px}.lesson-move button{font-size:10px;min-width:46px;padding:5px 5px}.lesson-count{font-size:18px}.lesson-shuffle{width:100%;margin-top:5px}.lesson-area{gap:12px}.lesson-area>div{min-width:100px}.lesson-area strong{font-size:27px}.lesson-scoreboard{gap:10px}.lesson-scoreboard strong{font-size:23px}.lesson-scoreboard span{font-size:10px}.lesson-takeaway{padding:15px}.lesson-explanation{padding:12px}}@media print{.lesson-presets,.lesson-move,.lesson-budget input,.lesson-budget-ticks{display:none!important}.lesson-grid{grid-template-columns:.9fr 1.1fr;gap:20px}.lesson-list-panel{padding:12px}.lesson-site{grid-template-columns:20px 1fr 35px;padding:9px}.lesson-chart-panel{break-inside:avoid}.lesson-area{break-inside:avoid}.lesson-takeaway{break-inside:avoid}.lesson-site-name small{font-size:8px}}
+.lesson-area .blue{color:#1766d0}.lesson-area .amber{color:#b77000}
+
+/* Edition 03: a numbered practitioner reference with an integrated calculator. */
+:root { --ink:#172e43; --muted:#526575; --line:#d9e1e7; }
+main { max-width:1260px; padding:0 42px; }
+.topbar { min-height:76px; padding:14px max(28px,calc((100vw - 1176px)/2)); }
+.topbar nav { gap:20px; }
+.handbook-header { padding:58px 0 34px; max-width:970px; }
+.handbook-header .eyebrow { color:#1766d0; font-size:11px; margin-bottom:22px; }
+.handbook-header h1 { font-size:clamp(36px,4vw,54px); line-height:1.13; letter-spacing:-1.35px; margin:0 0 21px; }
+.handbook-deck { font-size:20px; line-height:1.6; max-width:68ch; color:#354e61; }
+.handbook-meta { display:flex; flex-wrap:wrap; gap:8px 24px; color:var(--muted); font-size:12px; border-top:1px solid var(--line); padding-top:18px; margin-top:24px; }
+.scope-note { font-size:12px; line-height:1.75; color:var(--muted); max-width:105ch; margin-top:16px; }
+.handbook-header .hero-actions { margin-top:20px; }
+.contents { display:block; padding:23px 26px; margin:0 0 38px; background:#f5f7f9; border-top:2px solid #224d73; }
+.contents .eyebrow { margin-bottom:13px; font-size:10px; }
+.contents ol { display:grid; grid-template-columns:1fr 1fr; column-gap:48px; row-gap:8px; list-style-position:outside; margin:0; padding-left:23px; }
+.contents li { padding-left:5px; color:#1766d0; font-size:14px; font-variant-numeric:tabular-nums; }
+.contents a { font-size:14px; color:#243f54; }
+.chapter { padding:42px 0 46px; }
+.chapter h2 { font:500 clamp(26px,2.6vw,33px)/1.25 Georgia,serif; letter-spacing:-.4px; }
+.chapter h3 { margin-top:28px; font-size:18px; }
+.chapter .prose { max-width:92ch; }
+.chapter p,.chapter li { max-width:92ch; line-height:1.8; }
+.chapter .fine { font-size:12px; line-height:1.7; }
+.chapter table { font-size:13px; line-height:1.65; }
+.chapter th:first-child { min-width:135px; }
+.chapter caption { max-width:90ch; font-size:12px; line-height:1.7; }
+.chapter .table-wrap { margin:20px 0; }
+.chapter .formula { margin:20px 0; font-size:23px; }
+.concept-layout { display:grid; grid-template-columns:1.12fr 1fr; align-items:center; gap:30px; margin:26px 0; }
+.concept-figure { margin:0; padding:16px; background:#f7f9fb; border:1px solid #e2e8ed; }
+.concept-figure svg { display:block; width:100%; height:auto; }
+.concept-figure figcaption { margin:14px 3px 3px; color:var(--muted); font-size:12px; line-height:1.7; }
+.concept-layout .formula { font-size:26px; }
+.lesson-interactive { margin-top:26px; }
+.lesson-interactive .lesson-sites { max-width:none; }
+.lesson-interactive .lesson-sites li { max-width:none; font-size:14px; }
+.lesson-interactive .lesson-legend { font-size:11px; }
+.lesson-interactive .lesson-takeaway { font-size:13px; }
+.laboratory { margin-top:28px; padding:30px 0 0; }
+.laboratory .section-head { display:flex; align-items:center; }
+.laboratory .section-head h3 { margin:0; font:500 24px/1.3 Georgia,serif; }
+.laboratory .section-head > p { font-size:12px; max-width:33ch; }
+.laboratory p { max-width:none; }
+.laboratory h3 { margin-top:0; }
+.laboratory .input-panel p { font-size:11px; line-height:1.7; }
+.laboratory label { line-height:1.5; }
+.laboratory .result-heading h3 { font-size:20px; font-family:"Segoe UI",Arial,sans-serif; }
+.laboratory .result-heading .eyebrow { font-size:9px; }
+.laboratory .chart-readout { font-size:12px; }
+.laboratory .fine { font-size:11px; }
+.laboratory details > summary { font-size:14px; }
+.laboratory .input-panel details > summary { font-size:12px; }
+.laboratory .table-wrap { margin:15px 0; }
+.laboratory table { font-size:11px; }
+.laboratory .metrics strong { font-size:35px; }
+#empirical-controls { padding:10px 0 0; }
+#reuse { margin-top:32px; }
+#reuse h4 { margin:18px 0 12px; font-size:15px; }
+.reference-list { padding-left:25px; max-width:105ch; }
+#references .reference-list li { max-width:100ch; margin:0 0 20px; font-size:13px; line-height:1.75; padding-left:6px; }
+.field-distribution { margin:24px 0; }
+.field-distribution svg, #distribution-chart { width:100%; max-width:940px; height:auto; display:block; }
+.field-distribution figcaption { font-size:12px; line-height:1.7; color:var(--muted); }
+@media(max-width:900px) {
+  .topbar nav { gap:12px; }
+  .concept-layout { grid-template-columns:1fr; }
+  .concept-figure { max-width:650px; }
+}
+@media(max-width:700px) {
+  main { padding:0 21px; }
+  .handbook-header { padding-top:34px; }
+  .handbook-header h1 { font-size:37px; }
+  .handbook-deck { font-size:18px; }
+  .contents ol { grid-template-columns:1fr; row-gap:10px; }
+  .topbar nav { flex-wrap:wrap; justify-content:flex-start; gap:8px 16px; }
+  .chapter { padding:32px 0; }
+  .laboratory .section-head { display:block; }
+  .concept-layout { gap:15px; }
+  .lab-grid { grid-template-columns:1fr; }
+}
+@media print {
+  .handbook-header { padding-top:10px; }
+  .handbook-header h1 { font-size:32px; }
+  .handbook-deck { font-size:15px; }
+  .concept-layout { grid-template-columns:1fr 1fr; gap:20px; }
+  .concept-figure { break-inside:avoid; }
+  .chapter table { font-size:10px; }
+  .chapter .formula { font-size:18px; }
+  .handbook-meta,.scope-note { font-size:9px; }
+  .chapter { padding:22px 0; }
+  #references .reference-list li { font-size:10px; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#laboratory">Skip to calculator</a>
+<header class="topbar"><a class="brand" href="#top"><svg class="brand-symbol" viewBox="0 0 36 36" aria-hidden="true"><path d="M4 29L31 5L31 29Z" fill="#e6effc"/><path d="M4 29Q10 6 31 5" fill="none" stroke="#009b9d" stroke-width="2.5"/><path d="M4 29Q14 16 31 5" fill="none" stroke="#1766d0" stroke-width="2.5"/></svg><span>LIFT RATIO<small>Larval source management</small></span></a><nav aria-label="Main navigation"><a href="#purpose">Purpose</a><a href="#compute">Calculation</a><a href="#learn">Example</a><a href="#field-cases">Cases</a><a href="#resources">Resources</a><a href="#references">References</a></nav></header>
+<main id="top">
+<header class="handbook-header">
+<p class="eyebrow">PRACTITIONER HANDBOOK · EDITION 03</p>
+<h1>Lift ratio for<br>larval source management</h1>
+<p class="handbook-deck">Evaluating whether a habitat priority list places more of the observed larval burden within a limited site-visit budget.</p>
+<div class="handbook-meta"><span>For LSM specialists, programme managers and analysts</span><span>28 October 2026</span><span>Metric convention v1.0</span></div>
+<p class="scope-note">A proposed reporting convention grounded in cumulative-gains methods. Not an adopted entomological standard, a WHO-endorsed metric or evidence of treatment effectiveness.</p>
+<div class="hero-actions"><a class="button primary" href="#laboratory">Open the calculator</a><a class="text-link" href="lift_ratio_handbook.html" download>Download offline handbook</a></div>
+</header>
+<nav class="contents" aria-label="Contents"><p class="eyebrow">CONTENTS</p><ol><li><a href="#purpose">Purpose and appropriate use</a></li><li><a href="#compute">Calculation and interpretation</a></li><li><a href="#learn">A simple worked example</a></li><li><a href="#field-cases">Field cases and realistic simulations</a></li><li><a href="#resources">Resources and reporting</a></li><li><a href="#references">References</a></li></ol></nav>
+<section id="purpose" class="chapter" aria-labelledby="purpose-title">
+  <header class="section-head"><h2 id="purpose-title">1. Purpose and appropriate use</h2></header>
+  <div class="prose">
+    <p>Larval source management (LSM) programmes need reliable surveillance, suitable interventions and a feasible allocation of field effort. When a programme cannot visit every candidate habitat immediately, a priority ranking can inform which sites to assess first. The evaluation question is specific: <strong>what proportion of a measured entomological outcome is represented in the sites selected at a given visit budget?</strong> This handbook describes cumulative outcome coverage and a full-range normalized coverage lift ratio for that question. These measures complement, rather than replace, surveillance and intervention evaluation. <a href="#ref-who">[1]</a></p>
+    <p>Suitable inputs are a defined set of evaluation units, comparable observed outcomes and a priority score for every unit. A unit might be a habitat or a habitat visit; the outcome might be a standardized larval or pupal count. Specify species, life stage, sampling effort and period. The score can come from remote sensing, another model or a prespecified expert rule. For predictive claims, evaluate scores generated without using the corresponding test outcomes in model development or selection.</p>
+    <p>Coverage refers to the <em>observed outcome represented</em>, not necessarily total habitat productivity. Summing sampled counts does not establish adult emergence, and summing densities or rates does not necessarily represent total abundance. The denominator is the evaluated population, not all habitats in a city unless the sampling frame supports that interpretation.</p>
+  </div>
+  <h3>Relationship to other measures</h3>
+  <div class="table-wrap"><table>
+    <caption>Choose measures according to the question; no single measure is sufficient.</caption>
+    <thead><tr><th scope="col">Measure</th><th scope="col">Useful information</th><th scope="col">Relationship to outcome coverage at a visit budget</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Habitat positivity and larval or pupal density</th><td>Describe habitat status and observed abundance under a specified protocol.</td><td>Essential surveillance inputs, but not an evaluation of the ordering in which habitats are visited.</td></tr>
+      <tr><th scope="row">Adult emergence and intervention-impact measures</th><td>Assess downstream biological or public-health objectives.</td><td>Require their own observations and study designs. A favourable ranking does not demonstrate intervention impact.</td></tr>
+      <tr><th scope="row">MAE, RMSE and R²</th><td>Assess numerical prediction error or goodness of fit. <a href="#ref-metrics">[5]</a></td><td>Answer a different question from prioritization. An ordering can be useful even when predicted counts are poorly calibrated.</td></tr>
+      <tr><th scope="row">Spearman correlation and Kendall correlation</th><td>Summarize rank association or concordance. <a href="#ref-rank">[6]</a></td><td>Do not directly quantify the share of observed count magnitude accumulated by visiting a specified fraction of sites.</td></tr>
+      <tr><th scope="row">Binary ROC and precision-recall measures</th><td>Evaluate discrimination and detection of a defined positive class. <a href="#ref-metrics">[5]</a></td><td>Appropriate for presence or a threshold-defined outcome. Binarizing counts discards differences in magnitude among positive sites.</td></tr>
+      <tr><th scope="row">Normalized discounted cumulative gain (NDCG)</th><td>Evaluates graded relevance with explicit gain and position-discount choices. <a href="#ref-ndcg">[4]</a></td><td>A valid alternative when those choices match the operational objective. Its discounted gain is not ordinarily the same quantity as cumulative observed-outcome coverage.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="prose"><p>Coverage lift is a cumulative-gains/Gini-type summary, not a new mathematical statistic. This handbook proposes a reproducible convention for entomological use, not a universally superior metric or an endorsed discipline-wide standard. Compare methods on the same evaluation population, inspect the full curves and report coverage at prespecified operational budgets. There is no universal “good lift” threshold. <a href="#ref-gini">[2]</a> <a href="#ref-cap">[3]</a></p></div>
+</section>
+
+<section id="compute" class="chapter" aria-labelledby="compute-title">
+  <header class="section-head"><h2 id="compute-title">2. Calculation and interpretation</h2></header>
+  <div class="prose"><p>For <var>n</var> evaluation units, let <var>y</var><sub>i</sub> be the nonnegative observed outcome and <var>s</var><sub>i</sub> the priority score. Sort units in decreasing priority and retain genuine zero outcomes. At the first <var>k</var> units, cumulative coverage is:</p></div>
+  <div class="formula" role="math" aria-label="Coverage at k over n equals the cumulative observed outcome in priority order divided by the total observed outcome.">C(k/n) = (y<sub>(1)</sub> + … + y<sub>(k)</sub>) / Σ<sub>i=1…n</sub> y<sub>i</sub></div>
+  <div class="prose"><p>The horizontal coordinate is the share of units selected; the vertical coordinate is the share of total observed outcome represented. If two of four sites contain 60 of 100 observed larvae, the point is (50%, 60%). Join cumulative points with straight lines, including (0, 0) and (1, 1).</p><p>Random ordering has expected coverage <var>C</var><sub>random</sub>(<var>x</var>) = <var>x</var>. One random realization need not follow that diagonal. The ideal reference sorts the same units by observed outcome, highest first. It is a retrospective ceiling, not a prediction available before future observation.</p></div>
+  <div class="concept-layout">
+    <figure class="concept-figure"><svg id="intro-chart" viewBox="0 0 520 310" role="img" aria-label="Illustrative cumulative coverage curves showing the blue ranking, teal ideal reference and dashed gray random reference, with area A and area B shaded"></svg><div class="mini-legend"><span><i class="line-swatch model"></i>Ranking</span><span><i class="line-swatch ideal"></i>Ideal</span><span><i class="line-swatch random"></i>Random</span></div><figcaption><strong>Figure 1.</strong> Area A is the ranking's signed gain over random ordering. Area B is the remaining gap to ideal ordering. These schematic curves illustrate the definition; they are not study results.</figcaption></figure>
+    <div><h3>Normalize the available area advantage</h3><p>Integrate over the complete selected-site range, 0 to 1. With A the signed area between the ranking and random curves, and B the area between ideal and ranking curves:</p><div class="formula">L = A / (A + B)</div><p>Equivalently, if A<sub>model</sub> and A<sub>ideal</sub> are absolute areas under the curves:</p><div class="formula">L = (A<sub>model</sub> − 0.5) / (A<sub>ideal</sub> − 0.5)</div><p>Thus A = A<sub>model</sub> − 0.5 and B = A<sub>ideal</sub> − A<sub>model</sub>. Contributions below random are subtracted from A.</p></div>
+  </div>
+  <h3>Report three distinct quantities</h3>
+  <div class="table-wrap"><table><thead><tr><th scope="col">Quantity</th><th scope="col">Interpretation</th></tr></thead><tbody>
+    <tr><th scope="row">Full-range lift, <var>L</var></th><td>The fraction of the available area advantage recovered. L = 0.800 means 80% of that advantage, not 80% of larvae eliminated or disease reduced.</td></tr>
+    <tr><th scope="row">Coverage, <var>C</var>(<var>q</var>)</th><td>The outcome share at a stated site budget. C(0.50) = 0.60 means the first half of sites contains 60% of the observed outcome.</td></tr>
+    <tr><th scope="row">Budget-specific multiplier, <var>C</var>(<var>q</var>)/<var>q</var></th><td>Coverage relative to random expectation at that budget. Here 0.60/0.50 = 1.20, or 1.2 times random expected coverage.</td></tr>
+  </tbody></table></div>
+  <p>Changing the selected budget changes coverage, not full-range lift. Curves can cross: the highest full-range lift need not give the greatest coverage at a small operational budget.</p>
+  <details><summary>Integration, ties and whole-site budgets</summary><div class="prose"><p>Use trapezoids: A<sub>curve</sub> = Σ<sub>j=1…n</sub> (<var>x</var><sub>j</sub> − <var>x</var><sub>j−1</sub>)(<var>C</var><sub>j</sub> + <var>C</var><sub>j−1</sub>)/2. Retain full numerical precision. Partial-range integration is a different measure.</p><p>For exact score ties, use the straight chord across each tied block: expected coverage under random ordering within that block. Do not break ties using outcomes or advantageous CSV row order. Rounding scores can create new ties.</p><p>The app interpolates at fraction <var>q</var> and separately reports <var>k</var> = floor(<var>q</var><var>n</var>) whole sites. For 743 units, 30% is 222.9 site equivalents, not a literal visit count. Expected tied-block coverage is not guaranteed for a particular selection.</p></div></details>
+  <details><summary>Range, undefined cases and mathematical properties</summary><div class="prose"><p>For heterogeneous nonnegative outcomes, −1 ≤ L ≤ 1. Ideal ordering gives 1; reverse-outcome ordering gives −1; random expectation is 0. All-tied scores give the diagonal exactly. All-zero outcomes have undefined coverage and lift. Uniform positive outcomes have coverage <var>C</var>(<var>x</var>) = <var>x</var> but undefined lift. Report N/A, not a numerical zero; a very small ideal advantage also warrants numerical caution.</p><p>Strictly increasing score transformations preserve lift if ties remain unchanged. Positive rescaling of outcomes preserves coverage and lift. Adding a common nonnegative constant preserves defined normalized lift but changes coverage. Similar lift across cohorts therefore need not imply similar operational value. For binary outcomes with both classes present, equal unit weights and consistent ties, L = 2 × ROC AUC − 1; this identity does not extend indiscriminately to counts. <a href="#ref-cap">[3]</a></p></div></details>
+</section>
+
+<section id="learn" class="lesson chapter" aria-labelledby="lesson-title">
+  <header class="section-head"><h2 id="lesson-title">3. A simple worked example</h2></header>
+  <div class="prose"><p>Suppose a priority rule orders four habitats with recorded larval counts of 40, 20, 30 and 10. There are 100 larvae in total. The scores determine the order; their numerical scale is irrelevant. These invented observations make the calculation transparent.</p></div>
+  <div class="table-wrap"><table><caption>Table 1. Cumulative coverage in a four-habitat example.</caption><thead><tr><th scope="col">Priority position</th><th scope="col">Observed count</th><th scope="col">Sites selected</th><th scope="col">Ranking coverage</th><th scope="col">Ideal coverage</th><th scope="col">Random expectation</th></tr></thead><tbody>
+    <tr><th scope="row">0</th><td>Not selected</td><td>0%</td><td>0%</td><td>0%</td><td>0%</td></tr>
+    <tr><th scope="row">1</th><td>40</td><td>25%</td><td>40%</td><td>40%</td><td>25%</td></tr>
+    <tr><th scope="row">2</th><td>20</td><td>50%</td><td>60%</td><td>70%</td><td>50%</td></tr>
+    <tr><th scope="row">3</th><td>30</td><td>75%</td><td>90%</td><td>90%</td><td>75%</td></tr>
+    <tr><th scope="row">4</th><td>10</td><td>100%</td><td>100%</td><td>100%</td><td>100%</td></tr>
+  </tbody></table></div>
+  <div class="prose"><p>Trapezoidal integration gives a ranking area of 0.600 and an ideal area of 0.625. The random area is 0.500. Therefore, <strong>L = (0.600 − 0.500) / (0.625 − 0.500) = 0.800</strong>. This ranking achieves 80% of the full-curve gain that was possible over random ordering on these four observations.</p><p>At a budget of two sites, the ranking covers 60% of the observed count. Its budget-specific multiplier is 60% / 50% = <strong>1.20</strong>. Neither 0.800 nor 1.20 is the proportion of larvae eliminated, and neither measures monetary savings.</p><button type="button" data-case="worked" data-budget="50">Open the four-site example in the calculator</button></div>
+  <div id="worked-metric-comparison">
+  <h3>Compare the other measures on these same four habitats</h3>
+  <p>The following comparison is fixed to the four-site example, not the separate eight-site exercise below. In habitat-ID order, observed counts are <code>[40, 30, 20, 10]</code> and priority scores are <code>[4, 2, 3, 1]</code>. Thus the visit order is H1, H3, H2, H4. To illustrate count-error metrics, we additionally assume hypothetical count predictions of <code>[40, 20, 30, 10]</code>, equal to ten times the priority score. <strong>This count scale is an explicit teaching assumption, not something that can be inferred from a rank score.</strong></p>
+  <div class="table-wrap"><table>
+    <caption>Table 2. Different questions answered by the same synthetic four-site case. Values are descriptive, not evidence of generalization.</caption>
+    <thead><tr><th scope="col">Measure</th><th scope="col">Value</th><th scope="col">Interpretation in this example</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Habitat positivity</th><td><span data-worked-metric="positivity">100.0%</span></td><td>All four sites contain larvae. This describes presence but cannot distinguish their contributions or assess the visit order.</td></tr>
+      <tr><th scope="row">Mean recorded count</th><td><span data-worked-metric="mean">25.0</span> larvae/site</td><td>There are 100 larvae across four sites. The mean is unchanged by reordering. Without a sampling-effort or area denominator, this is not larval density or an adult-production rate.</td></tr>
+      <tr><th scope="row">MAE</th><td><span data-worked-metric="mae">5.000</span> larvae/site</td><td>The assumed count predictions differ from the observations by 0, 10, 10 and 0 larvae. Their average absolute error is 5. Lower is better for count accuracy; it does not directly report priority coverage.</td></tr>
+      <tr><th scope="row">RMSE</th><td><span data-worked-metric="rmse">7.071</span> larvae/site</td><td>The square root of the mean squared count error is 7.071. Squaring gives larger errors greater weight. This is a count-error measure, not a fraction of larvae captured.</td></tr>
+      <tr><th scope="row">R²</th><td><span data-worked-metric="r2">0.600</span></td><td>The assumed predictions have 60% less squared error than predicting the observed sample mean, 25, for every site. This does not mean 60% outcome coverage.</td></tr>
+      <tr><th scope="row">Spearman ρ</th><td><span data-worked-metric="rho">0.800</span></td><td>Only the two middle ranks are swapped. The rank correlation is 0.8. Its equality to lift here is coincidental; it compares ranks rather than the count share accumulated.</td></tr>
+      <tr><th scope="row">Kendall τ-b</th><td><span data-worked-metric="tau">0.667</span></td><td>Five of six site pairs are concordant and one is discordant: (5 − 1)/6. With no ties, τ-b equals τ-a. Each pair counts equally, regardless of its larval-count difference.</td></tr>
+      <tr><th scope="row">NDCG, all four sites</th><td><span data-worked-metric="ndcg4">0.982</span></td><td>The order achieves 98.2% of ideal logarithmically discounted count gain. The highest-count site is already first. This is not 98.2% of gain above random, nor 98.2% larval coverage.</td></tr>
+      <tr><th scope="row">NDCG@2</th><td><span data-worked-metric="ndcg2">0.893</span></td><td>The first two positions achieve 89.3% of ideal discounted gain at that cutoff. This weights position 1 more than position 2, unlike simply adding the counts in two visited sites.</td></tr>
+      <tr><th scope="row">Full-range lift ratio</th><td><span data-worked-metric="lift">0.800</span></td><td>The order recovers 80% of the area advantage available over random ordering across the full site-selection range. Random expectation is zero; ideal ordering is one.</td></tr>
+      <tr><th scope="row">Coverage at two sites</th><td><span data-worked-metric="coverage">60.0%</span></td><td>H1 and H3 contain 40 + 20 = 60 of 100 larvae. Ideal selection would contain 70; random selection represents 50 in expectation. This directly answers the two-visit allocation question.</td></tr>
+      <tr><th scope="row">Coverage multiplier at two sites</th><td><span data-worked-metric="multiplier">1.200</span></td><td>60% / 50% = 1.2 times random expected coverage, a 10-percentage-point coverage advantage. It is not the full-range lift ratio.</td></tr>
+      <tr><th scope="row">Adult emergence or treatment impact</th><td>Not available</td><td>No emergence, intervention, cost or malaria observations were supplied. None of the ranking measures establishes those outcomes.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note"><strong>Read the measures together.</strong> Count-error measures assess numerical predictions; rank correlations assess ordering agreement; NDCG assesses discounted gain; coverage and lift assess allocation of the measured outcome across site budgets. A larger numerical value under one metric is not evidence that it is a better metric. In particular, NDCG 0.982 and lift 0.800 use different denominators and different random-reference values. <a href="#ref-metrics">[5]</a> <a href="#ref-rank">[6]</a> <a href="#ref-ndcg">[4]</a></p>
+  <details><summary>Binary ROC and precision-recall: define the positive class first</summary>
+    <p>For larval presence (<code>count &gt; 0</code>), every habitat is positive. ROC AUC is undefined because there are no negatives. Average precision is 1.000 for every ordering, so it provides no discrimination information here. Selecting any two sites gives 100% precision and 50% recall of positive sites, despite different possible larval-count coverage.</p>
+    <p>For a separate teaching question, define “high-count” as <code>observed count ≥ 30</code>. This arbitrary cutoff is not a recommended operational threshold. H1 and H2 are positive, and the priority-ordered labels become <code>[1, 0, 1, 0]</code>.</p>
+    <div class="table-wrap"><table><caption>Table 3. Binary evaluation after explicitly changing the target to count ≥ 30.</caption><thead><tr><th scope="col">Measure</th><th scope="col">Value</th><th scope="col">Interpretation</th></tr></thead><tbody>
+      <tr><th scope="row">ROC AUC</th><td><span data-worked-metric="auc">0.750</span></td><td>Three of four positive-negative pairs are correctly ordered. It does not retain the count differences within either class.</td></tr>
+      <tr><th scope="row">Average precision (AP)</th><td><span data-worked-metric="ap">0.833</span></td><td>Positive sites occur at positions 1 and 3: AP = (1 + 2/3)/2. AP summarizes precision-recall using recall increments, not trapezoidal PR area.</td></tr>
+      <tr><th scope="row">Precision@2 and recall@2</th><td><span data-worked-metric="precision">50.0%</span> and <span data-worked-metric="recall">50.0%</span></td><td>One of the two selected sites is high-count, and one of the two high-count sites is selected. These are site-class fractions, not the 60% larval-count coverage.</td></tr>
+    </tbody></table></div>
+    <p>Binary metrics are appropriate when identifying a specified class is the objective. They answer a changed question, not a defective version of the count-ranking question. <a href="#ref-metrics">[5]</a> <a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.average_precision_score.html" target="_blank" rel="noopener noreferrer">AP definition</a>.</p>
+  </details>
+  <details><summary>Same ranking, worse count predictions: a calibration counterexample</summary>
+    <p>Double the hypothetical predictions to <code>[80, 40, 60, 20]</code>. Their ordering is unchanged. Lift remains 0.800, two-site coverage remains 60%, and Spearman, Kendall, NDCG and the binary discrimination measures above also stay unchanged. Count errors, however, increase:</p>
+    <div class="table-wrap"><table><caption>Table 4. Rescaling predictions changes count accuracy without changing priority order.</caption><thead><tr><th scope="col">Measure</th><th scope="col">Original predictions</th><th scope="col">Doubled predictions</th></tr></thead><tbody>
+      <tr><th scope="row">MAE (larvae/site)</th><td>5.000</td><td><span data-worked-metric="scaledMAE">25.000</span></td></tr>
+      <tr><th scope="row">RMSE (larvae/site)</th><td>7.071</td><td><span data-worked-metric="scaledRMSE">29.155</span></td></tr>
+      <tr><th scope="row">R²</th><td>0.600</td><td><span data-worked-metric="scaledR2">−5.800</span></td></tr>
+    </tbody></table></div>
+    <p>The negative R² means these doubled predictions have more squared error than predicting the observed mean for every site. <strong>A useful ranking can still give poor absolute counts.</strong> Report count-error measures when numerical prediction matters, and coverage measures when prioritization matters. Neither replaces the other.</p>
+  </details>
+  <details><summary>Formulas and reproducible metric conventions for this comparison</summary>
+    <p>Let e<sub>i</sub> = predicted count − observed count. MAE = Σ|e<sub>i</sub>|/4; RMSE = √(Σe<sub>i</sub>²/4); R² = 1 − Σe<sub>i</sub>²/Σ(y<sub>i</sub> − 25)². Here squared error is 200 and the observed sum of squared deviations is 500.</p>
+    <p>Without ties, Spearman ρ = 1 − 6Σd<sub>i</sub>²/[n(n² − 1)], where d is the difference between observed and predicted ranks. Here Σd² = 2. Kendall τ-b = (concordant pairs − discordant pairs)/6 for this tie-free example.</p>
+    <p>Use <strong>linear count gain</strong> and discount 1/log<sub>2</sub>(r + 1): DCG@k = Σ<sub>r=1…k</sub> y<sub>(r)</sub>/log<sub>2</sub>(r + 1), and NDCG@k = DCG@k / ideal DCG@k. For all four sites, the areas are not involved: DCG = 71.925 and ideal DCG = 73.235. Exponential gain, another discount or another cutoff defines a different convention. <a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.ndcg_score.html" target="_blank" rel="noopener noreferrer">NDCG implementation reference</a>.</p>
+    <p>All calculations use the same four records, no sampling weights and no score ties. Tests recompute the displayed values. These tiny examples do not support significance, uncertainty or transferability claims. Editing the calculator does not change these fixed explanatory tables.</p>
+  </details>
+  </div>
+  <details class="lesson-interactive"><summary>Optional exercise: change the order of eight habitats</summary>
+  <p>Eight synthetic habitats contain exactly 100 observed larvae. Change the order or the site budget to see the difference between full-curve lift and coverage at one budget.</p>
+  <p class="lesson-intro">Move a habitat earlier or later, then watch the coverage curve change. The blue rows are the habitats selected at your current budget. Their known counts make this a teaching exercise, not a validated prediction or a treatment result.</p>
+  <div class="lesson-presets" aria-label="Example visit orders"><span>Try an order</span><button type="button" class="small-button" id="lesson-mixed">Mixed</button><button type="button" class="small-button" id="lesson-ideal">Ideal retrospective</button><button type="button" class="small-button" id="lesson-reversed">Reversed</button><div class="lesson-shuffle"><label for="lesson-seed">Shuffle seed</label><input id="lesson-seed" type="number" min="0" max="4294967295" step="1" value="2026"><button type="button" class="small-button" id="lesson-shuffle">Shuffle</button></div></div>
+  <p class="fine" id="lesson-order-note">Mixed example. Use Earlier and Later to change a habitat's position.</p>
+  <div class="lesson-grid">
+    <div class="lesson-list-panel"><div class="lesson-list-heading"><h3>Visit order</h3><span>Observed larvae</span></div><ol id="lesson-sites" class="lesson-sites" aria-label="Reorder the eight simulated habitats"></ol><p class="fine">Counts belong to the habitats and do not change when you reorder them. Every site uses one equal unit of the visit budget.</p></div>
+    <div class="lesson-chart-panel">
+      <div class="lesson-budget"><label for="lesson-budget">Select the first <output id="lesson-budget-value">2 of 8 sites</output></label><input id="lesson-budget" type="range" min="1" max="8" step="1" value="2"><div class="lesson-budget-ticks" aria-hidden="true"><span>1 site</span><span>8 sites</span></div></div>
+      <div class="lesson-scoreboard"><div><span>Observed larvae represented</span><strong id="lesson-selected-count">50 / 100</strong></div><div><span>Coverage at this budget</span><strong id="lesson-coverage">50%</strong></div><div><span>Random expectation</span><strong id="lesson-random">25%</strong></div></div>
+      <svg id="lesson-chart" class="lesson-chart" viewBox="0 0 600 340" role="img" aria-labelledby="lesson-chart-title lesson-chart-desc"><title id="lesson-chart-title">Coverage for the editable eight-habitat visit order</title><desc id="lesson-chart-desc">Compare the current order with ideal retrospective ordering and random selection.</desc></svg>
+      <div class="lesson-legend"><span><i class="line-swatch model"></i>Your order</span><span><i class="line-swatch ideal"></i>Ideal retrospective</span><span><i class="line-swatch random"></i>Random expectation</span></div>
+      <p id="lesson-explanation" class="lesson-explanation" aria-live="polite"></p>
+      <div class="lesson-area"><div><span>Full-curve lift ratio</span><strong id="lesson-lift">N/A</strong></div><p id="lesson-area-formula"></p></div>
+      <p id="lesson-interpretation" class="fine"></p>
+    </div>
+  </div>
+  <p class="lesson-takeaway"><strong>What should you notice?</strong> Swapping sites that are already inside the selected group can change the full-curve lift ratio without changing coverage at this one budget. At all eight sites, every order reaches 100% coverage, but some orders reached productive sites much earlier.</p>
+  <p class="fine">The ideal line uses known outcomes to show what was possible in this dataset. In real evaluation, generate priority scores without using test outcomes. “Represented larvae” is a coverage description, not a claim that larvae were killed or malaria was reduced.</p>
+  </details>
+</section>
+
+<section id="field-cases" class="chapter" aria-labelledby="field-cases-title">
+  <header class="section-head"><div><p class="eyebrow">EMPIRICAL CONTEXT AND CONTROLLED EXAMPLES</p><h2 id="field-cases-title">4. Field cases and realistic simulations</h2></div></header>
+  <p>Field data help identify which features a teaching example should preserve and which conclusions it cannot support. The examples below sample synthetic counts from the observed count distribution in the Jigjiga study and assign artificial ranking scores. They do not reproduce the study's prediction results.</p>
+
+  <h3>4.1. Observed distributions from Jigjiga</h3>
+  <p>The complete labelled survey cohort contains 743 sites. The 547-site cohort is its nested subset with segmentation-mask availability, not a second independent sample and not a positive-only cohort. Both distributions include sites with zero recorded larvae. Their differences reflect the composition of these particular samples; they do not establish geographical or temporal transferability.</p>
+  <figure style="margin:24px 0">
+    <svg id="field-distribution-chart" viewBox="0 0 960 490" role="img" aria-labelledby="field-distribution-title field-distribution-desc" style="display:block;width:100%;height:auto"><title id="field-distribution-title">Recorded larval count distributions in the two nested Jigjiga cohorts</title><desc id="field-distribution-desc">A paired frequency chart comparing the share of sites in seven recorded-count categories. Exact counts are available in the accompanying table.</desc></svg>
+    <figcaption class="fine">Empirical distributions, not simulated results. Each bar gives the percentage of its own source cohort in a recorded-count category; labels also show the number of sites. The 547 sites are included within the 743 sites, so these bars are not independent-group estimates.</figcaption>
+  </figure>
+  <div id="field-summary-table" class="table-wrap" aria-live="off"></div>
+  <p class="fine">The top-10% and top-30% shares use descending observed-count order and interpolate at the exact site fraction. They describe retrospective outcome concentration, not predictive performance. Counts are reported as recorded; this handbook does not establish standardized sampling effort, adult emergence, or treatment response.</p>
+  <details><summary>Source frequency counts and provenance</summary><div id="field-frequency-table" class="table-wrap"></div><p class="fine">Only count-frequency pairs and aggregate summaries are embedded here. Source-file hashes, cohort definitions and verification notes are available in the. No original site identifiers, coordinates, image features or prediction scores are included in these examples.</p></details>
+
+  <h3>4.2. From a source distribution to a controlled simulation</h3>
+  <p>For each new row, the generator samples a recorded count with replacement from the chosen cohort's frequency distribution. This preserves the empirical marginal distribution in expectation, including its zero prevalence and upper tail, but a particular sample will not necessarily have the original total, median or number of zero-count sites. Sampling with replacement does not reproduce habitat identity, dependence between nearby sites, repeated visits, sampling effort or persistence through time.</p>
+  <p>The ranking scores are deliberately artificial. The informative scenario combines the logarithm of one plus the simulated count with specified random noise; other scenarios assign independent random scores, reverse the outcome ordering, or use perfect retrospective information. These mechanisms teach how ranking quality affects the curve. They are not fitted predictive models, recovered out-of-fold scores or simulations calibrated to the study's reported lift ratio.</p>
+  <p>Within one source distribution, keep the sample size and seed fixed while changing the score-quality scenario. Separate random-number streams preserve the same synthetic outcomes and identifiers, allowing a paired comparison of ordering alone. Changing the source distribution, sample size or seed changes the underlying example.</p>
+  <div class="field-case-actions" style="display:flex;flex-wrap:wrap;gap:10px;margin:18px 0"><button type="button" class="small-button" data-case="jigjiga_743" data-size="743">Simulate the 743-site distribution</button><button type="button" class="small-button" data-case="jigjiga_547" data-size="547">Simulate the 547-site subset distribution</button></div>
+  <p class="fine">The buttons select source distributions and example sizes, not actual study rows. All generated identifiers begin with SYN. A useful synthetic ranking does not demonstrate biological validity, transferable prediction, cost savings or malaria reduction.</p>
+
+  <h3>4.3. Field evidence and the choice of outcome</h3>
+  <p>Yared and colleagues reported that 23% of the positive habitats analysed in January accounted for 77% of the larvae in their Ethiopian study. This is a retrospective concentration result, with positive habitats as the denominator; it should not be interpreted as coverage of all screened premises or as evidence that a prediction model identified those habitats in advance. Such concentration motivates targeted prioritisation, while the changing contribution of habitats across months cautions against treating a productive site as permanently productive. <a href="#ref-yared">[9]</a></p>
+  <p>The Kenyan study by Orondo and colleagues distinguishes larval density from adult emergence when examining habitat productivity. That distinction is important for coverage analysis: recorded larval counts and emerging adult mosquitoes are different endpoints. A ranking that represents a large share of one measured outcome does not, by itself, establish the same coverage for another endpoint or demonstrate a reduction in malaria transmission. <a href="#ref-orondo">[10]</a></p>
+
+  <section id="laboratory" class="laboratory">
+<header class="section-head"><div><p class="eyebrow">INTERACTIVE ANALYSIS</p><h3>4.4 Calculate and compare coverage</h3></div><p>Compare scores on the same observations.<br><span class="privacy-dot"></span> Your data stay in this browser.</p></header>
+<div class="lab-grid">
+<aside class="input-panel" aria-label="Data and analysis controls">
+<div class="control-title"><span class="step">1</span><h3>Choose your data</h3></div>
+<div class="source-switch" role="group" aria-label="Choose input controls"><button type="button" id="mode-examples" aria-pressed="true">Examples</button><button type="button" id="mode-csv" aria-pressed="false">My CSV</button></div>
+<div id="example-inputs">
+<label for="case">Synthetic dataset</label><select id="case"></select>
+<div id="empirical-controls"><label for="ranking-quality">Artificial ranking scenario</label><select id="ranking-quality"><option value="informative">Informative, with noise</option><option value="random">Random, unrelated to counts</option><option value="reversed">Reversed retrospective order</option><option value="perfect">Ideal retrospective order</option></select><p class="fine">Hold the size and seed fixed to compare scenarios on identical synthetic outcomes. Informative scores use those outcomes for demonstration; they are not held-out predictions.</p></div>
+<details class="compact-details"><summary>Size and reproducible seed</summary>
+<div class="field-pair"><div><label for="sample-size">Sites</label><input id="sample-size" type="number" min="4" max="2000" step="1" value="743"></div><div><label for="seed">Random seed</label><input id="seed" type="number" min="0" max="4294967295" step="1" value="2026"></div></div>
+</details>
+<button id="generate" class="button secondary full">Generate example</button><p id="case-description" class="fine"></p>
+</div>
+<div id="input-details" hidden><p class="fine">One clearly defined evaluation unit per row. UTF-8 CSV, up to 20,000 rows and 5 MB. Missing required values are rejected, not silently dropped.</p><label class="file-label" for="file-input">Choose a CSV file<input type="file" id="file-input" accept=".csv,text/csv"></label><label for="csv-input">Or paste rows with column headers</label><textarea id="csv-input" rows="6" spellcheck="false" placeholder="site_id,observed,score&#10;H01,40,4&#10;H02,30,2&#10;H03,20,3&#10;H04,10,1"></textarea><button id="load-csv" class="button secondary full">Load pasted CSV</button><button id="template-download" class="small-button">Download input template</button><p class="fine">Repeated visits or nearby sites may be correlated. Define your row unit and use appropriate grouped validation.</p></div>
+<div class="control-title"><span class="step">2</span><h3>Map the columns</h3></div>
+<label for="id-column">Site / evaluation-unit ID</label><select id="id-column"></select>
+<label for="observed-column">Observed nonnegative outcome</label><select id="observed-column"></select>
+<label for="score-column">Ranking score 1</label><select id="score-column"></select>
+<label for="direction">Higher priority means</label><select id="direction"><option value="high">Larger score</option><option value="low">Smaller score</option></select>
+<details><summary>Compare a second ranking</summary><label for="compare-column">Score 2 (same rows and outcomes)</label><select id="compare-column"></select><label for="compare-direction">Ranking 2 priority direction</label><select id="compare-direction"><option value="high">Larger score</option><option value="low">Smaller score</option></select><p class="fine">Comparison requires complete scores on the same evaluation sample. It is not a significance test.</p></details>
+<div class="control-title"><span class="step">3</span><h3>Describe the evaluation</h3></div>
+<details class="metadata-controls" id="evaluation-metadata"><summary>Cohort, outcome and prediction source</summary>
+<label for="cohort">Dataset or cohort name</label><input id="cohort" maxlength="120" value="Simulated habitats">
+<label for="endpoint">Outcome and unit</label><input id="endpoint" maxlength="120" value="Synthetic recorded larval count (Jigjiga distribution)" placeholder="e.g. pupae counted per standardized visit">
+<label for="validation">Prediction source</label><select id="validation"><option value="simulated">Simulated teaching data</option><option value="external">External / prospective held-out sample</option><option value="heldout">Single held-out test set</option><option value="oof">Out-of-fold predictions</option><option value="insample">In-sample predictions (optimistic)</option><option value="unknown">Not documented</option></select>
+</details>
+<button id="analyze" class="button primary full">Compute lift ratio</button>
+<p class="fine">Changing a column or direction recomputes results. The calculator cannot verify that predictions were genuinely held out.</p>
+</aside>
+<div class="results-panel">
+<div id="message" role="status" aria-live="polite" class="notice"></div>
+<div class="result-heading"><div><p class="eyebrow" id="dataset-source">SIMULATED DATA</p><h3 id="dataset-title">An illustrative ranking</h3></div><span id="sample-badge" class="badge"></span></div>
+<div class="metrics" aria-live="polite"><div><span>Full-curve lift ratio</span><strong id="metric-lift">N/A</strong><small id="lift-interpretation"></small></div><div><span>Outcome coverage at budget</span><strong id="metric-coverage">N/A</strong><small id="coverage-detail"></small></div><div><span>Coverage / random at budget</span><strong id="metric-multiplier">N/A</strong><small>Budget-specific multiplier, not full lift</small></div></div>
+<div class="budget-control"><label for="budget">Site budget <output id="budget-output">30%</output></label><input type="range" id="budget" min="1" max="100" step="1" value="30"><div class="chart-options"><label><input id="shade" type="checkbox" checked> Show A and B areas</label><span>Changing the budget changes coverage, not full-curve lift</span></div></div>
+<div class="chart-frame"><svg id="coverage-chart" viewBox="0 0 820 460" role="img" aria-labelledby="chart-title chart-desc"><title id="chart-title">Cumulative outcome coverage</title><desc id="chart-desc">The selected ranking, random-selection diagonal and ideal retrospective ordering.</desc></svg></div>
+<div class="chart-key"><span><i class="line-swatch model"></i>Ranking 1</span><span id="compare-legend" hidden><i class="line-swatch compare"></i>Ranking 2</span><span><i class="line-swatch ideal"></i>Ideal retrospective order</span><span><i class="line-swatch random"></i>Random expectation</span></div>
+<p id="chart-readout" class="chart-readout" aria-live="off"></p>
+<div class="area-calculation" id="area-calculation"></div>
+<p id="budget-convention" class="fine"></p>
+<div id="comparison-output" class="comparison" hidden></div>
+<div class="insight-grid">
+<section class="target-panel" aria-labelledby="target-heading"><p class="eyebrow">READ THE CURVE IN REVERSE</p><h4 id="target-heading">How many sites reach my target?</h4><label for="target-coverage">Share of observed outcome <output id="target-output">80%</output></label><input id="target-coverage" type="range" min="10" max="100" step="5" value="80"><div id="target-result" aria-live="polite"></div><p class="fine">Retrospective coverage on these evaluation rows, not a forecast, cost estimate or treatment effect. With score ties, coverage is an expectation.</p></section>
+<section class="diagnostic-panel" aria-labelledby="diagnostic-heading"><p class="eyebrow">READ THE DATA BEHIND THE SCORE</p><h4 id="diagnostic-heading">How much is there to prioritize?</h4><div id="data-diagnostics"></div><p class="fine">The same lift can mean different coverage in different populations. Always retain the outcome distribution and curve.</p></section>
+</div>
+<details><summary>Compare practical site budgets</summary><p class="fine">Coverage and multiplier at prespecified example budgets. These are interpolated site shares, not resource costs; choose study budgets before evaluating models.</p><div id="budget-table" class="table-wrap"></div><button id="download-budgets" class="small-button">Download budget table</button></details>
+<details><summary>Inspect the calculation and ranked rows</summary><div id="calculation-detail"></div><p class="fine">Tied rows share a rank interval. Their display order is not a treatment recommendation; expected outcome coverage is averaged within each tied block. First 100 rows shown here; the export includes every row.</p><div id="rank-table" class="table-wrap"></div></details>
+<div class="export-bar"><span>Export results</span><button class="small-button" id="download-data">Input CSV</button><button class="small-button" id="download-curves">Curve CSV</button><button class="small-button" id="download-ranks">Ranked CSV</button><button class="small-button" id="download-json">Report JSON</button><button class="small-button" id="download-svg">Figure SVG</button><button class="small-button" id="download-png">Figure PNG</button></div>
+<details id="report-details"><summary>Generate a reporting paragraph</summary><p class="fine">This text records the selected settings, not an independent audit of the evaluation design. Add the sampling protocol, study period, model-selection procedure and uncertainty analysis before publication.</p><textarea id="report-text" rows="7" readonly aria-label="Generated reporting paragraph"></textarea><button id="copy-report" class="small-button">Copy paragraph</button><button id="download-report" class="small-button">Download text</button></details>
+</div>
+</div>
+</section>
+
+</section>
+
+<section id="resources" class="chapter" aria-labelledby="resources-title">
+  <header class="section-head"><h2 id="resources-title">5. Reporting and reusable resources</h2></header>
+  <div id="reporting">
+    <h3>5.1 Minimum reporting requirements</h3>
+    <p>On first mention, use <strong>full-range normalized coverage lift ratio</strong>, give L = A/(A + B), and state the metric convention version. Report the full curve and coverage at prespecified budgets alongside lift.</p>
+    <ol class="report-checklist">
+      <li><strong>Population and unit:</strong> location, season, dates, inclusion criteria, row unit and number of distinct sites.</li>
+      <li><strong>Outcome:</strong> species, life stage, sampling protocol, effort, units, total, median and zero fraction.</li>
+      <li><strong>Score and validation:</strong> algorithm or expert rule, version, direction, available inputs, data splits and model-selection procedure.</li>
+      <li><strong>Metric convention:</strong> full 0–1 range, trapezoids, exact-score ties, missing-value policy and undefined-result handling.</li>
+      <li><strong>Results and comparisons:</strong> lift, model and ideal areas, complete curves and coverage at stated fractional or whole-site budgets; use the same rows and outcomes for compared methods.</li>
+      <li><strong>Uncertainty and scope:</strong> resampling unit, interval method, dependence assumptions and operational outcomes not measured.</li>
+      <li><strong>Reproducibility:</strong> data-access conditions, code/metric version, simulation seeds where applicable and sufficient exported values to reconstruct the curve.</li>
+    </ol>
+    <details><summary>Suggested reporting sentence</summary><p>“Among [n] [evaluation units] with [outcome definition], [priority method] achieved full-range normalized coverage lift [L] under [validation design]. The first [k of n units or exact fraction q] represented [C]% of the observed outcome, compared with [q]% under random-selection expectation. We used full-range trapezoidal integration and expected ordering within exact score ties. [Uncertainty method and interval, if justified].”</p><p>The generated report records chosen settings. It does not verify sampling comparability, declared metadata or the independence of uploaded predictions.</p></details>
+  </div>
+  <div id="limitations">
+    <h3>5.2 Validation and operational boundaries</h3>
+    <details><summary>Held-out evaluation, model selection and dependence</summary><div class="prose"><p>Held-out outcomes must be excluded from model development and selection. In out-of-fold (OOF) prediction, each row is predicted by a model fitted without its test fold. Imputation, scaling, supervised feature selection and tuning must respect the evaluation design. Repeated selection using the reported test results can still cause optimism; use nested selection or an untouched final evaluation set where appropriate. <a href="#ref-cv">[7]</a></p><p>Group repeated visits by site and use spatial or temporal holdouts when they match intended deployment. Such tests answer different generalization questions; they are not interchangeable. <a href="#ref-blocking">[8]</a> This app pools supplied rows into one curve. Pooled OOF ranking requires scores comparable across folds, and its lift is not the mean of fold-specific lifts.</p></div></details>
+    <details><summary>Uncertainty and comparison between rankings</summary><div class="prose"><p>The tools provide descriptive point estimates, not confidence intervals. For fixed test-set scores, resampling must respect the sampling unit and spatial, temporal or repeated-measure dependence. Compare rankings through paired resampling of their shared outcomes and scores. Recompute both areas and normalization in every replicate and report undefined replicates. Fixed-score resampling excludes model-training uncertainty. Repeated cross-validation partitions reuse observations; their standard deviation is not an independent-sample confidence interval.</p></div></details>
+    <details><summary>From site selection to programme outcomes</summary><div class="prose"><p>The horizontal axis weights each unit equally. It is not a cost axis: travel, access, service duration and team constraints require separate assessment. High lift or earlier scheduled coverage does not demonstrate net savings, reduced adult emergence or reduced disease. Missing habitats, measurement error and changing conditions limit the evaluated population. Low priority does not justify permanently excluding a habitat from surveillance. Verify locally and evaluate treatment and transferability prospectively. <a href="#ref-who">[1]</a></p></div></details>
+  </div>
+  <div id="downloads">
+    <h3>5.3 Data, code and offline use</h3>
+    <p><a class="button secondary" href="lift_ratio_handbook.html" download>Download offline handbook</a></p>
+    <p>The standalone HTML contains the calculator and numerical engine. Companion CSV files and the source archive remain separate downloads. Uploaded rows are processed in the browser, held in memory and not retained by this app after reload. The calculator accepts finite nonnegative outcomes and finite scores, rejects missing required values, and does not silently drop rows. It does not implement sampling weights or unequal-cost evaluation.</p>
+    <details><summary>Synthetic dataset catalogue and provenance</summary>
+      <p>The two cohort-informed examples use <strong>synthetic counts sampled with replacement from observed marginal count distributions</strong>. Only the univariate outcome distribution is empirically informed; priority scores are artificial. These examples do not reconstruct fitted models, out-of-fold predictions or field-validation results. The 547-unit source cohort is a nested mask-available subset of the 743-unit cohort, not independent evidence. Simulated draws need not reproduce source totals or zero fractions exactly.</p>
+      <div class="table-wrap"><table><thead><tr><th scope="col">Example group</th><th scope="col">Download CSV</th></tr></thead><tbody>
+        <tr><th scope="row">Cohort-informed marginal distributions</th><td><a href="datasets/jigjiga_743.csv" download>Synthetic sample from the 743-unit distribution</a> · <a href="datasets/jigjiga_547.csv" download>Synthetic sample from the 547-unit distribution</a></td></tr>
+        <tr><th scope="row">Arithmetic and limits</th><td><a href="datasets/worked.csv" download>Four-site worked example</a> · <a href="datasets/perfect.csv" download>Ideal ordering</a> · <a href="datasets/reversed.csv" download>Reverse ordering</a></td></tr>
+        <tr><th scope="row">Informative and random scores</th><td><a href="datasets/good.csv" download>Informative score</a> · <a href="datasets/random.csv" download>Random score</a></td></tr>
+        <tr><th scope="row">Ties and undefined lift</th><td><a href="datasets/tied.csv" download>All tied</a> · <a href="datasets/partial_ties.csv" download>Partial ties</a> · <a href="datasets/uniform.csv" download>Uniform outcomes</a> · <a href="datasets/allzero.csv" download>All-zero outcomes</a></td></tr>
+        <tr><th scope="row">Budget-dependent comparison</th><td><a href="datasets/crossing.csv" download>Crossing curves</a></td></tr>
+      </tbody></table></div>
+      <p><a href="datasets/case_manifest.json" download>Dataset manifest and expected results</a> ·</p>
+      <p>These files are not original site records. They contain no original site IDs, coordinates, images, dates or prediction scores. Consult provenance and the package licence before redistribution.</p>
+    </details>
+  </div>
+  <div id="reuse" aria-labelledby="reuse-title">
+  <h3 id="reuse-title">5.4 Reuse the metric in Python</h3>
+  <div class="prose"><p>The companion <code>entomology-lift</code> package computes coverage lift from observed outcomes and priority scores. Use it in a notebook, analysis script or command-line workflow. It requires <strong>Python 3.10 or later</strong>, has no third-party runtime dependencies, and works offline. It does not train a model or upload your data.</p><p>This is a downloadable local package, <strong>not a published PyPI package</strong>. Download the wheel, then run the installation command from its folder.</p></div>
+  <p><a class="button secondary" href="python/entomology_lift-0.1.0-py3-none-any.whl" download>Download Python wheel · v0.1.0</a></p>
+  <div class="two-col">
+    <div><h4>Install the downloaded file</h4><pre><code>python -m pip install --no-index --no-deps ./entomology_lift-0.1.0-py3-none-any.whl</code></pre><p class="fine"><code>--no-index</code> prevents package-index access. Install into your chosen environment; no JavaScript or NumPy runtime is needed.</p></div>
+    <div><h4>Start with five lines</h4><pre><code>from coverage_lift import evaluate
+observed = [40, 30, 20, 10]
+scores = [4, 2, 3, 1]
+result = evaluate(observed, scores, budget=0.5)
+print(result.lift)  # Expected: 0.8</code></pre><p class="fine">The same four-site example used in this handbook: 60% observed-outcome coverage at a 50% site budget.</p></div>
+  </div>
+  <details><summary>Read a CSV and export the results from the command line</summary><p>For a CSV with <code>site_id</code>, <code>observed</code> and <code>score</code> columns:</p><pre><code>coverage-lift input.csv --outcome observed --score score --id site_id --direction high --budget 0.3 --output report.json --curve-output curve.csv</code></pre><p>The JSON records the result; the curve CSV contains cumulative points. Omit <code>--output</code> to print JSON to standard output. Omit <code>--id</code> to generate row identifiers. If your environment does not expose the <code>coverage-lift</code> command, replace it with <code>python -m coverage_lift</code>.</p></details>
+  <details><summary>Python API contract and return values</summary>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Function</th><th scope="col">Inputs and result</th></tr></thead><tbody>
+      <tr><th scope="row"><code>evaluate(observed, scores, *, ids=None, direction="high", budget=0.3)</code></th><td>Equal-length observed-outcome and score sequences, with at least two rows. Optional IDs identify rows. Set <code>direction="low"</code> when smaller scores mean higher priority. Returns a <code>LiftResult</code> dataclass.</td></tr>
+      <tr><th scope="row"><code>coverage_at(result, q, key="model")</code></th><td>Interpolated coverage at site fraction <code>q</code>, from 0 to 1. The curve key can be <code>"model"</code>, <code>"ideal"</code> or <code>"random"</code>. Returns a number or <code>None</code> when coverage is undefined.</td></tr>
+      <tr><th scope="row"><code>target_coverage(result, target)</code></th><td>For a target outcome share from 0 to 1, returns a dictionary with the interpolated site fraction, site equivalents and smallest whole-site budget reaching the target on the evaluated curve. Includes ideal and random reference fractions and a status.</td></tr>
+    </tbody></table></div>
+    <p>Access the headline value as <code>result.lift</code>, absolute model area as <code>result.auc_model</code>, cumulative-point dictionaries as <code>result.curve</code>, and budget results as <code>result.budget</code>. Use <code>result.to_dict()</code> for a dictionary representation.</p>
+    <pre><code>from coverage_lift import coverage_at, target_coverage
+print(coverage_at(result, 0.5))       # Expected: 0.6
+print(target_coverage(result, 0.8))  # Fractional and whole-site requirements
+report = result.to_dict()</code></pre>
+    <p>The target dictionary includes <code>fraction</code>, <code>site_equivalents</code>, <code>whole_sites</code>, <code>whole_fraction</code>, <code>whole_coverage</code>, <code>ideal_fraction</code>, <code>random_fraction</code>, <code>target</code> and <code>status</code>. Fractional sites describe interpolation, not a literal visit schedule.</p>
+  </details>
+  <details><summary>Same metric rules, including ties and undefined results</summary><div class="prose"><p>Outcomes must be finite and nonnegative; scores must be finite, but may be negative. Invalid inputs raise <code>ValueError</code>. Required rows are not silently dropped. Exact score ties use expected ordering within each tied block, never outcome-informed tie breaking.</p><p>The full-range definition remains <strong>L = A / (A + B)</strong>, using the complete cumulative curve. Uniform positive outcomes and all-zero outcomes have undefined normalized lift: <code>result.lift</code> is <code>None</code>, serialized as JSON <code>null</code>. All-zero outcomes also have undefined coverage. Uniform positive outcomes have coverage equal to the selected-site fraction.</p><p>Coverage and target calculations inherit the tie convention. A whole-site target inside a tied block is based on expected coverage, not a guarantee for a particular realized selection. Like the browser calculator, the package provides descriptive point estimates, not confidence intervals, leakage detection or evidence of treatment effectiveness. The validation and reporting requirements above still apply.</p></div></details>
+</div>
+
+</section>
+
+<section id="references" class="chapter" aria-labelledby="references-title">
+  <header class="section-head"><h2 id="references-title">6. References</h2></header>
+  <ol class="reference-list">
+    <li id="ref-who">World Health Organization. <a href="https://www.who.int/publications/i/item/9789240123212" target="_blank" rel="noopener noreferrer"><cite>Operational manual on larval source management: control of Anopheles and Aedes mosquito vectors</cite></a>. Geneva: World Health Organization; 2026. ISBN 978-92-4-012321-2. Operational context for surveillance, local adaptation and evaluation; not an endorsement of this metric convention.</li>
+    <li id="ref-gini">Wüthrich MV. <a href="https://arxiv.org/abs/2207.14372" target="_blank" rel="noopener noreferrer"><cite>Model Selection with Gini Indices under Auto-Calibration</cite></a>. arXiv:2207.14372. Mathematical context for normalized Gini indices, cumulative accuracy profiles and the distinction between ranking and calibration.</li>
+    <li id="ref-cap">Engelmann B, Hayden E, Tasche D. <a href="https://www.bundesbank.de/resource/blob/704150/b9fa10a16dfff3c98842581253f6d141/mL/2003-10-01-dkp-01-data.pdf" target="_blank" rel="noopener noreferrer"><cite>Measuring the Discriminative Power of Rating Systems</cite></a>. Deutsche Bundesbank Discussion Paper, Series 2: Banking and Financial Supervision, No. 01/2003; 2003. Cumulative accuracy-profile area ratios and their binary-outcome relationship to ROC AUC.</li>
+    <li id="ref-ndcg">Järvelin K, Kekäläinen J. <a href="https://doi.org/10.1145/582415.582418" target="_blank" rel="noopener noreferrer">Cumulated gain-based evaluation of IR techniques</a>. <cite>ACM Transactions on Information Systems</cite>. 2002;20(4):422–446. doi:10.1145/582415.582418. Original graded-gain and discounted cumulative-gain framework. <a href="https://faculty.cc.gatech.edu/~zha/CS8803WST/dcg.pdf" target="_blank" rel="noopener noreferrer">Institutional copy</a>.</li>
+    <li id="ref-metrics">scikit-learn developers. <a href="https://scikit-learn.org/stable/modules/model_evaluation.html" target="_blank" rel="noopener noreferrer"><cite>Metrics and scoring: quantifying the quality of predictions</cite></a>. Official user guide. Accessed 28 October 2026. Definitions of regression-error, goodness-of-fit, ROC and precision-recall measures.</li>
+    <li id="ref-rank">SciPy developers. <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.spearmanr.html" target="_blank" rel="noopener noreferrer"><cite>scipy.stats.spearmanr</cite></a> and <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.kendalltau.html" target="_blank" rel="noopener noreferrer"><cite>scipy.stats.kendalltau</cite></a>. Official API documentation. Accessed 28 October 2026. Definitions of ordinary Spearman and Kendall rank-association measures.</li>
+    <li id="ref-cv">Cawley GC, Talbot NLC. <a href="https://www.jmlr.org/papers/v11/cawley10a.html" target="_blank" rel="noopener noreferrer">On Over-fitting in Model Selection and Subsequent Selection Bias in Performance Evaluation</a>. <cite>Journal of Machine Learning Research</cite>. 2010;11:2079–2107. Evaluation must account for model selection as well as model fitting.</li>
+    <li id="ref-blocking">Roberts DR, Bahn V, Ciuti S, et al. <a href="https://doi.org/10.1111/ecog.02881" target="_blank" rel="noopener noreferrer">Cross-validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure</a>. <cite>Ecography</cite>. 2017;40:913–929. doi:10.1111/ecog.02881. Validation designs for dependent observations and different generalization objectives.</li>
+    <li id="ref-yared">Yared S, Dengela D, Mumba P, et al. <a href="https://doi.org/10.1186/s12936-025-05589-y" target="_blank" rel="noopener noreferrer">Anopheles stephensi larval habitat superproductivity and its relevance for larval source management in Ethiopia</a>. <cite>Malaria Journal</cite>. 2025;24:357. doi:10.1186/s12936-025-05589-y. Field evidence on seasonal concentration of sampled larvae; not a validation of the handbook's predictive rankings.</li>
+    <li id="ref-orondo">Orondo PW, Wang X, Lee MC, et al. <a href="https://doi.org/10.1093/jme/tjac168" target="_blank" rel="noopener noreferrer">Habitat Diversity, Stability, and Productivity of Malaria Vectors in Irrigated and Nonirrigated Ecosystems in Western Kenya</a>. <cite>Journal of Medical Entomology</cite>. 2023;60(1):202–212. doi:10.1093/jme/tjac168. Online publication 5 November 2022. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9835762/" target="_blank" rel="noopener noreferrer">Open full text</a>. Field evidence distinguishing sampled larval density, habitat characteristics and adult production.</li>
+  </ol>
+  <p class="fine">Handbook convention <code>coverage-lift-v1.0</code>. The mathematical references establish provenance; the operational and field references establish context. None establishes this convention as an adopted entomological standard. Broader adoption requires community review and validation across relevant tasks.</p>
+</section>
+
+</main>
+<footer><span><b>Lift ratio for larval source management</b><br>A practitioner reference and reproducible calculator</span><span>Edition 03 · 28 October 2026<br>Observed distribution summaries; synthetic example records</span><button class="small-button" id="print-handbook">Print handbook</button></footer>
+<noscript><div class="notice error">JavaScript is required for the calculator and distribution chart. The handbook text remains readable.</div></noscript>
+<script>/* Coverage lift ratio, handbook reference implementation v1.0.
+ * No dependencies, network calls, storage or model fitting.
+ * Exact score ties use expected within-tie coverage, never outcome tie-breaking.
+ */
+(function (root, factory) {
+  const api = factory();
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  root.LiftCore = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+  'use strict';
+  const VERSION = '1.0.0';
+  const MAX_ROWS = 100000;
+  const MAX_CSV_CHARACTERS = 20000000;
+  const numericPattern = /^[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?$/;
+
+  function sum(values) {
+    let result = 0, correction = 0;
+    for (const value of values) {
+      const next = result + value;
+      correction += Math.abs(result) >= Math.abs(value)
+        ? (result - next) + value : (value - next) + result;
+      result = next;
+    }
+    return result + correction;
+  }
+
+  function numeric(value, label, rowNumber) {
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      if (!trimmed || !numericPattern.test(trimmed)) {
+        throw new Error(`Row ${rowNumber}: ${label} must contain a finite number, not a blank or formatted text.`);
+      }
+      value = Number(trimmed);
+    }
+    if (typeof value !== 'number' || !Number.isFinite(value)) {
+      throw new Error(`Row ${rowNumber}: ${label} must contain a finite number.`);
+    }
+    return value;
+  }
+
+  function atFraction(curve, fraction, key = 'model') {
+    if (!Number.isFinite(fraction) || fraction < 0 || fraction > 1) {
+      throw new Error('Selection fraction must be between 0 and 1 inclusive.');
+    }
+    if (!Array.isArray(curve) || curve.length < 2) return null;
+    if (!['model', 'ideal', 'random'].includes(key)) throw new Error('Unknown coverage curve.');
+    const n = curve.length - 1;
+    const position = fraction * n;
+    const left = Math.min(Math.floor(position), n);
+    if (left === n) return curve[n][key];
+    const a = curve[left][key], b = curve[left + 1][key];
+    if (a === null || b === null) return null;
+    return a + (b - a) * (position - left);
+  }
+
+  function rankedCoverage(values, scores, direction) {
+    const n = values.length;
+    const order = Array.from({ length: n }, (_, i) => i);
+    // Compare without subtracting potentially extreme finite score values.
+    order.sort((a, b) => {
+      if (scores[a] === scores[b]) return a - b;
+      if (direction === 'low') return scores[a] < scores[b] ? -1 : 1;
+      return scores[a] > scores[b] ? -1 : 1;
+    });
+    const total = sum(values), coverage = [0], groups = [];
+    let cumulative = 0, correction = 0;
+    for (let start = 0; start < n;) {
+      let end = start + 1;
+      while (end < n && scores[order[end]] === scores[order[start]]) end++;
+      const block = sum(order.slice(start, end).map(i => values[i]));
+      const previous = cumulative + correction;
+      const next = cumulative + block;
+      correction += Math.abs(cumulative) >= Math.abs(block)
+        ? (cumulative - next) + block : (block - next) + cumulative;
+      cumulative = next;
+      const final = cumulative + correction;
+      for (let j = start + 1; j <= end; j++) {
+        coverage[j] = total > 0 ? (previous + block * (j - start) / (end - start)) / total : null;
+      }
+      groups.push({ start, end, count: end - start, score: scores[order[start]], totalScaled: block,
+                    previousCoverage: total > 0 ? previous / total : null,
+                    finalCoverage: total > 0 ? final / total : null });
+      start = end;
+    }
+    if (total > 0) coverage[n] = 1;
+    else coverage[0] = null;
+    return { order, coverage, groups };
+  }
+
+  function evaluate(rows, options = {}) {
+    if (!Array.isArray(rows) || rows.length < 2) throw new Error('At least two data rows are required.');
+    if (rows.length > MAX_ROWS) throw new Error(`Maximum supported dataset size is ${MAX_ROWS.toLocaleString('en-US')} rows.`);
+    const observed = options.observed || 'observed';
+    const score = options.score || 'score';
+    const id = options.id === null ? null : (options.id || 'site_id');
+    const direction = options.direction === undefined ? 'high' : options.direction;
+    if (!['high', 'low'].includes(direction)) throw new Error('Score direction must be high or low.');
+    const fraction = options.fraction === undefined ? .3 : options.fraction;
+    if (!Number.isFinite(fraction) || fraction < 0 || fraction > 1) throw new Error('Selection fraction must be between 0 and 1 inclusive.');
+    if (observed === score) throw new Error('Observed outcome and prediction score must use different columns. Use the ideal reference for an outcome-based ordering.');
+    const n = rows.length, ids = new Set(), warnings = [];
+    const yy = [], ss = [], labels = [];
+    let maximum = 0, minimum = Infinity;
+    const idIsMapped = id !== null && rows.some(r => r && Object.prototype.hasOwnProperty.call(r, id));
+    for (let i = 0; i < n; i++) {
+      if (!rows[i] || typeof rows[i] !== 'object' || Array.isArray(rows[i])) throw new Error(`Row ${i + 1}: expected an object with outcome and score fields.`);
+      const y = numeric(rows[i][observed], observed, i + 1);
+      const p = numeric(rows[i][score], score, i + 1);
+      if (y < 0) throw new Error(`Row ${i + 1}: observed outcomes must be non-negative. Zero is a valid observation.`);
+      let label = String(i + 1);
+      if (idIsMapped) {
+        if (rows[i][id] === null || rows[i][id] === undefined || String(rows[i][id]).trim() === '') {
+          throw new Error(`Row ${i + 1}: the mapped site ID is blank.`);
+        }
+        label = String(rows[i][id]).trim();
+        if (ids.has(label)) throw new Error(`Row ${i + 1}: duplicate site ID "${label}". Define one unique evaluation unit per row.`);
+        ids.add(label);
+      }
+      yy.push(y); ss.push(p); labels.push(label);
+      maximum = Math.max(maximum, y); minimum = Math.min(minimum, y);
+    }
+    if (!idIsMapped) warnings.push('No site-ID column is mapped. Row numbers identify records; duplicate evaluation units cannot be checked.');
+    const scaled = maximum > 0 ? yy.map(y => y / maximum) : yy.map(() => 0);
+    const totalScaled = sum(scaled);
+    const totalCandidate = maximum * totalScaled;
+    const total = Number.isFinite(totalCandidate) ? totalCandidate : null;
+    const mean = maximum * (totalScaled / n);
+    if (total === null) warnings.push('The observed total exceeds JavaScript numeric range. It is shown as unavailable; normalized coverage and lift were computed using scaled values.');
+    if (yy.some((y, i) => y > 0 && scaled[i] === 0)) warnings.push('Extreme outcome magnitudes cause negligible positive values to underflow after scaling. Inspect the original measurement units.');
+    const model = rankedCoverage(scaled, ss, direction);
+    const ideal = rankedCoverage(scaled, scaled, 'high');
+    const status = maximum === 0 ? 'zero_total' : maximum === minimum ? 'uniform_outcomes' : 'ok';
+    const curve = Array.from({ length: n + 1 }, (_, i) => ({ x: i / n,
+      model: model.coverage[i], ideal: ideal.coverage[i], random: status === 'zero_total' ? null : i / n }));
+    // For stable area advantages, subtract a constant from all scaled outcomes.
+    // This does not alter the rank-weighted numerator because the rank weights sum to zero.
+    // It avoids cancellation for almost-equal outcomes. The results are algebraically
+    // identical to trapezoidal AUC minus 0.5 on each full-resolution coverage curve.
+    const baseline = maximum > 0 ? minimum / maximum : 0;
+    function areaAdvantage(ranking) {
+      const terms = [];
+      for (const group of ranking.groups) {
+        const midRank = (group.start + 1 + group.end) / 2;
+        const rankWeight = n + 1 - 2 * midRank;
+        const blockDelta = sum(ranking.order.slice(group.start, group.end).map(i => scaled[i] - baseline));
+        terms.push(rankWeight * blockDelta);
+      }
+      return totalScaled > 0 ? sum(terms) / (2 * n * totalScaled) : null;
+    }
+    const modelAdvantage = areaAdvantage(model), denominator = areaAdvantage(ideal);
+    const aucModel = modelAdvantage === null ? null : .5 + modelAdvantage;
+    const aucIdeal = denominator === null ? null : .5 + denominator;
+    let lift = status === 'ok' && denominator > 0 ? modelAdvantage / denominator : null;
+    if (lift !== null && Math.abs(lift) < 1e-14) lift = 0;
+    if (lift !== null && Math.abs(lift - 1) < 1e-13) lift = 1;
+    if (lift !== null && Math.abs(lift + 1) < 1e-13) lift = -1;
+    if (status === 'uniform_outcomes') warnings.push('All observed outcomes are equal. The ideal and random areas coincide, so normalized lift is undefined, not zero.');
+    if (status === 'zero_total') warnings.push('All observed outcomes are zero. Outcome coverage and normalized lift are undefined.');
+    if (status === 'ok' && denominator < 1e-10) warnings.push('Outcome contrast is extremely small. Normalized lift can be unstable to measurement error; interpret absolute coverage alongside it.');
+    const k = Math.min(n, Math.floor(fraction * n + 1e-12));
+    const floorFraction = k / n;
+    const coverage = atFraction(curve, fraction);
+    const floorCoverage = atFraction(curve, floorFraction);
+    const tieBlocks = model.groups.filter(g => g.count > 1).map(g => ({
+      rankStart: g.start + 1, rankEnd: g.end, size: g.count, score: g.score,
+      share: totalScaled > 0 ? g.totalScaled / totalScaled : null,
+      cumulativeBefore: g.previousCoverage, cumulativeAfter: g.finalCoverage,
+      selectionProbability: Math.max(0, Math.min(1, (fraction * n - g.start) / g.count))
+    }));
+    if (tieBlocks.length) warnings.push(`${tieBlocks.length} tied-score block(s). Coverage uses the expected result of random ordering within each exact-score tie, not the displayed row order.`);
+    const rankedRows = [];
+    for (const group of model.groups) {
+      for (let position = group.start; position < group.end; position++) {
+        const i = model.order[position];
+        rankedRows.push({ sourceIndex: i, siteId: labels[i], observed: yy[i], score: ss[i],
+          displayedPosition: position + 1, rankStart: group.start + 1, rankEnd: group.end,
+          rankMean: (group.start + 1 + group.end) / 2, tieSize: group.count,
+          share: totalScaled > 0 ? scaled[i] / totalScaled : null,
+          cumulativeExpected: model.coverage[position + 1],
+          selectionProbability: Math.max(0, Math.min(1, (fraction * n - group.start) / group.count)) });
+      }
+    }
+    return { version: VERSION, n, total, mean, aucModel, aucIdeal, denominator, modelAdvantage,
+      lift, status, warnings, curve, direction, observedColumn: observed, scoreColumn: score,
+      idColumn: idIsMapped ? id : null, zeroCount: yy.filter(y => y === 0).length,
+      positiveCount: yy.filter(y => y > 0).length, uniqueScoreCount: model.groups.length,
+      budget: { fraction, siteEquivalents: fraction * n, coverage,
+        idealCoverage: atFraction(curve, fraction, 'ideal'),
+        multiplier: fraction > 0 && coverage !== null ? coverage / fraction : null,
+        k, floorFraction, floorCoverage,
+        floorMultiplier: floorFraction > 0 && floorCoverage !== null ? floorCoverage / floorFraction : null },
+      tieBlocks, ordering: model.order, rankedRows };
+  }
+
+  function parseCSV(text) {
+    if (typeof text !== 'string') throw new Error('CSV input must be text.');
+    if (text.length > MAX_CSV_CHARACTERS) throw new Error('CSV exceeds the 20-million-character browser limit.');
+    text = text.replace(/^\uFEFF/, '');
+    const matrix = []; let fields = [], field = '', state = 'start', rowSyntax = false;
+    let line = 1;
+    function endField() { fields.push(field); field = ''; state = 'start'; }
+    function endRow() {
+      endField();
+      if (rowSyntax || fields.length > 1 || fields[0].trim() !== '') matrix.push(fields);
+      if (matrix.length > MAX_ROWS + 1) throw new Error(`CSV exceeds ${MAX_ROWS} data rows.`);
+      fields = []; rowSyntax = false;
+    }
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if (state === 'quoted') {
+        if (ch === '"') {
+          if (text[i + 1] === '"') { field += '"'; i++; }
+          else state = 'afterQuote';
+        } else { field += ch; if (ch === '\n') line++; }
+        continue;
+      }
+      if (ch === ',') { rowSyntax = true; endField(); continue; }
+      if (ch === '\n' || ch === '\r') {
+        if (ch === '\r' && text[i + 1] === '\n') i++;
+        endRow(); line++; continue;
+      }
+      if (state === 'afterQuote') {
+        if (ch === ' ' || ch === '\t') continue;
+        throw new Error(`CSV line ${line}: unexpected text after a closing quote.`);
+      }
+      if (ch === '"') {
+        if (state !== 'start') throw new Error(`CSV line ${line}: a quote occurs inside an unquoted field.`);
+        state = 'quoted'; rowSyntax = true; continue;
+      }
+      field += ch; state = 'unquoted';
+      if (ch.trim()) rowSyntax = true;
+    }
+    if (state === 'quoted') throw new Error('CSV ends inside a quoted field.');
+    if (fields.length || field.length || rowSyntax || state === 'afterQuote') endRow();
+    if (matrix.length < 2) throw new Error('CSV must have a header and at least one data row.');
+    const headers = matrix.shift().map(s => s.trim());
+    if (headers.some(s => !s)) throw new Error('CSV column headers cannot be blank.');
+    if (new Set(headers).size !== headers.length) throw new Error('CSV column headers must be unique.');
+    const rows = matrix.map((fields, i) => {
+      if (fields.length !== headers.length) throw new Error(`CSV data row ${i + 1}: expected ${headers.length} fields but found ${fields.length}.`);
+      const row = Object.create(null);
+      headers.forEach((h, j) => { row[h] = fields[j]; });
+      return row;
+    });
+    return { headers, rows };
+  }
+
+  function toCSV(rows, headers) {
+    if (!Array.isArray(rows)) throw new Error('CSV output rows must be an array.');
+    if (!headers) headers = rows.length ? Object.keys(rows[0]) : [];
+    if (!Array.isArray(headers) || new Set(headers).size !== headers.length) throw new Error('CSV output headers must be unique.');
+    function escape(value) {
+      if (value === null || value === undefined) return '';
+      let text;
+      if (typeof value === 'number') {
+        if (!Number.isFinite(value)) return '';
+        text = String(value);
+      } else {
+        text = String(value);
+        // Spreadsheet applications may execute formulas even in quoted CSV cells.
+        // Prefix potentially executable strings. Strict finite numeric strings are
+        // safe literals too, so uploaded negative scores survive a CSV round-trip.
+        const isNumericLiteral = numericPattern.test(text.trim()) && Number.isFinite(Number(text));
+        if ((!isNumericLiteral && /^[\s]*[=+\-@]/.test(text)) || /^[\t\r\n]/.test(text)) text = "'" + text;
+      }
+      return /[",\r\n]/.test(text) ? '"' + text.replace(/"/g, '""') + '"' : text;
+    }
+    return [headers.map(escape).join(','), ...rows.map(row => headers.map(h => escape(row[h])).join(','))].join('\r\n') + '\r\n';
+  }
+
+  function rngFor(seed) {
+    let a = seed >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) >>> 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  const cases = [
+    { id:'worked', title:'Four-site worked example', description:'A fixed, hand-checkable example: model area 0.600, ideal area 0.625, normalized lift 0.800.' },
+    { id:'perfect', title:'Perfect retrospective order', description:'Scores equal the observed outcomes. This is an oracle reference, not a deployable prediction model.' },
+    { id:'good', title:'Useful but imperfect ranking', description:'A seeded synthetic score combines log-count information with noise. It is not an empirical entomological result.' },
+    { id:'random', title:'Random ranking', description:'A seeded random score is independent of the simulated counts. Its realized lift may differ from zero; its expectation over random permutations is zero.' },
+    { id:'reversed', title:'Reversed ordering', description:'The lowest observed counts receive the highest scores. For heterogeneous non-negative outcomes, normalized lift is -1.' },
+    { id:'tied', title:'No discrimination: all scores tied', description:'All scores are equal. Expected-within-tie coverage is the random diagonal, giving lift zero when outcomes vary.' },
+    { id:'partial_ties', title:'Coarse priority categories', description:'Several habitats share a priority score. The chart averages possible orders inside each tied block.' },
+    { id:'uniform', title:'Equal observed outcomes', description:'Every site has the same positive count. There is no advantage available from ranking, so normalized lift is undefined.' },
+    { id:'allzero', title:'All-zero observations', description:'There is no observed outcome total to divide by. Coverage and normalized lift are undefined; this is not a failed model.' },
+    { id:'crossing', title:'Crossing curves: budget matters', description:'Two deliberately constructed rankings have crossing curves. A stronger full-curve summary need not win at every selection budget.' }
+  ];
+
+  function simulate(caseId = 'good', options = {}) {
+    const definition = cases.find(c => c.id === caseId);
+    if (!definition) throw new Error('Unknown simulation case.');
+    const requestedN = options.n === undefined ? 120 : Number(options.n);
+    const seed = options.seed === undefined ? 2026 : Number(options.seed);
+    if (!Number.isInteger(requestedN) || requestedN < 2 || requestedN > 10000) throw new Error('Simulation size must be an integer from 2 to 10,000.');
+    if (!Number.isInteger(seed) || seed < 0 || seed > 4294967295) throw new Error('Simulation seed must be an integer from 0 to 4,294,967,295.');
+    const random = rngFor(seed);
+    function normal() { return Math.sqrt(-2 * Math.log(Math.max(random(), 1e-12))) * Math.cos(2 * Math.PI * random()); }
+    let rows;
+    if (caseId === 'worked') {
+      rows = [40,30,20,10].map((observed, i) => ({site_id:`DEMO-${i + 1}`, observed, score:[4,2,3,1][i]}));
+    } else if (caseId === 'crossing') {
+      const ys=[100,80,60,40,30,20,15,10,5,0];
+      const orderA=[1,2,3,4,5,6,0,7,8,9], orderB=[0,9,8,7,6,5,4,3,2,1];
+      rows=ys.map((observed,i)=>({site_id:`DEMO-${String(i+1).padStart(2,'0')}`, observed,
+        score:10-orderA.indexOf(i), score_alt:10-orderB.indexOf(i)}));
+    } else {
+      rows=Array.from({length:requestedN},(_,i)=>{
+        const observed=caseId==='allzero'?0:caseId==='uniform'?10:
+          random()<.22?0:Math.max(1,Math.round(Math.exp(2.1+1.25*normal())));
+        let score;
+        if (caseId==='perfect') score=observed;
+        else if (caseId==='reversed') score=-observed;
+        else if (caseId==='tied') score=1;
+        else if (caseId==='good') score=Math.log1p(observed)+1.2*normal();
+        else if (caseId==='partial_ties') score=Math.floor(Math.log1p(observed)/1.2);
+        else score=random();
+        return {site_id:`SIM-${String(i+1).padStart(5,'0')}`,observed,score};
+      });
+      // The named non-degenerate teaching cases must remain heterogeneous even for n=2.
+      if (!['uniform','allzero'].includes(caseId) && rows.every(r=>r.observed===rows[0].observed)) {
+        rows[0].observed=0; rows[1].observed=Math.max(1,rows[1].observed);
+        if (caseId==='perfect') rows.forEach(r=>r.score=r.observed);
+        if (caseId==='reversed') rows.forEach(r=>r.score=-r.observed);
+        if (caseId==='partial_ties') rows.forEach(r=>r.score=Math.floor(Math.log1p(r.observed)/1.2));
+      }
+    }
+    return { ...definition, seed, requestedN, n:rows.length, synthetic:true,
+      rows, scoreColumns:caseId==='crossing'?['score','score_alt']:['score'],
+      scoreLabels:caseId==='crossing'?{'score':'Broad-coverage ranking','score_alt':'Early-hit ranking'}:{'score':'Prediction score'},
+      generator:['worked','crossing'].includes(caseId)
+        ? 'Fixed hand-constructed illustration, not empirical data. The seed does not change this case.'
+        : ['uniform','allzero'].includes(caseId)
+          ? 'Constant illustrative outcomes with Mulberry32-generated scores; no empirical parameter calibration.'
+          : 'Mulberry32; zero-inflated log-normal illustrative counts; no empirical parameter calibration.' };
+  }
+
+  return Object.freeze({ VERSION, MAX_ROWS, MAX_CSV_CHARACTERS, evaluate, atFraction, parseCSV, toCSV,
+    simulate, cases:Object.freeze(cases.map(c=>Object.freeze(c))) });
+});
+</script>
+<script>/* Empirical-marginal teaching examples. No original site records are embedded.
+ * Counts are bootstrapped from aggregate frequencies; ranking scores are artificial.
+ * No network, fitted ecological process, or historical prediction-model reuse.
+ */
+(function(root,factory){
+  const api=factory(root.LiftCore||(typeof module==='object'&&module.exports?require('../dist/core.js'):null));
+  if(typeof module==='object'&&module.exports)module.exports=api;
+  root.LiftExamples=api;
+})(typeof globalThis!=='undefined'?globalThis:this,function(C){
+  'use strict';
+  if(!C)throw new Error('LiftExamples requires LiftCore.');
+  const VERSION='2.0';
+  const distributionData={"jigjiga_743":{"source_cohort":743,"source_file":"code/density_prediction/productivity_code_audit/data/manual/cohort_743_manual.csv","sha256":"b0655259627a5dbfdca26a1cca7ba4eb9e121cdc78a7a54f079621e1ac9f81e8","n":743,"total":88586,"zero_count":157,"zero_share":0.21130551816958276,"minimum":0,"median":62,"mean":119.22745625841185,"maximum":850,"top10_observed_share":0.38073736256293317,"top30_observed_share":0.7612376673515001,"top_share_convention":"Interpolated share of observed counts under descending observed-count ordering","unique_counts":187,"histogram":[[0,157],[1,3],[2,4],[4,1],[5,18],[6,6],[7,4],[8,3],[9,1],[10,15],[11,1],[12,8],[14,1],[15,13],[16,3],[17,1],[18,2],[19,2],[20,14],[21,4],[22,3],[24,2],[25,6],[28,1],[29,1],[30,10],[32,2],[33,4],[34,2],[35,6],[36,5],[37,1],[38,2],[39,1],[40,9],[41,1],[42,1],[43,1],[45,7],[46,1],[48,1],[50,17],[51,1],[52,1],[53,1],[54,2],[55,4],[56,2],[57,1],[58,3],[59,1],[60,8],[61,2],[62,3],[65,2],[66,1],[67,5],[68,2],[69,1],[70,7],[71,1],[72,1],[74,3],[75,4],[76,3],[77,1],[78,2],[79,2],[80,10],[81,2],[82,2],[83,2],[85,1],[86,2],[89,1],[90,5],[91,1],[92,1],[94,1],[95,2],[96,1],[99,1],[100,6],[104,1],[105,3],[106,1],[108,1],[110,8],[113,2],[115,1],[118,1],[120,14],[121,2],[122,2],[123,3],[124,1],[125,1],[128,1],[130,6],[135,1],[136,3],[138,1],[140,6],[141,1],[143,1],[145,2],[150,25],[153,1],[154,1],[155,4],[160,2],[161,1],[162,1],[165,3],[170,2],[172,1],[175,1],[176,1],[177,1],[180,5],[182,1],[185,3],[190,2],[191,1],[195,1],[196,1],[200,11],[207,2],[210,3],[213,1],[215,1],[220,8],[225,2],[230,4],[236,1],[239,1],[240,3],[246,1],[250,24],[255,2],[259,1],[260,3],[270,1],[275,1],[280,2],[285,1],[290,2],[295,1],[300,10],[310,1],[315,1],[320,9],[325,3],[330,2],[332,1],[334,1],[340,1],[350,14],[352,1],[360,4],[364,1],[370,1],[380,1],[397,1],[400,5],[403,1],[408,1],[417,2],[420,1],[450,8],[460,2],[470,1],[485,1],[500,3],[510,1],[520,2],[525,1],[540,1],[550,7],[560,1],[600,2],[625,1],[630,1],[650,2],[660,1],[760,1],[850,1]]},"jigjiga_547":{"source_cohort":547,"source_file":"code/density_prediction/productivity_code_audit/data/manual/cohort_547_manual.csv","sha256":"d4df54994dd6ba6668f1399638d9a9fc9b3aab388e54a3cc5aec201036dc7cd4","n":547,"total":72806,"zero_count":97,"zero_share":0.1773308957952468,"minimum":0,"median":75,"mean":133.10054844606947,"maximum":850,"top10_observed_share":0.36065708870148067,"top30_observed_share":0.7369996978271022,"top_share_convention":"Interpolated share of observed counts under descending observed-count ordering","unique_counts":167,"histogram":[[0,97],[1,2],[2,2],[4,1],[5,10],[6,4],[7,3],[8,1],[9,1],[10,10],[11,1],[12,4],[15,8],[16,2],[17,1],[18,2],[19,2],[20,10],[21,3],[22,1],[24,1],[25,5],[29,1],[30,8],[32,1],[33,3],[34,1],[35,6],[36,5],[37,1],[38,1],[39,1],[40,8],[41,1],[42,1],[43,1],[45,5],[46,1],[48,1],[50,13],[51,1],[52,1],[53,1],[54,2],[55,3],[56,2],[57,1],[58,3],[59,1],[60,6],[61,2],[62,1],[65,1],[66,1],[67,4],[68,2],[70,6],[71,1],[72,1],[74,3],[75,3],[76,1],[77,1],[78,2],[79,1],[80,7],[81,2],[83,2],[85,1],[86,1],[90,3],[92,1],[94,1],[95,1],[99,1],[100,2],[105,2],[106,1],[110,8],[113,2],[115,1],[118,1],[120,12],[121,2],[122,1],[123,2],[125,1],[128,1],[130,6],[135,1],[136,2],[138,1],[140,6],[141,1],[143,1],[145,2],[150,20],[154,1],[155,3],[160,2],[162,1],[165,3],[170,1],[172,1],[175,1],[177,1],[180,3],[185,3],[190,1],[191,1],[195,1],[196,1],[200,7],[207,1],[210,3],[213,1],[215,1],[220,8],[225,2],[230,3],[236,1],[239,1],[240,2],[246,1],[250,19],[255,1],[259,1],[260,3],[270,1],[275,1],[280,2],[290,2],[295,1],[300,10],[315,1],[320,8],[325,2],[330,1],[332,1],[334,1],[350,11],[352,1],[360,4],[364,1],[380,1],[400,4],[408,1],[417,2],[420,1],[450,8],[460,1],[470,1],[485,1],[500,3],[510,1],[520,2],[525,1],[540,1],[550,5],[560,1],[600,2],[625,1],[630,1],[650,2],[660,1],[760,1],[850,1]]}};
+  const fitScope='Univariate empirical recorded-count distribution only; score quality is artificially specified, not fitted to a real model.';
+  const cohortDefinition='743 complete labelled survey sites; 547 is the segmentation-mask-available nested subset, not independent external validation.';
+  const histograms=Object.freeze(Object.fromEntries(Object.entries(distributionData).map(([id,data])=>[id,Object.freeze(data.histogram.map(pair=>Object.freeze(pair.slice())))])));
+  const cohortSummaries=Object.freeze(Object.fromEntries(Object.entries(distributionData).map(([id,data])=>{
+    const {histogram,...summary}=data;return[id,Object.freeze(summary)];
+  })));
+  const definitions=[
+    {id:'jigjiga_743',title:'Jigjiga-shaped simulation: 743-site distribution',description:'New synthetic counts resampled from the full Jigjiga cohort count distribution. Artificial ranking scores, not historical OOF predictions.'},
+    {id:'jigjiga_547',title:'Jigjiga-shaped simulation: 547-site subset distribution',description:'New synthetic counts resampled from the nested segmentation-mask subset. This is not an independent cohort or a reconstructed field result.'}
+  ];
+  const cases=Object.freeze(C.cases.concat(definitions).map(c=>Object.freeze({...c})));
+  function rng(seed){
+    let a=seed>>>0;
+    return function(){a=(a+0x6D2B79F5)>>>0;let t=Math.imul(a^(a>>>15),1|a);t^=t+Math.imul(t^(t>>>7),61|t);return((t^(t>>>14))>>>0)/4294967296;};
+  }
+  function simulate(caseId='good',options={}){
+    const definition=definitions.find(c=>c.id===caseId);
+    if(!definition)return C.simulate(caseId,options);
+    const summary=cohortSummaries[caseId],histogram=histograms[caseId];
+    const n=options.n===undefined?summary.n:Number(options.n);
+    const seed=options.seed===undefined?2026:Number(options.seed);
+    const quality=options.quality===undefined?'informative':options.quality;
+    const noiseStd=options.noiseStd===undefined?2.5:Number(options.noiseStd);
+    if(typeof options.n==='boolean'||!Number.isInteger(n)||n<2||n>10000)throw new Error('Simulation size must be an integer from 2 to 10,000.');
+    if(typeof options.seed==='boolean'||!Number.isInteger(seed)||seed<0||seed>4294967295)throw new Error('Simulation seed must be an integer from 0 to 4,294,967,295.');
+    if(!['informative','random','reversed','perfect'].includes(quality))throw new Error('Score quality must be informative, random, reversed, or perfect.');
+    if(typeof options.noiseStd==='boolean'||!Number.isFinite(noiseStd)||noiseStd<0||noiseStd>20)throw new Error('Informative-score noise standard deviation must be between 0 and 20.');
+    // Independent streams keep every bootstrapped outcome fixed when only quality changes.
+    const outcomeRng=rng(seed),scoreRng=rng((seed^0x9E3779B9)>>>0);
+    const cumulative=[];let totalFrequency=0;
+    for(const pair of histogram){totalFrequency+=pair[1];cumulative.push(totalFrequency);}
+    function drawOutcome(){
+      const position=Math.floor(outcomeRng()*totalFrequency);
+      let low=0,high=cumulative.length-1;
+      while(low<high){const middle=Math.floor((low+high)/2);if(cumulative[middle]>position)high=middle;else low=middle+1;}
+      return histogram[low][0];
+    }
+    function normal(){return Math.sqrt(-2*Math.log(Math.max(scoreRng(),1e-12)))*Math.cos(2*Math.PI*scoreRng());}
+    const rows=Array.from({length:n},(_,i)=>{
+      const observed=drawOutcome();
+      const score=quality==='perfect'?observed:quality==='reversed'?-observed:quality==='random'?scoreRng():Math.log1p(observed)+noiseStd*normal();
+      return{site_id:'SYN-'+summary.source_cohort+'-'+String(i+1).padStart(6,'0'),observed,score};
+    });
+    return{...definition,n,requestedN:n,seed,synthetic:true,empirical:true,
+      endpoint:'Synthetic recorded larval count (Jigjiga distribution)',scenario:quality,quality,
+      sourceCohort:summary.source_cohort,fitScope,generatorVersion:VERSION,
+      noiseStd:quality==='informative'?noiseStd:null,
+      rows,scoreColumns:['score'],scoreLabels:{score:quality==='informative'?'Artificial noisy log-count score':quality==='random'?'Artificial independent random score':quality==='perfect'?'Retrospective perfect-information score':'Artificial reversed outcome score'},
+      generator:'Mulberry32 bootstrap with replacement from aggregate observed count frequencies; independent Mulberry32 score stream. Informative scores use log1p(count) plus normal noise with specified standard deviation.',
+      provenance:{sourcePath:summary.source_file,sourceSHA256:summary.sha256,sourceCohort:summary.source_cohort,cohortDefinition,fitScope},
+      warnings:[
+        'Synthetic teaching data, not actual survey rows or held-out model predictions.',
+        'Only the empirical marginal count distribution is reused. Covariates, spatial dependence, sampling effort, seasonality and habitat persistence are not modeled.',
+        'The artificial score mechanism is not calibrated to historical lift or a validated predictive model.',
+        'Bootstrap sample totals and zero frequencies vary. The source cohorts are nested, not independent validation samples.'
+      ]};
+  }
+  return Object.freeze({VERSION,cases,simulate,histograms,cohortSummaries});
+});
+
+</script>
+<script>/* Operational descriptions of already-computed coverage curves.
+ * No fitting, confidence intervals, causal claims or cost assumptions.
+ */
+(function (root, factory) {
+  const api = typeof module === 'object' && module.exports
+    ? factory(require('../dist/core.js')) : factory(root.LiftCore);
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  root.LiftInsights = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (Core) {
+  'use strict';
+  if (!Core || typeof Core.atFraction !== 'function') {
+    throw new Error('LiftInsights requires LiftCore.atFraction. Load core.js first.');
+  }
+
+  function checkResult(result) {
+    if (!result || !Number.isInteger(result.n) || result.n < 2 ||
+        !Array.isArray(result.curve) || result.curve.length !== result.n + 1) {
+      throw new Error('Pass an evaluation result produced by LiftCore.evaluate.');
+    }
+    return result;
+  }
+
+  function checkFraction(value, label) {
+    if (typeof value !== 'number' || !Number.isFinite(value) || value < 0 || value > 1) {
+      throw new Error(`${label} must be a finite number from 0 to 1 inclusive.`);
+    }
+  }
+
+  function undefinedCoverage(result) {
+    return result.status === 'zero_total' || result.curve[0].model === null;
+  }
+
+  function inverse(curve, target, key) {
+    if (target === 0) return 0;
+    // First crossing, rather than the last point on a plateau.
+    let low = 0, high = curve.length - 1;
+    while (low < high) {
+      const middle = Math.floor((low + high) / 2);
+      if (curve[middle][key] >= target) high = middle;
+      else low = middle + 1;
+    }
+    const right = curve[low];
+    if (right[key] === null || right[key] < target) return null;
+    if (low === 0) return right.x;
+    const left = curve[low - 1];
+    const rise = right[key] - left[key];
+    if (!(rise > 0)) return left.x;
+    const fraction = left.x + (right.x - left.x) * (target - left[key]) / rise;
+    return Math.max(0, Math.min(1, fraction));
+  }
+
+  function wholeBudget(result, siteEquivalents, target) {
+    const rounded = Math.round(siteEquivalents);
+    const tolerance = 8 * Number.EPSILON * Math.max(1, Math.abs(siteEquivalents));
+    // Do not snap a strictly positive target down to zero visits.
+    let k = rounded > 0 && Math.abs(siteEquivalents - rounded) <= tolerance
+      ? rounded : Math.ceil(siteEquivalents);
+    k = Math.max(0, Math.min(result.n, k));
+    let coverage = Core.atFraction(result.curve, k / result.n);
+    const valueTolerance = 16 * Number.EPSILON * Math.max(Number.MIN_VALUE,
+      Math.abs(target), Math.abs(coverage));
+    // Retain the ceiling interpretation if a nearly-integer inverse sits just above
+    // a boundary by more than ordinary floating-point error.
+    if (k < result.n && coverage + valueTolerance < target) {
+      k += 1;
+      coverage = Core.atFraction(result.curve, k / result.n);
+    }
+    return { wholeSites: k, wholeFraction: k / result.n, wholeCoverage: coverage };
+  }
+
+  function targetCoverage(result, targetFraction) {
+    checkResult(result);
+    checkFraction(targetFraction, 'Target coverage');
+    if (undefinedCoverage(result)) {
+      return { status: 'undefined_zero_total', target: targetFraction,
+        fraction: null, siteEquivalents: null, wholeSites: null,
+        wholeFraction: null, wholeCoverage: null, randomFraction: null, idealFraction: null };
+    }
+    const fraction = inverse(result.curve, targetFraction, 'model');
+    const idealFraction = inverse(result.curve, targetFraction, 'ideal');
+    if (fraction === null || idealFraction === null) {
+      throw new Error('The supplied curve does not reach the target coverage.');
+    }
+    const siteEquivalents = fraction * result.n;
+    return { status: result.status, target: targetFraction, fraction, siteEquivalents,
+      ...wholeBudget(result, siteEquivalents, targetFraction),
+      randomFraction: targetFraction, idealFraction };
+  }
+
+  function budgetRows(result, budgets = [.1, .2, .3, .5, .8]) {
+    checkResult(result);
+    if (!Array.isArray(budgets)) throw new Error('Budgets must be an array of fractions.');
+    return budgets.map(fraction => {
+      checkFraction(fraction, 'Selection budget');
+      const k = Math.min(result.n, Math.floor(fraction * result.n + 1e-12));
+      const floorFraction = k / result.n;
+      const coverage = Core.atFraction(result.curve, fraction);
+      const idealCoverage = Core.atFraction(result.curve, fraction, 'ideal');
+      const floorCoverage = Core.atFraction(result.curve, floorFraction);
+      return { fraction, siteEquivalents: fraction * result.n, coverage, idealCoverage,
+        multiplier: fraction > 0 && coverage !== null ? coverage / fraction : null,
+        k, floorFraction, floorCoverage,
+        floorMultiplier: floorFraction > 0 && floorCoverage !== null ? floorCoverage / floorFraction : null,
+        status: undefinedCoverage(result) ? 'undefined_zero_total' : result.status };
+    });
+  }
+
+  function diagnostics(result) {
+    checkResult(result);
+    const denominator = result.denominator;
+    const denominatorState = denominator === null ? 'undefined' : denominator === 0 ? 'zero' : 'positive';
+    const denominatorDescription = denominatorState === 'undefined'
+      ? 'No positive observed total: outcome coverage and its area denominator are undefined.'
+      : denominatorState === 'zero'
+        ? 'No observed outcome contrast: ideal ordering has no area advantage over random ordering.'
+        : 'Positive observed outcome contrast: ideal ordering has an area advantage over random ordering.';
+    const tiedUnits = (result.tieBlocks || []).reduce((total, block) => total + block.size, 0);
+    return { n: result.n, total: result.total, zeroShare: result.zeroCount / result.n,
+      observedTop10Share: Core.atFraction(result.curve, .1, 'ideal'), denominator,
+      denominatorState, denominatorDescription,
+      idealConcentration: denominator === null ? null : 2 * denominator,
+      uniqueScoreCount: result.uniqueScoreCount, tiedUnitShare: tiedUnits / result.n,
+      status: result.status };
+  }
+
+  // Explicit polygons avoid renderer-dependent clipping of positive/negative fills.
+  // Close each returned run to the diagonal at its final and initial x positions.
+  function signedAreaRegions(curve) {
+    const regions = { positive: [], negative: [] };
+    if (!Array.isArray(curve) || curve.length < 2 || curve.some((point, i) =>
+      !point || !Number.isFinite(point.x) || !Number.isFinite(point.model) ||
+      (i > 0 && point.x <= curve[i - 1].x))) return regions;
+
+    let run = [], sign = 0;
+    const copy = point => ({ x: point.x, model: point.model });
+    function flush() {
+      if (run.length > 1) {
+        let area = 0;
+        for (let i = 1; i < run.length; i++) {
+          const a = run[i - 1], b = run[i];
+          area += (b.x - a.x) * ((a.model - a.x) + (b.model - b.x)) / 2;
+        }
+        if (area > 0) regions.positive.push(run);
+        else if (area < 0) regions.negative.push(run);
+      }
+      run = []; sign = 0;
+    }
+    function add(a, b, nextSign) {
+      if (nextSign === 0) { flush(); return; }
+      if (nextSign !== sign) { flush(); run.push(copy(a)); sign = nextSign; }
+      run.push(copy(b));
+      if (b.model === b.x) flush();
+    }
+    for (let i = 1; i < curve.length; i++) {
+      const a = curve[i - 1], b = curve[i];
+      const da = a.model - a.x, db = b.model - b.x;
+      if ((da < 0 && db > 0) || (da > 0 && db < 0)) {
+        const x = a.x + (b.x - a.x) * da / (da - db);
+        const crossing = { x, model: x };
+        add(a, crossing, Math.sign(da));
+        add(crossing, b, Math.sign(db));
+      } else add(a, b, Math.sign(da || db));
+    }
+    flush();
+    return regions;
+  }
+
+  return Object.freeze({ VERSION: '1.0.0', targetCoverage, budgetRows, diagnostics, signedAreaRegions });
+});
+</script>
+<script>(function () {
+  'use strict';
+  const C = globalThis.LiftCore;
+  const E = globalThis.LiftExamples;
+  const I = globalThis.LiftInsights;
+  const $ = id => document.getElementById(id);
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const number = (x,d=3) => x === null || x === undefined || !Number.isFinite(x) ? 'N/A' : x.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+  const pct = x => x === null || x === undefined ? 'N/A' : `${number(100*x,1)}%`;
+  const state = {rows:[],headers:[],source:null,result:null,comparison:null,revision:0};
+  const exportIDs=['download-data','download-curves','download-ranks','download-json','download-svg','download-png','copy-report','download-report','download-budgets'];
+  const plot={w:820,h:460,left:72,right:792,top:30,bottom:360};
+  const px=x=>plot.left+x*(plot.right-plot.left), py=y=>plot.bottom-y*(plot.bottom-plot.top);
+  const svgText=(x,y,t,opts='')=>`<text x="${x}" y="${y}" fill="#425b71" font-family="Arial, sans-serif" ${/\bfont-size\s*=/.test(opts)?'':'font-size="12"'} ${opts}>${esc(t)}</text>`;
+  function message(text,error=false){$('message').textContent=text;$('message').className='notice'+(error?' error':'');}
+  function invalidate(err,dropData=false){
+    if(dropData){state.rows=[];state.headers=[];state.source=null;$('dataset-title').textContent='No dataset loaded';$('dataset-source').textContent='INPUT NOT ACCEPTED';$('sample-badge').textContent='0 rows';}
+    state.result=null;state.comparison=null;
+    message(err instanceof Error ? err.message : String(err),true);
+    for(const id of ['metric-lift','metric-coverage','metric-multiplier']) $(id).textContent='N/A';
+    for(const id of ['lift-interpretation','coverage-detail','area-calculation','budget-convention','calculation-detail','rank-table','report-text','chart-readout','target-result','data-diagnostics','budget-table']) {
+      if(id==='report-text')$(id).value='';else $(id).textContent='';
+    }
+    $('coverage-chart').innerHTML=svgText(410,220,'No valid result. Correct the input and compute again.','text-anchor="middle"');
+    $('comparison-output').hidden=true;$('compare-legend').hidden=true;
+    exportIDs.forEach(id=>$(id).disabled=true);
+  }
+  function options(scoreKey='score-column',directionKey='direction'){
+    return {observed:$('observed-column').value,score:$(scoreKey).value,
+      id:$('id-column').value||null,direction:$(directionKey).value,fraction:Number($('budget').value)/100};
+  }
+  function fillSelect(id,values,preferred,empty){
+    const el=$(id);el.replaceChildren();
+    if(empty!==undefined){const opt=document.createElement('option');opt.value='';opt.textContent=empty;el.add(opt);}
+    values.forEach(value=>{const opt=document.createElement('option');opt.value=value;opt.textContent=value;el.add(opt);});
+    if(preferred!==undefined&&[...el.options].some(o=>o.value===preferred))el.value=preferred;
+  }
+  function inputMode(mode){
+    const examples=mode==='examples';
+    $('example-inputs').hidden=!examples;$('input-details').hidden=examples;
+    $('mode-examples').setAttribute('aria-pressed',String(examples));
+    $('mode-csv').setAttribute('aria-pressed',String(!examples));
+  }
+  function setData(rows,headers,source){
+    if(rows.length>20000)throw new Error('Please use 20,000 rows or fewer for this browser calculator. No rows were dropped.');
+    if(rows.length<2)throw new Error('At least two evaluation rows are required.');
+    state.rows=rows;state.headers=headers;state.source=source;
+    const find=pattern=>headers.find(h=>pattern.test(h));
+    const observed=find(/^(observed|actual_larvae|observed_larvae|count|outcome|y_true)$/i)||headers[1]||headers[0];
+    const score=find(/^(score|prediction|predicted|y_score|oof_score)$/i)||headers.find(h=>h!==observed&&!/^.*id$/i.test(h))||headers[0];
+    fillSelect('id-column',headers,find(/^(site_id|id|habitat_id)$/i)||'','Generate row IDs');
+    fillSelect('observed-column',headers,observed);
+    fillSelect('score-column',headers,score);
+    fillSelect('compare-column',headers,headers.includes('score_alt')?'score_alt':'','No comparison');
+    $('direction').value='high';$('compare-direction').value='high';
+    $('cohort').value=source.title;
+    $('endpoint').value=source.endpoint||(source.synthetic?'Synthetic recorded larval count':'');
+    $('evaluation-metadata').open=!source.synthetic;
+    inputMode(source.synthetic?'examples':'csv');
+    $('validation').value=source.synthetic?'simulated':'unknown';
+    $('dataset-source').textContent=source.empirical?'JIGJIGA-DISTRIBUTION SYNTHETIC DATA':source.synthetic?'SIMULATED TEACHING DATA':'USER-SUPPLIED DATA';
+    $('dataset-title').textContent=source.title;$('sample-badge').textContent=`${rows.length.toLocaleString()} rows`;
+    $('csv-input').value='';
+    compute();
+  }
+  function generate(){
+    // Every new data attempt, including a rejected one, supersedes older file reads.
+    state.revision++;
+    try{
+      if(!Number.isInteger(Number($('sample-size').value))||Number($('sample-size').value)<4||Number($('sample-size').value)>2000)throw new Error('Example size must be an integer from 4 to 2,000.');
+      $('empirical-controls').hidden=!Object.hasOwn(E.histograms,$('case').value);
+      const sim=E.simulate($('case').value,{n:Number($('sample-size').value),seed:Number($('seed').value),quality:$('ranking-quality').value});
+      $('case-description').textContent=sim.description+(sim.n!==Number($('sample-size').value)?` This fixed example uses ${sim.n} sites.`:'');
+      setData(sim.rows,Object.keys(sim.rows[0]),{...sim,rows:undefined});
+    }catch(e){invalidate(e,true);}
+  }
+  function loadCSV(text,name,requestRevision=++state.revision){
+    if(requestRevision!==state.revision)return;
+    try{
+      if(text.length>5000000)throw new Error('CSV exceeds the 5 MB browser input limit.');
+      const data=C.parseCSV(text);
+      setData(data.rows,data.headers,{title:name,synthetic:false,format:'CSV'});
+      $('case-description').textContent='User data loaded. Simulations remain available above.';
+    }catch(e){invalidate(e,true);}
+  }
+  function compute(){
+    try{
+      if(!state.rows.length)return;
+      const r=C.evaluate(state.rows,options());
+      const comparison=$('compare-column').value?C.evaluate(state.rows,options('compare-column','compare-direction')):null;
+      state.result=r;state.comparison=comparison;
+      const warnings=[...r.warnings];
+      if(r.observedColumn===r.scoreColumn)warnings.unshift('The observed outcome column is also the ranking score. This is retrospective perfect information, not predictive validation.');
+      if($('validation').value==='insample')warnings.unshift('In-sample ranking is descriptive and potentially optimistic. It is not a held-out performance estimate.');
+      if(!state.source.synthetic&&$('validation').value==='simulated')warnings.unshift('User-supplied CSV is labelled simulated. Confirm this provenance before reporting.');
+      if($('validation').value==='unknown')warnings.unshift('Prediction provenance is not documented. Do not interpret this calculation as a validated model result.');
+      if(comparison&&comparison.scoreColumn===r.scoreColumn&&comparison.direction===r.direction)warnings.push('The comparison uses the same score and direction as ranking 1.');
+      message(warnings.join('\n'));
+      exportIDs.forEach(id=>$(id).disabled=false);
+      $('metric-lift').textContent=number(r.lift);
+      $('lift-interpretation').textContent=r.lift===null?'No defined normalized comparison':r.lift<0?'Negative signed area gain versus random':`${number(100*r.lift,1)}% of the available area gain`;
+      $('metric-coverage').textContent=pct(r.budget.coverage);
+      $('coverage-detail').textContent=`At ${pct(r.budget.fraction)} of evaluation units`;
+      $('metric-multiplier').textContent=r.budget.multiplier===null?'N/A':number(r.budget.multiplier,2)+'×';
+      $('budget-output').textContent=`${$('budget').value}%`;
+      $('dataset-title').textContent=$('cohort').value||state.source.title;
+      $('area-calculation').innerHTML=r.lift===null?
+        esc(r.status==='zero_total'?'No outcome total: neither outcome coverage nor lift is defined.':'No outcome heterogeneity: model and ideal both follow the diagonal, leaving no area advantage to normalize.'):
+        `<b class="blue">A = ${number(r.modelAdvantage,5)}</b> &nbsp; <b class="amber">B = ${number(r.denominator-r.modelAdvantage,5)}</b><br>Lift ratio = A / (A + B) = ${number(r.modelAdvantage,5)} / ${number(r.denominator,5)} = <b>${number(r.lift)}</b>${r.lift<0?'<br>A is a signed area. Below-random performance is negative, not clipped to zero.':''}`;
+      $('budget-convention').textContent=`Interpolated budget: ${number(r.budget.siteEquivalents,2)} site equivalents. Whole-site floor budget: ${r.budget.k} sites (${pct(r.budget.floorFraction)}), expected coverage ${pct(r.budget.floorCoverage)}. Fractional sites are an evaluation convention, not partial field visits.`;
+      $('comparison-output').hidden=!comparison;$('compare-legend').hidden=!comparison;
+      if(comparison)$('comparison-output').textContent=`Ranking 2 (${comparison.scoreColumn}): full lift ${number(comparison.lift)}, coverage ${pct(comparison.budget.coverage)} at this budget. Ranking 1 minus 2: ${r.lift===null||comparison.lift===null?'N/A':number(r.lift-comparison.lift)} lift and ${r.budget.coverage===null?'N/A':number(100*(r.budget.coverage-comparison.budget.coverage),1)+' percentage points'} coverage. This is a same-sample descriptive comparison, not a test of statistical significance.`;
+      $('calculation-detail').innerHTML=`<div class="table-wrap"><table><tbody>${[
+        ['Evaluation units',String(r.n)],['Observed total',number(r.total,3)],['Zero-outcome units',`${r.zeroCount} (${pct(r.zeroCount/r.n)})`],
+        ['Model area under coverage curve',number(r.aucModel,6)],['Ideal area under coverage curve',number(r.aucIdeal,6)],
+        ['Random expected area',r.status==='zero_total'?'N/A':'0.500000'],['Ideal area advantage (denominator)',number(r.denominator,8)],
+        ['Distinct score values',String(r.uniqueScoreCount)],['Tied-score blocks',String(r.tieBlocks.length)],
+        ['Rule','Exact score ties; straight chords; full [0, 1] domain; trapezoidal integration']
+      ].map(([k,v])=>`<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join('')}</tbody></table></div>`;
+      $('rank-table').innerHTML=`<table><thead><tr><th>ID</th><th>Priority rank</th><th>Observed</th><th>Score</th><th>Expected cumulative coverage</th></tr></thead><tbody>${r.rankedRows.slice(0,100).map(row=>`<tr><td>${esc(row.siteId)}</td><td>${row.rankStart===row.rankEnd?row.rankStart:`${row.rankStart} to ${row.rankEnd} (tied)`}</td><td class="num">${number(row.observed,2)}</td><td class="num">${number(row.score,3)}</td><td class="num">${pct(row.cumulativeExpected)}</td></tr>`).join('')}</tbody></table>`;
+      drawChart();updateReadout(r.budget.fraction);renderInsights();$('report-text').value=reportText();
+    }catch(e){invalidate(e);}
+  }
+  function budgetData(){
+    if(!state.result)return [];
+    const rows=I.budgetRows(state.result),other=state.comparison?I.budgetRows(state.comparison):null;
+    return rows.map((r,i)=>({...r,...(other?{comparisonCoverage:other[i].coverage,comparisonMultiplier:other[i].multiplier}:{} )}));
+  }
+  function renderInsights(){
+    const r=state.result;if(!r)return;
+    const q=Number($('target-coverage').value)/100,t=I.targetCoverage(r,q),d=I.diagnostics(r);
+    $('target-output').textContent=pct(q);
+    $('target-result').innerHTML=t.fraction===null?'<p class="target-explainer">No target coverage can be calculated when the observed total is zero.</p>':
+      `<strong class="target-number">${t.wholeSites} <small>of ${r.n} sites</small></strong><p class="target-explainer">Whole-site ceiling: ${pct(t.wholeFraction)} of sites, representing ${pct(t.wholeCoverage)} of the observed outcome.</p><p class="target-explainer">Interpolated crossing: ${pct(t.fraction)} (${number(t.siteEquivalents,2)} site equivalents). Ideal: ${pct(t.idealFraction)}. Random expectation curve: ${pct(t.randomFraction)}.</p>${state.comparison?`<p class="target-explainer">Ranking 2 reaches this target at ${pct(I.targetCoverage(state.comparison,q).fraction)} of sites (interpolated).</p>`:''}`;
+    $('data-diagnostics').innerHTML=`<dl class="diagnostic-list"><div><dt>Zero-outcome sites</dt><dd>${pct(d.zeroShare)}</dd></div><div><dt>Outcome in the highest observed 10%</dt><dd>${pct(d.observedTop10Share)}</dd></div><div><dt>Sites with tied scores</dt><dd>${pct(d.tiedUnitShare)}</dd></div></dl><p class="target-explainer">${esc(d.denominatorDescription)} Top-10% concentration is interpolated from observed outcomes, not the model's top 10%.</p>`;
+    $('budget-table').innerHTML=`<table><thead><tr><th>Sites selected</th><th>Ranking 1 coverage</th>${state.comparison?'<th>Ranking 2 coverage</th>':''}<th>Random expectation</th><th>Ideal coverage</th><th>Ranking 1 multiplier</th></tr></thead><tbody>${budgetData().map(b=>`<tr><td>${pct(b.fraction)}</td><td>${pct(b.coverage)}</td>${state.comparison?`<td>${pct(b.comparisonCoverage)}</td>`:''}<td>${r.status==='zero_total'?'N/A':pct(b.fraction)}</td><td>${pct(b.idealCoverage)}</td><td>${b.multiplier===null?'N/A':number(b.multiplier,2)+'×'}</td></tr>`).join('')}</tbody></table>`;
+  }
+  function pathOf(curve,key){return curve.map((p,i)=>`${i?'L':'M'}${px(p.x).toFixed(2)},${py(p[key]).toFixed(2)}`).join(' ');}
+  function drawChart(){
+    const r=state.result;if(!r)return;
+    let content='<title id="chart-title">Cumulative outcome coverage by site-selection budget</title><desc id="chart-desc">Blue: ranking 1; teal: ideal outcome ordering; dashed gray: random expectation. Shading shows signed gain above random and remaining possible gain.</desc><rect width="820" height="460" fill="white"/>';
+    for(let k=0;k<=5;k++){
+      const p=k/5;
+      content+=`<path d="M${plot.left},${py(p)}H${plot.right}" stroke="#e4ebf1" stroke-width="1"/>`;
+      content+=svgText(plot.left-12,py(p)+4,`${20*k}`,'text-anchor="end"');
+      content+=svgText(px(p),plot.bottom+23,`${20*k}`,'text-anchor="middle"');
+    }
+    content+=`<path d="M${plot.left},${plot.top}V${plot.bottom}H${plot.right}" fill="none" stroke="#8c9aaa" stroke-width="1.1"/>`;
+    content+=svgText(432,411,'Evaluation units selected (%)','text-anchor="middle" font-weight="600"');
+    content+=svgText(432,431,'Highest priority first; each row has equal horizontal weight','text-anchor="middle" font-size="10"');
+    content+=`<text x="19" y="195" transform="rotate(-90 19 195)" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#425b71">Share of observed outcome (%)</text>`;
+    if(r.status==='zero_total'){
+      content+=svgText(432,180,'All observed outcomes are zero.','text-anchor="middle"');
+      content+=svgText(432,204,'A coverage curve has no defined denominator.','text-anchor="middle"');
+      $('coverage-chart').innerHTML=content;return;
+    }
+    const model=pathOf(r.curve,'model'), ideal=pathOf(r.curve,'ideal');
+    if($('shade').checked){
+      const gap=ideal+' '+r.curve.slice().reverse().map(p=>`L${px(p.x).toFixed(2)},${py(p.model).toFixed(2)}`).join(' ')+'Z';
+      const regions=I.signedAreaRegions(r.curve);
+      const areaPath=points=>points.map((p,i)=>`${i?'L':'M'}${px(p.x).toFixed(2)},${py(p.model).toFixed(2)}`).join(' ')+`L${px(points.at(-1).x).toFixed(2)},${py(points.at(-1).x).toFixed(2)}L${px(points[0].x).toFixed(2)},${py(points[0].x).toFixed(2)}Z`;
+      content+=`<path d="${gap}" fill="#f1d8a2" fill-opacity=".58"/>`;
+      for(const points of regions.positive)content+=`<path d="${areaPath(points)}" fill="#9cc6fc" fill-opacity=".53"/>`;
+      for(const points of regions.negative)content+=`<path d="${areaPath(points)}" fill="#e5aca4" fill-opacity=".48"/>`;
+    }
+    content+=`<path d="M${px(0)},${py(0)}L${px(1)},${py(1)}" fill="none" stroke="#7d8793" stroke-width="1.8" stroke-dasharray="6 5"/>`;
+    content+=`<path d="${ideal}" fill="none" stroke="#009b9d" stroke-width="2.5" stroke-linejoin="round"/><path d="${model}" fill="none" stroke="#1766d0" stroke-width="2.7" stroke-linejoin="round"/>`;
+    if(state.comparison)content+=`<path d="${pathOf(state.comparison.curve,'model')}" fill="none" stroke="#be6b37" stroke-width="2.1" stroke-dasharray="7 4"/>`;
+    const q=r.budget.fraction,y=r.budget.coverage;
+    content+=`<path d="M${px(q)},${plot.bottom}V${py(y)}H${plot.left}" fill="none" stroke="#1766d0" stroke-width="1" stroke-dasharray="3 4"/><circle cx="${px(q)}" cy="${py(y)}" r="5" fill="#1766d0" stroke="white" stroke-width="2"/>`;
+    content+=`<g id="hover-indicator" visibility="hidden"><path id="hover-line" fill="none" stroke="#667e94" stroke-dasharray="2 4"/><circle id="hover-point" r="4" fill="white" stroke="#1766d0" stroke-width="2"/></g><rect id="chart-hit" x="${plot.left}" y="${plot.top}" width="${plot.right-plot.left}" height="${plot.bottom-plot.top}" fill="transparent" style="cursor:crosshair"/>`;
+    $('coverage-chart').innerHTML=content;
+  }
+  function updateReadout(q){
+    const r=state.result;if(!r)return;
+    $('chart-readout').textContent=`Select ${pct(q)} of units → ranking 1 represents ${pct(C.atFraction(r.curve,q))} of the outcome; ideal ${pct(C.atFraction(r.curve,q,'ideal'))}; random expectation ${r.status==='zero_total'?'N/A':pct(q)}.${state.comparison?' Ranking 2: '+pct(C.atFraction(state.comparison.curve,q))+'.':''}`;
+  }
+  function pointerFraction(e){const svg=$('coverage-chart'),p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;const point=p.matrixTransform(svg.getScreenCTM().inverse());return Math.max(0,Math.min(1,(point.x-plot.left)/(plot.right-plot.left)));}
+  function reportObject(){
+    const r=state.result;if(!r)throw new Error('No valid result to export.');
+    const summarize=x=>x?{n:x.n,total:x.total,zeroCount:x.zeroCount,aucModel:x.aucModel,aucIdeal:x.aucIdeal,
+      signedGain:x.modelAdvantage,denominator:x.denominator,lift:x.lift,status:x.status,budget:x.budget,
+      scoreColumn:x.scoreColumn,direction:x.direction,warnings:x.warnings}:null;
+    return {specification:'coverage-lift-v1.0',handbookEdition:2,engineVersion:C.VERSION,createdUTC:new Date().toISOString(),
+      cohort:$('cohort').value,endpoint:$('endpoint').value,predictionSource:$('validation').value,
+      source:state.source,mapping:options(),rankingA:summarize(r),rankingB:summarize(state.comparison),
+      budgetTable:budgetData(),diagnostics:I.diagnostics(r),coverageTarget:{rankingA:I.targetCoverage(r,Number($('target-coverage').value)/100),rankingB:state.comparison?I.targetCoverage(state.comparison,Number($('target-coverage').value)/100):null},
+      conventions:{rowWeight:'equal',ties:'expected ordering within exact-score blocks',integration:'piecewise-linear trapezoid over [0,1]',
+        budgets:'exact fraction plus floor(n*q) whole-site comparator',undefined:'null, not zero',
+        exclusions:'none; invalid required values rejected',confidenceIntervals:'not computed',independence:'not verified by this calculator'},
+      safeguards:['A ranking metric is not treatment effectiveness, cost saving, adult emergence reduction or malaria reduction.',
+        'Simulated examples are generated teaching data, not observed entomological datasets.']};
+  }
+  function reportText(){
+    const r=state.result;if(!r)return '';
+    return `${$('cohort').value||'The evaluation sample'} included ${r.n} evaluation units with ${number(r.total,3)} total units of the specified outcome (${$('endpoint').value||'not documented'}); ${r.zeroCount} units had zero outcomes. Prediction source was reported as "${$('validation').selectedOptions[0].textContent}". We ordered units by ${r.direction==='high'?'decreasing':'increasing'} ${r.scoreColumn}, treated exact score ties by expected within-block coverage, and integrated the piecewise-linear cumulative coverage curve over the full selection range. The coverage lift ratio was ${number(r.lift)} (model area ${number(r.aucModel,6)}, ideal area ${number(r.aucIdeal,6)}; undefined values are reported as N/A). At an interpolated ${pct(r.budget.fraction)} site budget, coverage was ${pct(r.budget.coverage)} and the budget-specific multiplier was ${number(r.budget.multiplier,3)}. This represents ${number(r.budget.siteEquivalents,2)} site equivalents; the floor budget of ${r.budget.k} whole units (${pct(r.budget.floorFraction)}) gave expected coverage ${pct(r.budget.floorCoverage)}. All ${r.n} supplied rows were retained. The app did not compute uncertainty intervals or verify prediction independence. Metric specification: coverage-lift-v1.0. ${state.source.synthetic?'These are simulated teaching data, not field results. ':''}Coverage describes the represented observed outcome, not a measured treatment effect or cost saving.`;
+  }
+  function download(name,content,type='text/plain;charset=utf-8'){
+    const blob=content instanceof Blob?content:new Blob([content],{type});const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
+  }
+  function figureSVG(){
+    const svg=$('coverage-chart').cloneNode(true);svg.setAttribute('xmlns','http://www.w3.org/2000/svg');
+    svg.setAttribute('width','1230');svg.setAttribute('height','885');svg.setAttribute('viewBox','0 0 820 590');
+    svg.querySelector('#chart-hit')?.remove();svg.querySelector('#hover-indicator')?.remove();
+    const r=state.result;
+    const plotGroup=document.createElementNS('http://www.w3.org/2000/svg','g');plotGroup.setAttribute('transform','translate(0 60)');plotGroup.innerHTML=svg.innerHTML;
+    svg.innerHTML='<rect width="820" height="590" fill="white"/>';svg.appendChild(plotGroup);
+    const header=document.createElementNS('http://www.w3.org/2000/svg','g');
+    const short=(text,max)=>text.length>max?text.slice(0,max-1)+'…':text;
+    header.innerHTML=svgText(72,27,short($('cohort').value||'Cumulative outcome coverage',76),'font-size="18" font-weight="600"')+svgText(72,48,short(`${$('endpoint').value||'Outcome not documented'} | n = ${r.n} | ${state.source.synthetic?'SIMULATED TEACHING DATA':'USER-SUPPLIED DATA'}`,105),'font-size="11"');svg.appendChild(header);
+    const meta=document.createElementNS('http://www.w3.org/2000/svg','metadata');meta.textContent=JSON.stringify(reportObject());svg.appendChild(meta);
+    const footer=document.createElementNS('http://www.w3.org/2000/svg','g');
+    footer.innerHTML=`<rect x="0" y="500" width="820" height="90" fill="white"/>${svgText(72,521,'Blue: ranking 1; teal: ideal retrospective order; gray dashed: random expectation.')}${svgText(72,539,state.comparison?'Orange dashed: ranking 2. Shading: signed gain A and remaining gain B.':'Shading: blue positive gain A, red negative gain A, amber remaining gain B.')}${svgText(72,557,`Lift = ${number(r.lift)}; n = ${r.n}; coverage at ${pct(r.budget.fraction)} = ${pct(r.budget.coverage)}.`)}${svgText(72,575,state.source.synthetic?'Simulated teaching data. Not treatment effectiveness.':'User-supplied data. Prediction provenance and independence require verification.')}`;
+    svg.appendChild(footer);return new XMLSerializer().serializeToString(svg);
+  }
+  function intro(){
+    const x=q=>58+424*q,y=q=>249-208*q;
+    const points=Array.from({length:101},(_,i)=>{const q=i/100;return {q,m:q+.24*Math.sin(Math.PI*q),ideal:1-(1-q)**3};});
+    const path=k=>points.map((p,i)=>`${i?'L':'M'}${x(p.q)},${y(p[k])}`).join(' ');
+    let s='<rect width="520" height="310" fill="#f7f9fb"/>';
+    for(let i=0;i<=4;i++){const p=i/4;s+=`<path d="M58,${y(p)}H482" stroke="#e2e9ef" stroke-width="1"/><text x="45" y="${y(p)+4}" text-anchor="end" font-family="Arial" font-size="11" fill="#51677b">${i*25}</text><text x="${x(p)}" y="270" text-anchor="middle" font-family="Arial" font-size="11" fill="#51677b">${i*25}</text>`;}
+    s+=`<path d="${path('ideal')} ${points.slice().reverse().map(p=>`L${x(p.q)},${y(p.m)}`).join(' ')}Z" fill="#f7dcaa" fill-opacity=".7"/><path d="${path('m')}Z" fill="#b5d4fc" fill-opacity=".8"/><path d="M58,249L482,41" stroke="#788795" fill="none" stroke-dasharray="5 4" stroke-width="1.6"/><path d="${path('m')}" fill="none" stroke="#1766d0" stroke-width="2.5"/><path d="${path('ideal')}" fill="none" stroke="#009b9d" stroke-width="2.5"/><text x="225" y="153" font-size="25" font-weight="bold" font-family="Arial" fill="#1766d0">A</text><text x="230" y="109" font-size="25" font-weight="bold" font-family="Arial" fill="#ad6b00">B</text><text x="270" y="298" font-family="Arial" font-size="12" text-anchor="middle" fill="#51677b">Sites selected (%)</text><text x="15" y="145" transform="rotate(-90 15 145)" font-family="Arial" font-size="12" text-anchor="middle" fill="#51677b">Observed outcome (%)</text>`;
+    $('intro-chart').innerHTML=s;
+  }
+  E.cases.forEach(c=>{const o=document.createElement('option');o.value=c.id;o.textContent=c.title;$('case').add(o);});$('case').value='jigjiga_743';
+  $('mode-examples').addEventListener('click',()=>inputMode('examples'));
+  $('mode-csv').addEventListener('click',()=>inputMode('csv'));
+  $('generate').addEventListener('click',generate);$('case').addEventListener('change',()=>{
+    const cohort=E.cohortSummaries[$('case').value];
+    if(cohort)$('sample-size').value=cohort.n;
+    generate();
+  });
+  $('ranking-quality').addEventListener('change',generate);
+  $('load-csv').addEventListener('click',()=>loadCSV($('csv-input').value,'Pasted CSV'));
+  $('file-input').addEventListener('change',async e=>{
+    const f=e.target.files[0];if(!f)return;
+    const requestRevision=++state.revision;
+    if(f.size>5000000){invalidate('CSV exceeds 5 MB. No file was uploaded to a server.',true);e.target.value='';return;}
+    invalidate('Reading the selected CSV. No result is available yet.',true);
+    message('Reading the selected CSV. Calculations remain in this browser.');
+    try{
+      const text=await f.text();
+      if(requestRevision===state.revision)loadCSV(text,f.name,requestRevision);
+    }catch(err){if(requestRevision===state.revision)invalidate(err,true);}
+    finally{if(requestRevision===state.revision)e.target.value='';}
+  });
+  $('analyze').addEventListener('click',compute);
+  ['id-column','observed-column','score-column','direction','compare-column','compare-direction','validation'].forEach(id=>$(id).addEventListener('change',compute));
+  ['cohort','endpoint'].forEach(id=>$(id).addEventListener('input',()=>{if(state.result){$('report-text').value=reportText();$('dataset-title').textContent=$('cohort').value||state.source.title;}}));
+  $('budget').addEventListener('input',compute);$('shade').addEventListener('change',drawChart);
+  $('target-coverage').addEventListener('input',renderInsights);
+  $('coverage-chart').addEventListener('pointermove',e=>{const r=state.result;if(!r||r.status==='zero_total')return;const q=pointerFraction(e),y=C.atFraction(r.curve,q);const g=$('hover-indicator');if(g){g.setAttribute('visibility','visible');$('hover-line').setAttribute('d',`M${px(q)},${plot.top}V${plot.bottom}`);$('hover-point').setAttribute('cx',px(q));$('hover-point').setAttribute('cy',py(y));}updateReadout(q);});
+  $('coverage-chart').addEventListener('pointerleave',()=>{if(state.result){$('hover-indicator')?.setAttribute('visibility','hidden');updateReadout(state.result.budget.fraction);}});
+  $('coverage-chart').addEventListener('click',e=>{if(!state.result)return;$('budget').value=Math.max(1,Math.round(pointerFraction(e)*100));compute();});
+  $('template-download').addEventListener('click',()=>download('lift_input_template.csv',C.toCSV(C.simulate('worked').rows),'text/csv;charset=utf-8'));
+  $('download-data').addEventListener('click',()=>download('lift_input_data.csv',C.toCSV(state.rows,state.headers),'text/csv;charset=utf-8'));
+  $('download-curves').addEventListener('click',()=>download('lift_curve_points.csv',C.toCSV(state.result.curve.map((p,i)=>({...p,...(state.comparison?{comparison:state.comparison.curve[i].model}:{})}))),'text/csv;charset=utf-8'));
+  $('download-ranks').addEventListener('click',()=>download('lift_ranked_rows.csv',C.toCSV(state.result.rankedRows),'text/csv;charset=utf-8'));
+  $('download-budgets').addEventListener('click',()=>download('lift_budget_table.csv',C.toCSV(budgetData()),'text/csv;charset=utf-8'));
+  $('download-json').addEventListener('click',()=>download('lift_analysis_report.json',JSON.stringify(reportObject(),null,2),'application/json'));
+  $('download-report').addEventListener('click',()=>download('lift_reporting_paragraph.txt',reportText()));
+  $('copy-report').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(reportText());$('copy-report').textContent='Copied';setTimeout(()=>$('copy-report').textContent='Copy paragraph',1800);}catch{$('report-text').focus();$('report-text').select();message('Select and copy the highlighted paragraph. Clipboard access is unavailable in this browser context.');}});
+  $('download-svg').addEventListener('click',()=>download('lift_coverage_figure.svg',figureSVG(),'image/svg+xml'));
+  $('download-png').addEventListener('click',()=>{const url=URL.createObjectURL(new Blob([figureSVG()],{type:'image/svg+xml'}));const img=new Image();img.onload=()=>{const canvas=document.createElement('canvas');canvas.width=2460;canvas.height=1770;const ctx=canvas.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,2460,1770);ctx.drawImage(img,0,0,2460,1770);URL.revokeObjectURL(url);canvas.toBlob(blob=>{if(blob)download('lift_coverage_figure.png',blob);else message('PNG export failed. Use SVG instead.',true);},'image/png');};img.onerror=()=>{URL.revokeObjectURL(url);message('PNG export is unavailable in this browser. The editable SVG export remains available.',true);};img.src=url;});
+  document.querySelectorAll('[data-case]').forEach(el=>el.addEventListener('click',()=>{
+    $('case').value=el.dataset.case;
+    if(el.dataset.budget)$('budget').value=el.dataset.budget;
+    if(el.dataset.size)$('sample-size').value=el.dataset.size;
+    else if(E.cohortSummaries[el.dataset.case])$('sample-size').value=E.cohortSummaries[el.dataset.case].n;
+    generate();$('laboratory').scrollIntoView({behavior:'smooth'});
+  }));
+  $('print-handbook').addEventListener('click',()=>{document.querySelectorAll('.chapter details').forEach(d=>d.open=true);window.print();});
+  if($('intro-chart'))intro();
+  generate();
+})();
+</script>
+<script>(function(root,factory){
+  const api=factory(root.LiftCore || (typeof module==='object' && module.exports ? require('../dist/core.js') : null),root.LiftInsights || (typeof module==='object' && module.exports ? require('./insights.js') : null));
+  if(typeof module==='object' && module.exports)module.exports=api;
+  root.LiftLesson=api;
+  if(typeof document!=='undefined' && document.getElementById('learn'))api.mount(document);
+})(typeof globalThis!=='undefined'?globalThis:this,function(C,I){
+  'use strict';
+  if(!C||!I)throw new Error('The habitat lesson requires LiftCore and LiftInsights.');
+  const sites=Object.freeze([40,25,15,10,5,3,2,0].map((observed,i)=>Object.freeze({id:`H${String(i+1).padStart(2,'0')}`,observed})));
+  const mixed=Object.freeze([3,0,7,2,4,1,6,5]);
+  function validateOrder(order){
+    if(!Array.isArray(order)||order.length!==sites.length||new Set(order).size!==sites.length||order.some(i=>!Number.isInteger(i)||i<0||i>=sites.length))throw new Error('The lesson order must contain each of the eight habitats exactly once.');
+  }
+  function compute(order,budget){
+    validateOrder(order);
+    if(!Number.isInteger(budget)||budget<1||budget>sites.length)throw new Error('Choose an integer site budget from 1 to 8.');
+    const rows=order.map((i,rank)=>({site_id:sites[i].id,observed:sites[i].observed,score:sites.length-rank}));
+    const result=C.evaluate(rows,{fraction:budget/sites.length});
+    const selected=order.slice(0,budget).reduce((a,i)=>a+sites[i].observed,0);
+    return{order:order.slice(),budget,selected,total:100,coverage:selected/100,random:budget/sites.length,
+      difference:selected/100-budget/sites.length,result};
+  }
+  function move(order,siteIndex,direction){
+    validateOrder(order);
+    if(!Number.isInteger(siteIndex)||siteIndex<0||siteIndex>=sites.length)throw new Error('Unknown habitat.');
+    if(direction!==-1&&direction!==1)throw new Error('Move direction must be -1 or 1.');
+    const next=order.slice(),position=next.indexOf(siteIndex),target=position+direction;
+    if(target>=0&&target<next.length)[next[position],next[target]]=[next[target],next[position]];
+    return next;
+  }
+  function preset(name,seed=2026){
+    if(name==='mixed')return mixed.slice();
+    if(name==='ideal')return sites.map((_,i)=>i);
+    if(name==='reversed')return sites.map((_,i)=>sites.length-1-i);
+    if(name!=='shuffle')throw new Error('Unknown visit-order preset.');
+    if(!Number.isInteger(seed)||seed<0||seed>4294967295)throw new Error('Shuffle seed must be an integer from 0 to 4,294,967,295.');
+    let a=seed>>>0;
+    const random=()=>{a=(a+0x6D2B79F5)>>>0;let t=Math.imul(a^(a>>>15),1|a);t^=t+Math.imul(t^(t>>>7),61|t);return((t^(t>>>14))>>>0)/4294967296;};
+    const order=sites.map((_,i)=>i);
+    for(let i=order.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}
+    return order;
+  }
+  function mount(doc){
+    const $=id=>doc.getElementById(id);
+    const state={order:preset('mixed'),budget:2};
+    const esc=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const f=(x,d=3)=>x.toFixed(d),percent=x=>`${(x*100).toFixed(Number.isInteger(x*100)?0:1)}%`;
+    const box={left:58,right:578,top:22,bottom:267};
+    const x=q=>box.left+q*(box.right-box.left),y=q=>box.bottom-q*(box.bottom-box.top);
+    function chart(c){
+      const points=c.result.curve,path=key=>points.map((p,i)=>`${i?'L':'M'}${x(p.x).toFixed(2)},${y(p[key]).toFixed(2)}`).join(' ');
+      const text=(xx,yy,value,extra='')=>`<text x="${xx}" y="${yy}" font-family="Arial, sans-serif" font-size="11" fill="#496278" ${extra}>${esc(value)}</text>`;
+      let svg=`<title id="lesson-chart-title">Coverage for the editable eight-habitat order</title><desc id="lesson-chart-desc">The selected first ${c.budget} sites contain ${c.selected} of 100 observed larvae. Coverage is ${percent(c.coverage)}, compared with ${percent(c.random)} expected under random selection. Full-curve lift is ${f(c.result.lift)}.</desc><rect width="600" height="340" fill="white"/>`;
+      for(let i=0;i<=4;i++){const q=i/4;svg+=`<path d="M${box.left},${y(q)}H${box.right}" stroke="#e2e9ef" stroke-width="1"/>${text(box.left-10,y(q)+4,String(i*25),'text-anchor="end"')}${text(x(q),box.bottom+20,String(i*2),'text-anchor="middle"')}`;}
+      const model=path('model'),ideal=path('ideal'),gap=ideal+' '+points.slice().reverse().map(p=>`L${x(p.x)},${y(p.model)}`).join(' ')+'Z';
+      const regions=I.signedAreaRegions(points);
+      const areaPath=run=>run.map((p,i)=>`${i?'L':'M'}${x(p.x)},${y(p.model)}`).join(' ')+`L${x(run.at(-1).x)},${y(run.at(-1).x)}L${x(run[0].x)},${y(run[0].x)}Z`;
+      svg+=`<path d="${gap}" fill="#f4ddb0" fill-opacity=".58"/>`;
+      for(const run of regions.positive)svg+=`<path d="${areaPath(run)}" fill="#b5d4fc" fill-opacity=".62"/>`;
+      for(const run of regions.negative)svg+=`<path d="${areaPath(run)}" fill="#e4b4ad" fill-opacity=".50"/>`;
+      svg+=`<path d="M${box.left},${box.top}V${box.bottom}H${box.right}" fill="none" stroke="#8c9aaa" stroke-width="1"/><path d="M${x(0)},${y(0)}L${x(1)},${y(1)}" fill="none" stroke="#7d8793" stroke-width="1.5" stroke-dasharray="5 4"/><path d="${ideal}" fill="none" stroke="#009b9d" stroke-width="2.2"/><path d="${model}" fill="none" stroke="#1766d0" stroke-width="2.6" stroke-linejoin="round"/>`;
+      for(const p of points)svg+=`<circle cx="${x(p.x)}" cy="${y(p.model)}" r="2.6" fill="#1766d0" stroke="white" stroke-width=".7"/>`;
+      svg+=`<path d="M${x(c.random)},${box.bottom}V${y(c.coverage)}H${box.left}" fill="none" stroke="#1766d0" stroke-dasharray="3 4"/><circle cx="${x(c.random)}" cy="${y(c.coverage)}" r="4.5" fill="#1766d0" stroke="white" stroke-width="1.5"/>`;
+      svg+=text(318,310,'Sites selected (of 8)','text-anchor="middle"');
+      svg+=`<text x="15" y="145" transform="rotate(-90 15 145)" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#496278">Observed larvae represented (%)</text>`;
+      svg+=text(318,333,'Blue / red: signed area A. Amber: remaining area B.','text-anchor="middle"');
+      $('lesson-chart').innerHTML=svg;
+    }
+    function render(focusSite=null,focusDirection=null){
+      const c=compute(state.order,state.budget);
+      $('lesson-budget').value=String(state.budget);
+      $('lesson-budget-value').textContent=`${state.budget} of 8 sites`;
+      $('lesson-selected-count').textContent=`${c.selected} / 100`;
+      $('lesson-coverage').textContent=percent(c.coverage);$('lesson-random').textContent=percent(c.random);
+      $('lesson-lift').textContent=f(c.result.lift);
+      $('lesson-sites').innerHTML=state.order.map((siteIndex,position)=>{
+        const site=sites[siteIndex],selected=position<state.budget;
+        return`<li class="lesson-site${selected?' is-selected':''}"><span class="lesson-position">${position+1}</span><span class="lesson-site-name">${site.id}<small>${selected?'Selected now':'Outside budget'}</small></span><span class="lesson-count" aria-label="${site.observed} observed larvae">${site.observed}</span><span class="lesson-move"><button type="button" id="lesson-earlier-${site.id}" data-site="${siteIndex}" data-direction="-1" aria-label="Move habitat ${site.id} earlier"${position===0?' disabled':''}>Earlier</button><button type="button" id="lesson-later-${site.id}" data-site="${siteIndex}" data-direction="1" aria-label="Move habitat ${site.id} later"${position===7?' disabled':''}>Later</button></span></li>`;
+      }).join('');
+      $('lesson-sites').querySelectorAll('button[data-site]').forEach(button=>button.addEventListener('click',()=>{
+        const siteIndex=Number(button.dataset.site),direction=Number(button.dataset.direction);
+        state.order=move(state.order,siteIndex,direction);
+        $('lesson-order-note').textContent='Your edited order. The known habitat counts are unchanged.';
+        render(siteIndex,direction);
+      }));
+      const compare=Math.abs(c.difference)<1e-12?'This matches the random expectation at this budget.':
+        `That is ${f(Math.abs(c.difference)*100,1)} percentage points ${c.difference>0?'more':'less'} than random expectation.`;
+      $('lesson-explanation').textContent=`The first ${state.budget} of 8 habitats contain ${c.selected} of 100 observed larvae (${percent(c.coverage)}). Random selection of ${state.budget} sites would represent ${percent(c.random)} in expectation. ${compare}`;
+      $('lesson-area-formula').innerHTML=`<span class="blue">Signed area A = ${f(c.result.modelAdvantage,4)}</span><br><span class="amber">Remaining area B = ${f(c.result.denominator-c.result.modelAdvantage,4)}</span><br>L = A / (A + B) = ${f(c.result.lift)}`;
+      const interpretation=c.result.lift<0?`This order has a negative signed area gain: L = ${f(c.result.lift)}. Its full-curve result is worse than random expectation, even if some budgets perform differently.`:
+        `L = ${f(c.result.lift)} means this order recovers ${f(c.result.lift*100,1)}% of the available full-curve area advantage over random selection.`;
+      $('lesson-interpretation').textContent=interpretation+' Lift is not the percentage of larvae killed. Moving the budget changes the selected coverage but does not change the order or its full-curve lift.';
+      chart(c);
+      if(focusSite!==null){const site=sites[focusSite],requested=$(`lesson-${focusDirection===-1?'earlier':'later'}-${site.id}`),fallback=$(`lesson-${focusDirection===-1?'later':'earlier'}-${site.id}`);(requested&&!requested.disabled?requested:fallback)?.focus({preventScroll:true});}
+      return c;
+    }
+    function choose(name){
+      try{state.order=preset(name,Number($('lesson-seed').value));$('lesson-order-note').textContent=name==='shuffle'?`Shuffled with seed ${$('lesson-seed').value}. The same seed reproduces the same order.`:
+        name==='ideal'?'Ideal retrospective ordering uses the known outcomes. It is not a deployable prediction.':
+        name==='reversed'?'Reversed ordering puts the smallest observed counts first.':'Mixed example. Use Earlier and Later to change a habitat\'s position.';render();}
+      catch(error){$('lesson-order-note').textContent=error.message;}
+    }
+    for(const name of ['mixed','ideal','reversed','shuffle'])$(`lesson-${name}`).addEventListener('click',()=>choose(name));
+    $('lesson-budget').addEventListener('input',()=>{const budget=Number($('lesson-budget').value);if(Number.isInteger(budget)&&budget>=1&&budget<=8){state.budget=budget;render();}});
+    render();
+    return{getState:()=>({order:state.order.slice(),budget:state.budget}),render};
+  }
+  return Object.freeze({sites,compute,move,preset,mount});
+});
+</script>
+<script>/* Source-cohort distribution rendering. No individual field records or network access. */
+(function(root,factory){
+  const api=factory(root.LiftExamples||(typeof module==='object'&&module.exports?require('./empirical.js'):null));
+  if(typeof module==='object'&&module.exports)module.exports=api;
+  root.LiftFieldCases=api;
+  if(typeof document!=='undefined'){
+    if(document.getElementById('field-distribution-chart'))api.render(document);
+    else if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>api.render(document),{once:true});
+  }
+})(typeof globalThis!=='undefined'?globalThis:this,function(E){
+  'use strict';
+  if(!E)throw new Error('LiftFieldCases requires LiftExamples.');
+  const bins=Object.freeze([
+    {label:'0',minimum:0,maximum:0},{label:'1-25',minimum:1,maximum:25},
+    {label:'26-50',minimum:26,maximum:50},{label:'51-100',minimum:51,maximum:100},
+    {label:'101-200',minimum:101,maximum:200},{label:'201-400',minimum:201,maximum:400},
+    {label:'401-850',minimum:401,maximum:850}
+  ].map(Object.freeze));
+  const ids=['jigjiga_743','jigjiga_547'];
+  const esc=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmt=(value,digits=0)=>value.toLocaleString('en-US',{minimumFractionDigits:digits,maximumFractionDigits:digits});
+  const pct=value=>fmt(value*100,1)+'%';
+
+  function aggregate(histogram){
+    if(!Array.isArray(histogram))throw new Error('Expected an array of count-frequency pairs.');
+    const result=bins.map(bin=>({...bin,count:0}));
+    for(const pair of histogram){
+      if(!Array.isArray(pair)||pair.length!==2||!Number.isInteger(pair[0])||!Number.isInteger(pair[1])||pair[1]<1)throw new Error('Invalid count-frequency pair.');
+      const bin=result.find(b=>pair[0]>=b.minimum&&pair[0]<=b.maximum);
+      if(!bin)throw new Error('An observed count is outside the documented source categories.');
+      bin.count+=pair[1];
+    }
+    return result;
+  }
+
+  function render(doc){
+    const svg=doc.getElementById('field-distribution-chart');
+    if(!svg)return null;
+    const summaries=ids.map(id=>E.cohortSummaries[id]);
+    const frequency=ids.map(id=>aggregate(E.histograms[id]));
+    for(let j=0;j<ids.length;j++)if(frequency[j].reduce((a,b)=>a+b.count,0)!==summaries[j].n)throw new Error('Distribution frequencies do not match source cohort size.');
+    const colors=['#1766d0','#009b9d'],labels=['Full cohort (743 sites)','Nested subset (547 sites)'];
+    const left=126,right=773,top=86,groupHeight=48,barHeight=13;
+    const maxShare=Math.max(...frequency.flatMap((values,j)=>values.map(b=>b.count/summaries[j].n)));
+    const xMax=Math.ceil(maxShare/.05)*.05,x=value=>left+(right-left)*value/xMax;
+    const bottom=top+bins.length*groupHeight;
+    const text=(xx,yy,value,extra='')=>'<text x="'+xx+'" y="'+yy+'" fill="#425b71" font-family="Arial, sans-serif" font-size="13" '+extra+'>'+esc(value)+'</text>';
+    let chart='<title id="field-distribution-title">Recorded larval count distributions in nested Jigjiga cohorts</title><desc id="field-distribution-desc">Paired bars show source cohort frequencies in seven recorded-count bins. Blue: all 743 labelled sites. Teal: the 547-site segmentation-mask subset. Percentages use each cohort as its own denominator. These are descriptive source frequencies, not predictions or independent samples.</desc><rect width="960" height="490" fill="white"/>';
+    chart+='<rect x="126" y="21" width="17" height="13" fill="'+colors[0]+'"/>'+text(151,33,labels[0]);
+    chart+='<rect x="420" y="21" width="17" height="13" fill="'+colors[1]+'"/>'+text(445,33,labels[1]);
+    chart+=text(110,66,'Recorded count','text-anchor="end"');
+    const tickCount=Math.round(xMax/.05);
+    for(let i=0;i<=tickCount;i++){
+      const share=i*.05;
+      chart+='<path d="M'+x(share)+','+(top-9)+'V'+(bottom-3)+'" stroke="#e0e7ed" stroke-width="1"/>';
+      chart+=text(x(share),bottom+19,fmt(share*100)+'%','text-anchor="middle"');
+    }
+    for(let i=0;i<bins.length;i++){
+      const y=top+i*groupHeight;
+      chart+=text(110,y+18,bins[i].label,'text-anchor="end"');
+      for(let j=0;j<2;j++){
+        const count=frequency[j][i].count,share=count/summaries[j].n,yy=y+j*17;
+        chart+='<rect x="'+left+'" y="'+yy+'" width="'+(x(share)-left)+'" height="'+barHeight+'" fill="'+colors[j]+'"><title>'+esc(labels[j]+', count '+bins[i].label+': '+count+' sites ('+pct(share)+')')+'</title></rect>';
+        chart+=text(x(share)+8,yy+11,pct(share)+' ('+count+' sites)');
+      }
+    }
+    chart+=text((left+right)/2,bottom+49,'Share of sites within each source cohort','text-anchor="middle"');
+    svg.innerHTML=chart;
+    const summaryHeaders=['Source cohort','Sites','Recorded total','Zero-count sites','Median','Mean','Maximum','Top 10% share','Top 30% share'];
+    doc.getElementById('field-summary-table').innerHTML='<table><caption>Aggregate source-cohort summaries, before generating any synthetic examples</caption><thead><tr>'+summaryHeaders.map(h=>'<th scope="col">'+h+'</th>').join('')+'</tr></thead><tbody>'+summaries.map((s,j)=>'<tr><th scope="row">'+labels[j]+'</th>'+[
+      fmt(s.n),fmt(s.total),fmt(s.zero_count)+' ('+pct(s.zero_share)+')',fmt(s.median),fmt(s.mean,1),fmt(s.maximum),pct(s.top10_observed_share),pct(s.top30_observed_share)
+    ].map(value=>'<td class="num">'+esc(value)+'</td>').join('')+'</tr>').join('')+'</tbody></table>';
+    doc.getElementById('field-frequency-table').innerHTML='<table><caption>Underlying binned count frequencies</caption><thead><tr><th scope="col">Recorded count</th><th scope="col">743-site frequency</th><th scope="col">743-site share</th><th scope="col">547-site frequency</th><th scope="col">547-site share</th></tr></thead><tbody>'+bins.map((b,i)=>'<tr><th scope="row">'+b.label+'</th><td class="num">'+frequency[0][i].count+'</td><td class="num">'+pct(frequency[0][i].count/summaries[0].n)+'</td><td class="num">'+frequency[1][i].count+'</td><td class="num">'+pct(frequency[1][i].count/summaries[1].n)+'</td></tr>').join('')+'</tbody></table>';
+    return{bins:frequency,summaries};
+  }
+  return Object.freeze({bins,aggregate,render});
+});
+</script>
+</body></html>

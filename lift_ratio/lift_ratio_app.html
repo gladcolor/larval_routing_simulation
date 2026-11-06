@@ -1,0 +1,1200 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Lift-ratio | Data-input app</title><style>:root{--ink:#162c43;--muted:#556b7f;--blue:#1766d0;--teal:#009b9d;--amber:#b77000;--paper:#f7f9fb;--line:#dce4ec;--lightblue:#e9f2ff;--orange:#be6b37;--shadow:0 9px 32px #12375608}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:94px}body{margin:0;background:white;color:var(--ink);font:16px/1.65 Inter,"Segoe UI",Arial,sans-serif}a{color:var(--blue);text-underline-offset:4px}a:hover{color:#104f9d}button,input,select,textarea{font:inherit}button,a,input,select,textarea,summary{outline-offset:4px}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid #7db3fc}button{cursor:pointer}button:disabled{opacity:.4;cursor:not-allowed}h1,h2,h3,h4,p{margin-top:0}h1{font:500 clamp(40px,4.5vw,64px)/1.08 Georgia,"Times New Roman",serif;letter-spacing:-1.8px;margin-bottom:24px}h2{font:500 clamp(27px,2.8vw,38px)/1.2 Georgia,serif;letter-spacing:-.7px;margin-bottom:10px}h3{font-size:18px;line-height:1.35;margin-bottom:12px}h4{font-size:16px;margin-bottom:8px}p{margin-bottom:16px}small,.fine{font-size:12px;line-height:1.6;color:var(--muted)}.fine{margin:12px 0}.eyebrow{font-size:11px;line-height:1.6;letter-spacing:1.6px;font-weight:750;color:var(--muted);margin-bottom:16px}.topbar{min-height:83px;background:#fffffff5;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;padding:16px max(24px,calc((100vw - 1280px)/2));gap:24px;position:sticky;top:0;z-index:20;backdrop-filter:blur(12px)}.brand{display:flex;align-items:center;gap:12px;color:var(--ink);text-decoration:none;font-size:12px;letter-spacing:1px;font-weight:750;white-space:nowrap}.brand-mark{height:40px;width:40px;background:var(--ink);color:white;display:grid;place-items:center;border-radius:50%;font:italic 29px Georgia}.brand small{display:block;font-size:10px;font-weight:400;letter-spacing:.5px}nav{display:flex;gap:24px;align-items:center}nav a{text-decoration:none;color:var(--muted);font-size:13px}nav .offline{border:1px solid var(--line);padding:7px 13px;border-radius:5px}.skip{position:fixed;left:12px;top:-80px;z-index:100;background:white;padding:12px}.skip:focus{top:10px}main{max-width:1280px;margin:auto;padding:0 28px}.hero{display:grid;grid-template-columns:1fr 1fr;gap:70px;padding:74px 0 58px;align-items:center}.hero .lead{font-size:21px;line-height:1.5;color:var(--ink)}.hero p:not(.eyebrow):not(.lead){color:var(--muted)}.hero-actions{display:flex;align-items:center;gap:24px;margin-top:25px}.button{border:1px solid transparent;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;gap:20px;min-height:42px;padding:10px 17px;font-size:13px;font-weight:650;text-decoration:none;transition:.15s}.primary{background:var(--blue);color:white}.primary:hover{background:#1157b4;color:white}.secondary{background:white;border-color:#c5d4e3;color:var(--ink)}.secondary:hover{background:#eef5fb}.text-link{font-size:14px;font-weight:600;text-decoration:none}.full{width:100%}.hero-figure{background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:24px 23px 17px}.figure-kicker{font-size:10px;letter-spacing:1.8px;color:var(--muted);font-weight:750}.hero-figure svg{width:100%;display:block}.hero-equation{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding:16px 0 10px}.hero-equation>span{font-size:16px}.hero-equation strong{font:500 28px Georgia,serif}.blue{color:var(--blue)}.amber{color:var(--amber)}.area-key{display:flex;justify-content:space-between;gap:12px;font-size:11px;color:var(--muted);flex-wrap:wrap}.swatch{display:inline-block;width:10px;height:10px;margin-right:6px}.blue-fill{background:#bcd9ff}.amber-fill{background:#f4ddb0}.reading-strip{display:flex;justify-content:space-between;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:19px 0;font-size:12px;color:var(--muted);gap:15px}.reading-strip b{color:var(--blue);margin-right:12px}.laboratory{padding:62px 0}.section-head{display:flex;justify-content:space-between;gap:35px;align-items:end;margin-bottom:28px}.section-head p:last-child{font-size:13px;color:var(--muted);margin-bottom:8px}.section-head .eyebrow{margin-bottom:9px}.lab-grid{display:grid;grid-template-columns:287px minmax(0,1fr);border:1px solid var(--line);border-radius:9px;overflow:hidden;box-shadow:var(--shadow);align-items:stretch}.input-panel{background:var(--paper);padding:25px 22px;border-right:1px solid var(--line)}.control-title{display:flex;align-items:center;gap:9px;margin:26px 0 15px}.control-title:first-child{margin-top:0}.control-title h3{font-size:14px;margin:0}.step{display:grid;place-items:center;border:1px solid #b4c8dc;width:23px;height:23px;border-radius:50%;font-size:11px;color:var(--blue)}label{display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:#3c5268}select,input:not([type=checkbox]):not([type=range]):not([type=file]),textarea{width:100%;border:1px solid #c9d6e2;border-radius:5px;background:white;color:var(--ink);padding:8px 10px;min-height:38px;font-size:13px;margin-bottom:12px}select{height:39px}textarea{resize:vertical;line-height:1.5}#csv-input{font:11px/1.6 Consolas,monospace}.field-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}.file-label{border:1px dashed #9bb6d0;border-radius:5px;padding:13px 9px;background:white;color:var(--blue)}input[type=file]{display:block;width:100%;font-size:11px;margin-top:8px}details{border-top:1px solid var(--line);padding:14px 0}summary{cursor:pointer;font-weight:600;font-size:13px;color:var(--ink);padding:2px 0}details[open]>summary{margin-bottom:14px}.input-panel details:last-of-type{margin-bottom:10px}.results-panel{padding:28px 30px;background:white;min-width:0}.notice{padding:11px 14px;font-size:13px;border:1px solid #d4e4f1;background:#f0f6fb;border-radius:5px;margin-bottom:18px;white-space:pre-line}.notice:empty{display:none}.notice.error{border-color:#e5bfb5;background:#fff1ed;color:#8c3323}.result-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}.result-heading h3{font-size:21px;margin-bottom:6px}.result-heading .eyebrow{font-size:9px;margin-bottom:6px}.badge{border:1px solid var(--line);padding:4px 9px;font-size:11px;white-space:nowrap;border-radius:20px;color:var(--muted)}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:25px 0 20px;border-bottom:1px solid var(--line);gap:18px}.metrics>div{border-right:1px solid var(--line);padding-right:13px}.metrics>div:last-child{border:none;padding-right:0}.metrics span{font-size:11px;line-height:1.5;display:block;min-height:33px;color:var(--muted)}.metrics strong{display:block;font-size:35px;letter-spacing:-1.2px;line-height:1.4;color:var(--blue);font-weight:600}.metrics small{display:block;font-size:10px;line-height:1.4}.budget-control{padding:20px 0 5px}.budget-control>label{font-size:13px;display:flex;justify-content:space-between}.budget-control output{font-weight:750;color:var(--blue)}input[type=range]{width:100%;accent-color:var(--blue);cursor:pointer}.chart-options{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:8px}.chart-options label{font-size:11px;font-weight:400;margin:0}.chart-options>span{font-size:10px;color:var(--muted)}input[type=checkbox]{accent-color:var(--blue);vertical-align:middle}.chart-frame{width:100%;margin-top:10px;overflow:hidden}#coverage-chart{width:100%;display:block;height:auto;touch-action:pan-y}.chart-key{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;font-size:10px;color:var(--muted);margin:3px 0 14px}.line-swatch{display:inline-block;width:19px;border-top:2px solid;vertical-align:middle;margin-right:5px}.model{color:var(--blue)}.ideal{color:var(--teal)}.random{color:#7b8793;border-top-style:dashed}.compare{color:var(--orange);border-top-style:dashed}.chart-readout{min-height:31px;font-size:12px;text-align:center;color:var(--muted);margin-bottom:8px}.area-calculation{background:var(--paper);padding:13px 17px;font-size:12px;border-left:3px solid var(--blue);line-height:1.9}.area-calculation b{font-variant-numeric:tabular-nums}.comparison{margin:15px 0;border:1px solid #e2d0c4;background:#fffaf5;padding:13px;font-size:12px;border-radius:5px}.export-bar{border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:16px 0 9px}.export-bar>span{font-size:11px;color:var(--muted);margin-right:5px}.small-button{background:white;border:1px solid #d4dfe9;border-radius:4px;padding:6px 9px;font-size:11px;color:var(--ink)}.small-button:hover{background:#f0f5fa}.table-wrap{overflow-x:auto;margin:15px 0}table{border-collapse:collapse;width:100%;font-size:12px;text-align:left;white-space:normal}th,td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}th{background:var(--paper);font-weight:650}td.num{text-align:right;font-variant-numeric:tabular-nums}.chapter{border-top:1px solid var(--line);padding:55px 0}.chapter p,.chapter li{max-width:84ch;color:#3e5366;font-size:15px}.chapter h3{margin:22px 0 12px}.chapter .section-head{align-items:start}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:42px}.formula{font:22px/1.8 Georgia,serif;background:var(--paper);padding:20px 25px;border-left:3px solid var(--teal);margin:22px 0}.note{padding:17px 22px;background:#f0f5f9;border-left:3px solid #7ea4bd;font-size:14px;margin:20px 0}.note p:last-child{margin-bottom:0}.case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.case-card{padding:20px;border:1px solid var(--line);border-radius:6px}.case-card h3{margin:0 0 10px;font-size:16px}.case-card p{font-size:13px}.report-checklist{columns:2;column-gap:44px;padding-left:22px}.report-checklist li{break-inside:avoid;margin-bottom:12px}.chapter details{padding:18px 0}.chapter summary{font-size:16px}.chapter code{font-size:12px;padding:2px 4px;background:#edf2f6;overflow-wrap:anywhere}.chapter pre{background:#edf2f6;padding:18px;overflow-x:auto;font-size:12px}#references li{font-size:13px;margin-bottom:15px;overflow-wrap:anywhere}footer{background:var(--paper);border-top:1px solid var(--line);padding:25px max(28px,calc((100vw - 1224px)/2));display:flex;justify-content:space-between;align-items:center;gap:22px;font-size:12px;color:var(--muted)}[hidden]{display:none!important}
+@media(max-width:1050px){.hero{gap:35px}.topbar nav{gap:13px}.lab-grid{grid-template-columns:250px minmax(0,1fr)}.input-panel{padding:20px 16px}.results-panel{padding:22px 20px}.metrics{gap:10px}.metrics strong{font-size:30px}.chart-options>span{display:none}.hero-actions{gap:14px}.hero-equation strong{font-size:24px}}
+@media(max-width:800px){.topbar{position:relative;flex-wrap:wrap;padding:17px 22px;gap:16px}.topbar nav{width:100%;justify-content:space-between;gap:8px}.hero{grid-template-columns:1fr;padding:42px 0;gap:27px}.hero h1 br{display:none}.hero-figure{max-width:570px;width:100%;margin:auto}.reading-strip{display:grid;grid-template-columns:1fr 1fr}.section-head{display:block}.section-head>p{margin-top:15px}.lab-grid{grid-template-columns:1fr}.input-panel{border-right:0;border-bottom:1px solid var(--line);display:block;padding:24px}.results-panel{padding:24px 17px}.two-col{grid-template-columns:1fr;gap:15px}.case-grid{grid-template-columns:1fr 1fr}.report-checklist{columns:1}.chapter{padding:38px 0}.chapter .formula{font-size:18px}.topbar .brand{font-size:11px}footer{flex-wrap:wrap}.control-title{margin-top:24px}}
+@media(max-width:480px){main{padding:0 17px}.hero h1{font-size:39px}.hero .lead{font-size:19px}.hero-actions{flex-wrap:wrap}.reading-strip{font-size:10px;gap:12px}.reading-strip b{margin-right:7px}.metrics{gap:7px}.metrics strong{font-size:25px}.metrics small{font-size:9px}.metrics span{font-size:10px;min-height:45px}.result-heading h3{font-size:17px}.badge{font-size:9px}.case-grid{grid-template-columns:1fr}.formula{padding:16px}.hero-figure{padding:16px}.topbar nav a{font-size:11px}.chart-key{gap:10px}.chapter p,.chapter li{font-size:14px}}
+.chapter>.section-head{display:block}.case-card button,button[data-case]{background:white;border:1px solid #c5d4e3;border-radius:4px;color:#1766d0;padding:7px 10px;margin:4px 4px 0 0;font-size:12px}.case-card button:hover,button[data-case]:hover{background:#edf5ff}caption{text-align:left;font-size:13px;color:#556b7f;padding-bottom:10px}.chapter .formula{overflow-wrap:anywhere}
+@media print{.topbar{position:static}nav,.hero-actions,.input-panel,.export-bar,.small-button,#downloads,.budget-control,footer button,.offline,button[data-case]{display:none!important}.hero{padding:20px 0;gap:25px}.hero h1{font-size:35px}.lab-grid{display:block;border:none}.results-panel{padding:0}.chapter{padding:25px 0}.section-head{break-after:avoid}h2,h3,summary{break-after:avoid}p,li{orphans:3;widows:3}.chart-frame,.metrics,.hero-figure,.case-card{break-inside:avoid}details>*{display:block}main{padding:0;max-width:100%}body{font-size:11px}.chapter p,.chapter li{font-size:11px}.chapter{break-inside:auto}.hero .lead{font-size:16px}.reading-strip{display:none}a{color:inherit}#report-details{display:none}}
+
+/* Edition 02: editorial hierarchy and a task-led analysis workbench. */
+:root { --ink: #172d42; --muted: #52677a; --paper: #f5f7fa; --line: #dce3e9; }
+body { font-family: "Segoe UI", Arial, sans-serif; background: #fff; }
+main { max-width: 1344px; padding: 0 48px; }
+h1, h2 { font-family: Georgia, "Times New Roman", serif; }
+.topbar { padding: 18px max(32px, calc((100vw - 1248px)/2)); min-height: 86px; }
+.brand { font-size: 15px; letter-spacing: 2px; gap: 11px; }
+.brand-symbol { width: 38px; height: 38px; }
+.brand small { font-size: 11px; letter-spacing: .15px; margin-top: 3px; }
+nav a { font-size: 13px; }
+.hero { padding: 68px 0 56px; gap: 58px; grid-template-columns: 1.04fr 1fr; }
+.hero h1 { font-size: clamp(46px, 4.8vw, 68px); letter-spacing: -2.8px; line-height: 1.06; margin-bottom: 26px; }
+.hero h1 em { font-weight: 400; color: #1766d0; }
+.hero .lead { max-width: 25ch; font-size: 23px; line-height: 1.42; margin-bottom: 16px; }
+.hero-intro { max-width: 44ch; font-size: 16px; line-height: 1.75; }
+.hero .eyebrow { font-size: 10px; letter-spacing: 1.8px; margin-bottom: 27px; }
+.hero-actions { gap: 20px; flex-wrap: wrap; margin-top: 28px; }
+.button { border-radius: 4px; min-height: 44px; padding: 11px 17px; }
+.hero-footnote { font-size: 11px; line-height: 1.65; margin-top: 22px; }
+.hero-figure { margin: 0; padding: 24px 24px 18px; background: #f7f9fb; border-radius: 2px; box-shadow: none; }
+.figure-kicker { display: flex; justify-content: space-between; font-size: 9px; gap: 12px; letter-spacing: 1.25px; }
+.figure-kicker span:last-child { color: #7a8793; white-space: nowrap; }
+.hero-figure svg { margin: 16px 0 0; }
+.mini-legend { display: flex; justify-content: center; gap: 24px; color: var(--muted); font-size: 11px; margin: 2px 0 20px; }
+.hero-equation { padding: 20px 0 15px; }
+.hero-equation > span { font-size: 15px; line-height: 1.4; }
+.hero-equation small { font-size: 11px; }
+.hero-equation strong { font-size: 30px; }
+.hero-figure figcaption { font-size: 10px; line-height: 1.6; color: var(--muted); margin-top: 15px; }
+.reading-strip { margin-bottom: 0; padding: 21px 0; }
+.reading-strip a { font-size: 12px; color: var(--muted); text-decoration: none; }
+.reading-strip a:hover { color: var(--blue); }
+.section-head { margin-bottom: 30px; }
+.section-head .eyebrow { font-size: 10px; letter-spacing: 1.7px; }
+.section-head > p { max-width: 36ch; }
+.laboratory { border-top: 1px solid var(--line); padding: 65px 0 68px; }
+.privacy-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #07817d; margin-right: 6px; }
+.lab-grid { grid-template-columns: 278px minmax(0, 1fr); border-radius: 4px; box-shadow: 0 10px 35px #213b5007; }
+.input-panel { padding: 25px 20px; background: #f5f7fa; }
+.control-title { margin-top: 27px; margin-bottom: 17px; }
+.step { font-size: 10px; font-weight: 700; background: white; border-color: #c3d0dd; }
+.source-switch { display: grid; grid-template-columns: 1fr 1fr; padding: 3px; background: #e7edf3; border-radius: 5px; margin-bottom: 20px; gap: 3px; }
+.source-switch button { border: 0; padding: 8px; border-radius: 3px; font-size: 12px; color: var(--muted); background: transparent; }
+.source-switch [aria-pressed=true] { background: white; color: var(--blue); box-shadow: 0 1px 3px #14365812; font-weight: 650; }
+.compact-details { border: 0; padding: 0 0 13px; }
+.compact-details summary { font-size: 11px; font-weight: 400; color: var(--muted); }
+.metadata-controls { margin-top: -3px; border: 0; padding-top: 0; }
+.metadata-controls summary { font-size: 12px; line-height: 1.55; font-weight: 500; }
+.input-panel .fine { font-size: 11px; line-height: 1.7; }
+.file-label { padding: 17px 11px; }
+.results-panel { padding: 28px 30px; }
+.result-heading h3 { font-size: 23px; letter-spacing: -.6px; font-weight: 600; }
+.result-heading .eyebrow { letter-spacing: 1.4px; }
+.metrics { padding-top: 26px; padding-bottom: 23px; gap: 18px; }
+.metrics strong { font-size: 38px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.metrics > div:first-child strong { color: #163c6f; }
+.metrics small { font-size: 10px; }
+.budget-control { padding-top: 23px; }
+.budget-control > label { font-size: 13px; }
+input[type=range] { min-height: 28px; }
+.chart-readout { padding: 9px 12px; background: #f5f8fc; border-radius: 3px; text-align: left; font-size: 12px; }
+.area-calculation { background: #f7f9fb; padding: 15px 18px; border-left-width: 2px; }
+.insight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; border-top: 1px solid var(--line); margin-top: 23px; padding-top: 25px; }
+.insight-grid .eyebrow { font-size: 9px; letter-spacing: 1.1px; margin-bottom: 11px; }
+.insight-grid h4 { font-size: 15px; line-height: 1.4; margin-bottom: 15px; }
+.insight-grid .fine { font-size: 10px; line-height: 1.6; }
+.target-panel { padding-right: 22px; border-right: 1px solid var(--line); }
+.target-panel label { display: flex; justify-content: space-between; gap: 7px; font-weight: 400; font-size: 11px; }
+.target-panel output { color: var(--blue); font-weight: 700; }
+.target-number { display: block; font-size: 27px; letter-spacing: -.7px; color: #163c6f; line-height: 1.45; margin-bottom: 3px; }
+.target-number small { font-size: 12px; letter-spacing: 0; }
+.target-explainer { font-size: 11px; color: var(--muted); line-height: 1.65; margin: 5px 0; }
+.diagnostic-list { margin: 0; padding: 0; }
+.diagnostic-list > div { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 9px 0; }
+.diagnostic-list dt { font-size: 11px; color: var(--muted); }
+.diagnostic-list dd { font-size: 18px; margin: 0; font-variant-numeric: tabular-nums; color: #163c6f; }
+.budget-table-highlight { background: #eff5fe; }
+.export-bar { padding-top: 19px; }
+.small-button { font-size: 11px; padding: 7px 10px; }
+.chapter { padding: 58px 0; }
+.chapter > .section-head { margin-bottom: 25px; }
+.chapter p, .chapter li { font-size: 15px; line-height: 1.8; }
+.chapter .prose { max-width: 86ch; }
+.chapter .formula { border-radius: 0; font-size: 22px; }
+.chapter details { padding: 18px 0; }
+.chapter details > summary { font-weight: 550; font-size: 16px; }
+.chapter details[open] > summary { color: var(--blue); }
+.chapter details p { font-size: 14px; }
+.chapter .table-wrap { margin: 24px 0; }
+table { font-size: 12px; line-height: 1.65; }
+th, td { padding: 11px 12px; }
+.meaning-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 24px; margin: 30px 0; }
+.meaning-card { border-top: 3px solid #1766d0; padding: 20px 18px 8px; background: #f4f7fc; }
+.meaning-card:nth-child(2) { border-color: #009b9d; background: #f1f8f7; }
+.meaning-card:nth-child(3) { border-color: #b77000; background: #fbf7ef; }
+.meaning-card h3 { margin-top: 0; font-size: 18px; }
+.meaning-card p, .meaning-card li { font-size: 13px; line-height: 1.7; }
+.decision-guide { padding: 23px 26px 12px; background: #f5f7fa; margin: 24px 0; }
+.decision-guide h3 { margin-top: 0; }
+.decision-guide ol { padding-left: 21px; }
+.decision-guide li { padding: 0 0 12px 6px; font-size: 14px; }
+.glossary-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; }
+.glossary-term { margin: 0; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.glossary-term dt { font-size: 14px; font-weight: 650; color: var(--ink); }
+.glossary-term dd { margin: 6px 0 0; font-size: 13px; line-height: 1.7; color: var(--muted); }
+.case-grid { grid-template-columns: repeat(3, minmax(0,1fr)); gap: 0 26px; }
+.case-card { border: 0; border-top: 1px solid var(--line); border-radius: 0; padding: 21px 0; }
+.case-card h3 { font-size: 16px; }
+.case-card p { font-size: 13px; line-height: 1.75; }
+.note { border-left-width: 2px; background: #f4f7fa; }
+footer { padding: 30px max(48px, calc((100vw - 1248px)/2)); font-size: 11px; line-height: 1.8; }
+footer b { font-size: 16px; color: var(--ink); }
+@media (max-width: 1100px) {
+  main { padding: 0 30px; }
+  .hero { gap: 35px; }
+  .hero h1 { font-size: 53px; }
+  .hero .lead { font-size: 21px; }
+  .lab-grid { grid-template-columns: 250px minmax(0,1fr); }
+  .input-panel { padding: 24px 17px; }
+  .results-panel { padding: 25px 22px; }
+  .metrics strong { font-size: 32px; }
+  .insight-grid { gap: 16px; }
+  .target-panel { padding-right: 16px; }
+}
+@media (max-width: 850px) {
+  .hero { grid-template-columns: 1fr; gap: 35px; padding-top: 43px; }
+  .hero h1 { font-size: 60px; }
+  .hero h1 br { display: block; }
+  .hero .lead { max-width: 35ch; }
+  .hero-figure { width: 100%; max-width: 600px; margin: 0; }
+  .lab-grid { grid-template-columns: 1fr; }
+  .input-panel { border-right: 0; border-bottom: 1px solid var(--line); padding: 25px; }
+  .source-switch { max-width: 350px; }
+  .metrics strong { font-size: 38px; }
+  .meaning-grid { gap: 15px; }
+  .meaning-card { padding: 17px 14px 5px; }
+  .reading-strip { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+}
+@media (max-width: 600px) {
+  main { padding: 0 20px; }
+  .topbar { padding: 16px 20px; }
+  .brand { font-size: 13px; }
+  .hero h1 { font-size: 49px; letter-spacing: -1.8px; }
+  .hero .eyebrow { font-size: 9px; }
+  .hero .lead { font-size: 21px; }
+  .hero-intro { font-size: 15px; }
+  .hero-figure { padding: 21px 16px 18px; }
+  .figure-kicker { font-size: 8px; }
+  .reading-strip a { font-size: 11px; }
+  .laboratory, .chapter { padding: 42px 0; }
+  .results-panel { padding: 24px 15px; }
+  .metrics { gap: 11px; }
+  .metrics strong { font-size: clamp(22px, 6vw, 29px); }
+  .metrics span { min-height: 43px; font-size: 10px; }
+  .metrics > div { padding-right: 8px; }
+  .insight-grid, .meaning-grid, .glossary-grid { grid-template-columns: 1fr; }
+  .target-panel { border-right: 0; border-bottom: 1px solid var(--line); padding: 0 0 16px; }
+  .diagnostic-panel { padding-top: 4px; }
+  .case-grid { grid-template-columns: 1fr; }
+  .hero-equation strong { font-size: 28px; }
+  .hero-equation > span { font-size: 14px; }
+  .area-key { font-size: 10px; }
+  .target-number { font-size: 30px; }
+  .chapter p, .chapter li { font-size: 14px; }
+  .decision-guide { padding: 18px 18px 8px 31px; }
+  .brand small { font-size: 10px; }
+  .topbar nav a { font-size: 11px; }
+  .topbar nav .offline { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: 0s !important; animation-duration: 0s !important; }
+}
+@media print {
+  .hero { grid-template-columns: 1fr 1fr; padding: 15px 0 25px; gap: 30px; }
+  .hero h1 { font-size: 38px; letter-spacing: -1px; }
+  .hero .lead { font-size: 16px; }
+  .hero-intro { font-size: 11px; }
+  main { padding: 0; }
+  .lab-grid { display: block; }
+  .insight-grid { break-inside: avoid; }
+  .meaning-grid { gap: 16px; }
+  .chapter p, .chapter li, .meaning-card p { font-size: 11px; }
+  .source-switch, #download-budgets { display: none; }
+}
+
+/* Edition 03: a numbered practitioner reference with an integrated calculator. */
+:root { --ink:#172e43; --muted:#526575; --line:#d9e1e7; }
+main { max-width:1260px; padding:0 42px; }
+.topbar { min-height:76px; padding:14px max(28px,calc((100vw - 1176px)/2)); }
+.topbar nav { gap:20px; }
+.handbook-header { padding:58px 0 34px; max-width:970px; }
+.handbook-header .eyebrow { color:#1766d0; font-size:11px; margin-bottom:22px; }
+.handbook-header h1 { font-size:clamp(36px,4vw,54px); line-height:1.13; letter-spacing:-1.35px; margin:0 0 21px; }
+.handbook-deck { font-size:20px; line-height:1.6; max-width:68ch; color:#354e61; }
+.handbook-meta { display:flex; flex-wrap:wrap; gap:8px 24px; color:var(--muted); font-size:12px; border-top:1px solid var(--line); padding-top:18px; margin-top:24px; }
+.scope-note { font-size:12px; line-height:1.75; color:var(--muted); max-width:105ch; margin-top:16px; }
+.handbook-header .hero-actions { margin-top:20px; }
+.contents { display:block; padding:23px 26px; margin:0 0 38px; background:#f5f7f9; border-top:2px solid #224d73; }
+.contents .eyebrow { margin-bottom:13px; font-size:10px; }
+.contents ol { display:grid; grid-template-columns:1fr 1fr; column-gap:48px; row-gap:8px; list-style-position:outside; margin:0; padding-left:23px; }
+.contents li { padding-left:5px; color:#1766d0; font-size:14px; font-variant-numeric:tabular-nums; }
+.contents a { font-size:14px; color:#243f54; }
+.chapter { padding:42px 0 46px; }
+.chapter h2 { font:500 clamp(26px,2.6vw,33px)/1.25 Georgia,serif; letter-spacing:-.4px; }
+.chapter h3 { margin-top:28px; font-size:18px; }
+.chapter .prose { max-width:92ch; }
+.chapter p,.chapter li { max-width:92ch; line-height:1.8; }
+.chapter .fine { font-size:12px; line-height:1.7; }
+.chapter table { font-size:13px; line-height:1.65; }
+.chapter th:first-child { min-width:135px; }
+.chapter caption { max-width:90ch; font-size:12px; line-height:1.7; }
+.chapter .table-wrap { margin:20px 0; }
+.chapter .formula { margin:20px 0; font-size:23px; }
+.concept-layout { display:grid; grid-template-columns:1.12fr 1fr; align-items:center; gap:30px; margin:26px 0; }
+.concept-figure { margin:0; padding:16px; background:#f7f9fb; border:1px solid #e2e8ed; }
+.concept-figure svg { display:block; width:100%; height:auto; }
+.concept-figure figcaption { margin:14px 3px 3px; color:var(--muted); font-size:12px; line-height:1.7; }
+.concept-layout .formula { font-size:26px; }
+.lesson-interactive { margin-top:26px; }
+.lesson-interactive .lesson-sites { max-width:none; }
+.lesson-interactive .lesson-sites li { max-width:none; font-size:14px; }
+.lesson-interactive .lesson-legend { font-size:11px; }
+.lesson-interactive .lesson-takeaway { font-size:13px; }
+.laboratory { margin-top:28px; padding:30px 0 0; }
+.laboratory .section-head { display:flex; align-items:center; }
+.laboratory .section-head h3 { margin:0; font:500 24px/1.3 Georgia,serif; }
+.laboratory .section-head > p { font-size:12px; max-width:33ch; }
+.laboratory p { max-width:none; }
+.laboratory h3 { margin-top:0; }
+.laboratory .input-panel p { font-size:11px; line-height:1.7; }
+.laboratory label { line-height:1.5; }
+.laboratory .result-heading h3 { font-size:20px; font-family:"Segoe UI",Arial,sans-serif; }
+.laboratory .result-heading .eyebrow { font-size:9px; }
+.laboratory .chart-readout { font-size:12px; }
+.laboratory .fine { font-size:11px; }
+.laboratory details > summary { font-size:14px; }
+.laboratory .input-panel details > summary { font-size:12px; }
+.laboratory .table-wrap { margin:15px 0; }
+.laboratory table { font-size:11px; }
+.laboratory .metrics strong { font-size:35px; }
+#empirical-controls { padding:10px 0 0; }
+#reuse { margin-top:32px; }
+#reuse h4 { margin:18px 0 12px; font-size:15px; }
+.reference-list { padding-left:25px; max-width:105ch; }
+#references .reference-list li { max-width:100ch; margin:0 0 20px; font-size:13px; line-height:1.75; padding-left:6px; }
+.field-distribution { margin:24px 0; }
+.field-distribution svg, #distribution-chart { width:100%; max-width:940px; height:auto; display:block; }
+.field-distribution figcaption { font-size:12px; line-height:1.7; color:var(--muted); }
+@media(max-width:900px) {
+  .topbar nav { gap:12px; }
+  .concept-layout { grid-template-columns:1fr; }
+  .concept-figure { max-width:650px; }
+}
+@media(max-width:700px) {
+  main { padding:0 21px; }
+  .handbook-header { padding-top:34px; }
+  .handbook-header h1 { font-size:37px; }
+  .handbook-deck { font-size:18px; }
+  .contents ol { grid-template-columns:1fr; row-gap:10px; }
+  .topbar nav { flex-wrap:wrap; justify-content:flex-start; gap:8px 16px; }
+  .chapter { padding:32px 0; }
+  .laboratory .section-head { display:block; }
+  .concept-layout { gap:15px; }
+  .lab-grid { grid-template-columns:1fr; }
+}
+@media print {
+  .handbook-header { padding-top:10px; }
+  .handbook-header h1 { font-size:32px; }
+  .handbook-deck { font-size:15px; }
+  .concept-layout { grid-template-columns:1fr 1fr; gap:20px; }
+  .concept-figure { break-inside:avoid; }
+  .chapter table { font-size:10px; }
+  .chapter .formula { font-size:18px; }
+  .handbook-meta,.scope-note { font-size:9px; }
+  .chapter { padding:22px 0; }
+  #references .reference-list li { font-size:10px; }
+}
+</style></head><body><a class="skip-link" href="#laboratory">Skip to calculator</a><header class="topbar"><a class="brand" href="lift_ratio_examples.html">LIFT-RATIO / TOOLS</a><nav><a href="lift_ratio_examples.html">Introduction</a><a href="lift_ratio_handbook.html">Full handbook</a><button id="print-handbook" class="small-button">Print results</button></nav></header><main><section class="chapter"><p class="eyebrow">BROWSER-LOCAL CALCULATION</p><h1>Evaluate a priority list.</h1><p>Choose a synthetic teaching case, or select <strong>My CSV</strong> below to upload or paste your observations and scores. Data are processed in this browser, not uploaded by the calculator.</p><div class="case-grid"><div class="case-card"><h3>01 / Jigjiga distribution</h3><p>743 synthetic counts resampled from aggregate frequencies, with artificial scores. Not the archived 0.357 result.</p><button data-case="jigjiga_743" data-budget="30">Load Jigjiga synthetic case</button></div><div class="case-card"><h3>02 / Four habitats</h3><p>Trace the arithmetic. At half the habitats, coverage is 60% and full-curve lift-ratio is 0.800.</p><button data-case="worked" data-budget="50">Load four-habitat case</button></div><div class="case-card"><h3>03 / Crossing curves</h3><p>Compare two rankings on identical outcomes. Inspect the difference at 10% and at 30% of habitats.</p><button data-case="crossing" data-budget="10">Load crossing-curves case</button></div></div></section><section id="laboratory" class="laboratory">
+<header class="section-head"><div><p class="eyebrow">INTERACTIVE ANALYSIS</p><h3>Calculate and compare coverage</h3></div><p>Compare scores on the same observations.<br><span class="privacy-dot"></span> Your data stay in this browser.</p></header>
+<div class="lab-grid">
+<aside class="input-panel" aria-label="Data and analysis controls">
+<div class="control-title"><span class="step">1</span><h3>Choose your data</h3></div>
+<div class="source-switch" role="group" aria-label="Choose input controls"><button type="button" id="mode-examples" aria-pressed="true">Examples</button><button type="button" id="mode-csv" aria-pressed="false">My CSV</button></div>
+<div id="example-inputs">
+<label for="case">Synthetic dataset</label><select id="case"></select>
+<div id="empirical-controls"><label for="ranking-quality">Artificial ranking scenario</label><select id="ranking-quality"><option value="informative">Informative, with noise</option><option value="random">Random, unrelated to counts</option><option value="reversed">Reversed retrospective order</option><option value="perfect">Ideal retrospective order</option></select><p class="fine">Hold the size and seed fixed to compare scenarios on identical synthetic outcomes. Informative scores use those outcomes for demonstration; they are not held-out predictions.</p></div>
+<details class="compact-details"><summary>Size and reproducible seed</summary>
+<div class="field-pair"><div><label for="sample-size">Habitats</label><input id="sample-size" type="number" min="4" max="2000" step="1" value="743"></div><div><label for="seed">Random seed</label><input id="seed" type="number" min="0" max="4294967295" step="1" value="2026"></div></div>
+</details>
+<button id="generate" class="button secondary full">Generate example</button><p id="case-description" class="fine"></p>
+</div>
+<div id="input-details" hidden><p class="fine">One clearly defined evaluation unit per row. UTF-8 CSV, up to 20,000 rows and 5 MB. Missing required values are rejected, not silently dropped.</p><label class="file-label" for="file-input">Choose a CSV file<input type="file" id="file-input" accept=".csv,text/csv"></label><label for="csv-input">Or paste rows with column headers</label><textarea id="csv-input" rows="6" spellcheck="false" placeholder="site_id,observed,score&#10;H01,40,4&#10;H02,30,2&#10;H03,20,3&#10;H04,10,1"></textarea><button id="load-csv" class="button secondary full">Load pasted CSV</button><button id="template-download" class="small-button">Download input template</button><p class="fine">Repeated visits or nearby habitats may be correlated. Define your row unit and use appropriate grouped validation.</p></div>
+<div class="control-title"><span class="step">2</span><h3>Map the columns</h3></div>
+<label for="id-column">Habitat / evaluation-unit ID</label><select id="id-column"></select>
+<label for="observed-column">Observed nonnegative outcome</label><select id="observed-column"></select>
+<label for="score-column">Ranking score 1</label><select id="score-column"></select>
+<label for="direction">Higher priority means</label><select id="direction"><option value="high">Larger score</option><option value="low">Smaller score</option></select>
+<details><summary>Compare a second ranking</summary><label for="compare-column">Score 2 (same rows and outcomes)</label><select id="compare-column"></select><label for="compare-direction">Ranking 2 priority direction</label><select id="compare-direction"><option value="high">Larger score</option><option value="low">Smaller score</option></select><p class="fine">Comparison requires complete scores on the same evaluation sample. It is not a significance test.</p></details>
+<div class="control-title"><span class="step">3</span><h3>Describe the evaluation</h3></div>
+<details class="metadata-controls" id="evaluation-metadata"><summary>Cohort, outcome and prediction source</summary>
+<label for="cohort">Dataset or cohort name</label><input id="cohort" maxlength="120" value="Simulated habitats">
+<label for="endpoint">Outcome and unit</label><input id="endpoint" maxlength="120" value="Synthetic recorded larval count (Jigjiga distribution)" placeholder="e.g. pupae counted per standardized visit">
+<label for="validation">Prediction source</label><select id="validation"><option value="simulated">Simulated teaching data</option><option value="external">External / prospective held-out sample</option><option value="heldout">Single held-out test set</option><option value="oof">Out-of-fold predictions</option><option value="insample">In-sample predictions (optimistic)</option><option value="unknown">Not documented</option></select>
+</details>
+<button id="analyze" class="button primary full">Compute lift ratio</button>
+<p class="fine">Changing a column or direction recomputes results. The calculator cannot verify that predictions were genuinely held out.</p>
+</aside>
+<div class="results-panel">
+<div id="message" role="status" aria-live="polite" class="notice"></div>
+<div class="result-heading"><div><p class="eyebrow" id="dataset-source">SIMULATED DATA</p><h3 id="dataset-title">An illustrative ranking</h3></div><span id="sample-badge" class="badge"></span></div>
+<div class="metrics" aria-live="polite"><div><span>Full-curve lift ratio</span><strong id="metric-lift">N/A</strong><small id="lift-interpretation"></small></div><div><span>Outcome coverage at budget</span><strong id="metric-coverage">N/A</strong><small id="coverage-detail"></small></div><div><span>Coverage / random at budget</span><strong id="metric-multiplier">N/A</strong><small>Budget-specific multiplier, not full lift</small></div></div>
+<div class="budget-control"><label for="budget">Habitat budget <output id="budget-output">30%</output></label><input type="range" id="budget" min="1" max="100" step="1" value="30"><div class="chart-options"><label><input id="shade" type="checkbox" checked> Show A and B areas</label><span>Changing the budget changes coverage, not full-curve lift</span></div></div>
+<div class="chart-frame"><svg id="coverage-chart" viewBox="0 0 820 460" role="img" aria-labelledby="chart-title chart-desc"><title id="chart-title">Cumulative outcome coverage</title><desc id="chart-desc">The selected ranking, random-selection diagonal and ideal retrospective ordering.</desc></svg></div>
+<div class="chart-key"><span><i class="line-swatch model"></i>Ranking 1</span><span id="compare-legend" hidden><i class="line-swatch compare"></i>Ranking 2</span><span><i class="line-swatch ideal"></i>Ideal retrospective order</span><span><i class="line-swatch random"></i>Random expectation</span></div>
+<p id="chart-readout" class="chart-readout" aria-live="off"></p>
+<div class="area-calculation" id="area-calculation"></div>
+<p id="budget-convention" class="fine"></p>
+<div id="comparison-output" class="comparison" hidden></div>
+<div class="insight-grid">
+<section class="target-panel" aria-labelledby="target-heading"><p class="eyebrow">READ THE CURVE IN REVERSE</p><h4 id="target-heading">How many habitats reach my target?</h4><label for="target-coverage">Share of observed outcome <output id="target-output">80%</output></label><input id="target-coverage" type="range" min="10" max="100" step="5" value="80"><div id="target-result" aria-live="polite"></div><p class="fine">Retrospective coverage on these evaluation rows, not a forecast, cost estimate or treatment effect. With score ties, coverage is an expectation.</p></section>
+<section class="diagnostic-panel" aria-labelledby="diagnostic-heading"><p class="eyebrow">READ THE DATA BEHIND THE SCORE</p><h4 id="diagnostic-heading">How much is there to prioritize?</h4><div id="data-diagnostics"></div><p class="fine">The same lift can mean different coverage in different populations. Always retain the outcome distribution and curve.</p></section>
+</div>
+<details><summary>Compare practical habitat budgets</summary><p class="fine">Coverage and multiplier at prespecified example budgets. These are interpolated habitat shares, not resource costs; choose study budgets before evaluating models.</p><div id="budget-table" class="table-wrap"></div><button id="download-budgets" class="small-button">Download budget table</button></details>
+<details><summary>Inspect the calculation and ranked rows</summary><div id="calculation-detail"></div><p class="fine">Tied rows share a rank interval. Their display order is not a treatment recommendation; expected outcome coverage is averaged within each tied block. First 100 rows shown here; the export includes every row.</p><div id="rank-table" class="table-wrap"></div></details>
+<div class="export-bar"><span>Export results</span><button class="small-button" id="download-data">Input CSV</button><button class="small-button" id="download-curves">Curve CSV</button><button class="small-button" id="download-ranks">Ranked CSV</button><button class="small-button" id="download-json">Report JSON</button><button class="small-button" id="download-svg">Figure SVG</button><button class="small-button" id="download-png">Figure PNG</button></div>
+<details id="report-details"><summary>Generate a reporting paragraph</summary><p class="fine">This text records the selected settings, not an independent audit of the evaluation design. Add the sampling protocol, study period, model-selection procedure and uncertainty analysis before publication.</p><textarea id="report-text" rows="7" readonly aria-label="Generated reporting paragraph"></textarea><button id="copy-report" class="small-button">Copy paragraph</button><button id="download-report" class="small-button">Download text</button></details>
+</div>
+</div>
+</section>
+</main><footer><span>Research tool. Ranking evaluation, not treatment effectiveness.</span><a href="python/entomology_lift-0.1.0-py3-none-any.whl" download>Python wheel</a></footer><script>/* Coverage lift ratio, handbook reference implementation v1.0.
+ * No dependencies, network calls, storage or model fitting.
+ * Exact score ties use expected within-tie coverage, never outcome tie-breaking.
+ */
+(function (root, factory) {
+  const api = factory();
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  root.LiftCore = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+  'use strict';
+  const VERSION = '1.0.0';
+  const MAX_ROWS = 100000;
+  const MAX_CSV_CHARACTERS = 20000000;
+  const numericPattern = /^[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?$/;
+
+  function sum(values) {
+    let result = 0, correction = 0;
+    for (const value of values) {
+      const next = result + value;
+      correction += Math.abs(result) >= Math.abs(value)
+        ? (result - next) + value : (value - next) + result;
+      result = next;
+    }
+    return result + correction;
+  }
+
+  function numeric(value, label, rowNumber) {
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      if (!trimmed || !numericPattern.test(trimmed)) {
+        throw new Error(`Row ${rowNumber}: ${label} must contain a finite number, not a blank or formatted text.`);
+      }
+      value = Number(trimmed);
+    }
+    if (typeof value !== 'number' || !Number.isFinite(value)) {
+      throw new Error(`Row ${rowNumber}: ${label} must contain a finite number.`);
+    }
+    return value;
+  }
+
+  function atFraction(curve, fraction, key = 'model') {
+    if (!Number.isFinite(fraction) || fraction < 0 || fraction > 1) {
+      throw new Error('Selection fraction must be between 0 and 1 inclusive.');
+    }
+    if (!Array.isArray(curve) || curve.length < 2) return null;
+    if (!['model', 'ideal', 'random'].includes(key)) throw new Error('Unknown coverage curve.');
+    const n = curve.length - 1;
+    const position = fraction * n;
+    const left = Math.min(Math.floor(position), n);
+    if (left === n) return curve[n][key];
+    const a = curve[left][key], b = curve[left + 1][key];
+    if (a === null || b === null) return null;
+    return a + (b - a) * (position - left);
+  }
+
+  function rankedCoverage(values, scores, direction) {
+    const n = values.length;
+    const order = Array.from({ length: n }, (_, i) => i);
+    // Compare without subtracting potentially extreme finite score values.
+    order.sort((a, b) => {
+      if (scores[a] === scores[b]) return a - b;
+      if (direction === 'low') return scores[a] < scores[b] ? -1 : 1;
+      return scores[a] > scores[b] ? -1 : 1;
+    });
+    const total = sum(values), coverage = [0], groups = [];
+    let cumulative = 0, correction = 0;
+    for (let start = 0; start < n;) {
+      let end = start + 1;
+      while (end < n && scores[order[end]] === scores[order[start]]) end++;
+      const block = sum(order.slice(start, end).map(i => values[i]));
+      const previous = cumulative + correction;
+      const next = cumulative + block;
+      correction += Math.abs(cumulative) >= Math.abs(block)
+        ? (cumulative - next) + block : (block - next) + cumulative;
+      cumulative = next;
+      const final = cumulative + correction;
+      for (let j = start + 1; j <= end; j++) {
+        coverage[j] = total > 0 ? (previous + block * (j - start) / (end - start)) / total : null;
+      }
+      groups.push({ start, end, count: end - start, score: scores[order[start]], totalScaled: block,
+                    previousCoverage: total > 0 ? previous / total : null,
+                    finalCoverage: total > 0 ? final / total : null });
+      start = end;
+    }
+    if (total > 0) coverage[n] = 1;
+    else coverage[0] = null;
+    return { order, coverage, groups };
+  }
+
+  function evaluate(rows, options = {}) {
+    if (!Array.isArray(rows) || rows.length < 2) throw new Error('At least two data rows are required.');
+    if (rows.length > MAX_ROWS) throw new Error(`Maximum supported dataset size is ${MAX_ROWS.toLocaleString('en-US')} rows.`);
+    const observed = options.observed || 'observed';
+    const score = options.score || 'score';
+    const id = options.id === null ? null : (options.id || 'site_id');
+    const direction = options.direction === undefined ? 'high' : options.direction;
+    if (!['high', 'low'].includes(direction)) throw new Error('Score direction must be high or low.');
+    const fraction = options.fraction === undefined ? .3 : options.fraction;
+    if (!Number.isFinite(fraction) || fraction < 0 || fraction > 1) throw new Error('Selection fraction must be between 0 and 1 inclusive.');
+    if (observed === score) throw new Error('Observed outcome and prediction score must use different columns. Use the ideal reference for an outcome-based ordering.');
+    const n = rows.length, ids = new Set(), warnings = [];
+    const yy = [], ss = [], labels = [];
+    let maximum = 0, minimum = Infinity;
+    const idIsMapped = id !== null && rows.some(r => r && Object.prototype.hasOwnProperty.call(r, id));
+    for (let i = 0; i < n; i++) {
+      if (!rows[i] || typeof rows[i] !== 'object' || Array.isArray(rows[i])) throw new Error(`Row ${i + 1}: expected an object with outcome and score fields.`);
+      const y = numeric(rows[i][observed], observed, i + 1);
+      const p = numeric(rows[i][score], score, i + 1);
+      if (y < 0) throw new Error(`Row ${i + 1}: observed outcomes must be non-negative. Zero is a valid observation.`);
+      let label = String(i + 1);
+      if (idIsMapped) {
+        if (rows[i][id] === null || rows[i][id] === undefined || String(rows[i][id]).trim() === '') {
+          throw new Error(`Row ${i + 1}: the mapped site ID is blank.`);
+        }
+        label = String(rows[i][id]).trim();
+        if (ids.has(label)) throw new Error(`Row ${i + 1}: duplicate site ID "${label}". Define one unique evaluation unit per row.`);
+        ids.add(label);
+      }
+      yy.push(y); ss.push(p); labels.push(label);
+      maximum = Math.max(maximum, y); minimum = Math.min(minimum, y);
+    }
+    if (!idIsMapped) warnings.push('No site-ID column is mapped. Row numbers identify records; duplicate evaluation units cannot be checked.');
+    const scaled = maximum > 0 ? yy.map(y => y / maximum) : yy.map(() => 0);
+    const totalScaled = sum(scaled);
+    const totalCandidate = maximum * totalScaled;
+    const total = Number.isFinite(totalCandidate) ? totalCandidate : null;
+    const mean = maximum * (totalScaled / n);
+    if (total === null) warnings.push('The observed total exceeds JavaScript numeric range. It is shown as unavailable; normalized coverage and lift were computed using scaled values.');
+    if (yy.some((y, i) => y > 0 && scaled[i] === 0)) warnings.push('Extreme outcome magnitudes cause negligible positive values to underflow after scaling. Inspect the original measurement units.');
+    const model = rankedCoverage(scaled, ss, direction);
+    const ideal = rankedCoverage(scaled, scaled, 'high');
+    const status = maximum === 0 ? 'zero_total' : maximum === minimum ? 'uniform_outcomes' : 'ok';
+    const curve = Array.from({ length: n + 1 }, (_, i) => ({ x: i / n,
+      model: model.coverage[i], ideal: ideal.coverage[i], random: status === 'zero_total' ? null : i / n }));
+    // For stable area advantages, subtract a constant from all scaled outcomes.
+    // This does not alter the rank-weighted numerator because the rank weights sum to zero.
+    // It avoids cancellation for almost-equal outcomes. The results are algebraically
+    // identical to trapezoidal AUC minus 0.5 on each full-resolution coverage curve.
+    const baseline = maximum > 0 ? minimum / maximum : 0;
+    function areaAdvantage(ranking) {
+      const terms = [];
+      for (const group of ranking.groups) {
+        const midRank = (group.start + 1 + group.end) / 2;
+        const rankWeight = n + 1 - 2 * midRank;
+        const blockDelta = sum(ranking.order.slice(group.start, group.end).map(i => scaled[i] - baseline));
+        terms.push(rankWeight * blockDelta);
+      }
+      return totalScaled > 0 ? sum(terms) / (2 * n * totalScaled) : null;
+    }
+    const modelAdvantage = areaAdvantage(model), denominator = areaAdvantage(ideal);
+    const aucModel = modelAdvantage === null ? null : .5 + modelAdvantage;
+    const aucIdeal = denominator === null ? null : .5 + denominator;
+    let lift = status === 'ok' && denominator > 0 ? modelAdvantage / denominator : null;
+    if (lift !== null && Math.abs(lift) < 1e-14) lift = 0;
+    if (lift !== null && Math.abs(lift - 1) < 1e-13) lift = 1;
+    if (lift !== null && Math.abs(lift + 1) < 1e-13) lift = -1;
+    if (status === 'uniform_outcomes') warnings.push('All observed outcomes are equal. The ideal and random areas coincide, so normalized lift is undefined, not zero.');
+    if (status === 'zero_total') warnings.push('All observed outcomes are zero. Outcome coverage and normalized lift are undefined.');
+    if (status === 'ok' && denominator < 1e-10) warnings.push('Outcome contrast is extremely small. Normalized lift can be unstable to measurement error; interpret absolute coverage alongside it.');
+    const k = Math.min(n, Math.floor(fraction * n + 1e-12));
+    const floorFraction = k / n;
+    const coverage = atFraction(curve, fraction);
+    const floorCoverage = atFraction(curve, floorFraction);
+    const tieBlocks = model.groups.filter(g => g.count > 1).map(g => ({
+      rankStart: g.start + 1, rankEnd: g.end, size: g.count, score: g.score,
+      share: totalScaled > 0 ? g.totalScaled / totalScaled : null,
+      cumulativeBefore: g.previousCoverage, cumulativeAfter: g.finalCoverage,
+      selectionProbability: Math.max(0, Math.min(1, (fraction * n - g.start) / g.count))
+    }));
+    if (tieBlocks.length) warnings.push(`${tieBlocks.length} tied-score block(s). Coverage uses the expected result of random ordering within each exact-score tie, not the displayed row order.`);
+    const rankedRows = [];
+    for (const group of model.groups) {
+      for (let position = group.start; position < group.end; position++) {
+        const i = model.order[position];
+        rankedRows.push({ sourceIndex: i, siteId: labels[i], observed: yy[i], score: ss[i],
+          displayedPosition: position + 1, rankStart: group.start + 1, rankEnd: group.end,
+          rankMean: (group.start + 1 + group.end) / 2, tieSize: group.count,
+          share: totalScaled > 0 ? scaled[i] / totalScaled : null,
+          cumulativeExpected: model.coverage[position + 1],
+          selectionProbability: Math.max(0, Math.min(1, (fraction * n - group.start) / group.count)) });
+      }
+    }
+    return { version: VERSION, n, total, mean, aucModel, aucIdeal, denominator, modelAdvantage,
+      lift, status, warnings, curve, direction, observedColumn: observed, scoreColumn: score,
+      idColumn: idIsMapped ? id : null, zeroCount: yy.filter(y => y === 0).length,
+      positiveCount: yy.filter(y => y > 0).length, uniqueScoreCount: model.groups.length,
+      budget: { fraction, siteEquivalents: fraction * n, coverage,
+        idealCoverage: atFraction(curve, fraction, 'ideal'),
+        multiplier: fraction > 0 && coverage !== null ? coverage / fraction : null,
+        k, floorFraction, floorCoverage,
+        floorMultiplier: floorFraction > 0 && floorCoverage !== null ? floorCoverage / floorFraction : null },
+      tieBlocks, ordering: model.order, rankedRows };
+  }
+
+  function parseCSV(text) {
+    if (typeof text !== 'string') throw new Error('CSV input must be text.');
+    if (text.length > MAX_CSV_CHARACTERS) throw new Error('CSV exceeds the 20-million-character browser limit.');
+    text = text.replace(/^\uFEFF/, '');
+    const matrix = []; let fields = [], field = '', state = 'start', rowSyntax = false;
+    let line = 1;
+    function endField() { fields.push(field); field = ''; state = 'start'; }
+    function endRow() {
+      endField();
+      if (rowSyntax || fields.length > 1 || fields[0].trim() !== '') matrix.push(fields);
+      if (matrix.length > MAX_ROWS + 1) throw new Error(`CSV exceeds ${MAX_ROWS} data rows.`);
+      fields = []; rowSyntax = false;
+    }
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if (state === 'quoted') {
+        if (ch === '"') {
+          if (text[i + 1] === '"') { field += '"'; i++; }
+          else state = 'afterQuote';
+        } else { field += ch; if (ch === '\n') line++; }
+        continue;
+      }
+      if (ch === ',') { rowSyntax = true; endField(); continue; }
+      if (ch === '\n' || ch === '\r') {
+        if (ch === '\r' && text[i + 1] === '\n') i++;
+        endRow(); line++; continue;
+      }
+      if (state === 'afterQuote') {
+        if (ch === ' ' || ch === '\t') continue;
+        throw new Error(`CSV line ${line}: unexpected text after a closing quote.`);
+      }
+      if (ch === '"') {
+        if (state !== 'start') throw new Error(`CSV line ${line}: a quote occurs inside an unquoted field.`);
+        state = 'quoted'; rowSyntax = true; continue;
+      }
+      field += ch; state = 'unquoted';
+      if (ch.trim()) rowSyntax = true;
+    }
+    if (state === 'quoted') throw new Error('CSV ends inside a quoted field.');
+    if (fields.length || field.length || rowSyntax || state === 'afterQuote') endRow();
+    if (matrix.length < 2) throw new Error('CSV must have a header and at least one data row.');
+    const headers = matrix.shift().map(s => s.trim());
+    if (headers.some(s => !s)) throw new Error('CSV column headers cannot be blank.');
+    if (new Set(headers).size !== headers.length) throw new Error('CSV column headers must be unique.');
+    const rows = matrix.map((fields, i) => {
+      if (fields.length !== headers.length) throw new Error(`CSV data row ${i + 1}: expected ${headers.length} fields but found ${fields.length}.`);
+      const row = Object.create(null);
+      headers.forEach((h, j) => { row[h] = fields[j]; });
+      return row;
+    });
+    return { headers, rows };
+  }
+
+  function toCSV(rows, headers) {
+    if (!Array.isArray(rows)) throw new Error('CSV output rows must be an array.');
+    if (!headers) headers = rows.length ? Object.keys(rows[0]) : [];
+    if (!Array.isArray(headers) || new Set(headers).size !== headers.length) throw new Error('CSV output headers must be unique.');
+    function escape(value) {
+      if (value === null || value === undefined) return '';
+      let text;
+      if (typeof value === 'number') {
+        if (!Number.isFinite(value)) return '';
+        text = String(value);
+      } else {
+        text = String(value);
+        // Spreadsheet applications may execute formulas even in quoted CSV cells.
+        // Prefix potentially executable strings. Strict finite numeric strings are
+        // safe literals too, so uploaded negative scores survive a CSV round-trip.
+        const isNumericLiteral = numericPattern.test(text.trim()) && Number.isFinite(Number(text));
+        if ((!isNumericLiteral && /^[\s]*[=+\-@]/.test(text)) || /^[\t\r\n]/.test(text)) text = "'" + text;
+      }
+      return /[",\r\n]/.test(text) ? '"' + text.replace(/"/g, '""') + '"' : text;
+    }
+    return [headers.map(escape).join(','), ...rows.map(row => headers.map(h => escape(row[h])).join(','))].join('\r\n') + '\r\n';
+  }
+
+  function rngFor(seed) {
+    let a = seed >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) >>> 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  const cases = [
+    { id:'worked', title:'Four-site worked example', description:'A fixed, hand-checkable example: model area 0.600, ideal area 0.625, normalized lift 0.800.' },
+    { id:'perfect', title:'Perfect retrospective order', description:'Scores equal the observed outcomes. This is an oracle reference, not a deployable prediction model.' },
+    { id:'good', title:'Useful but imperfect ranking', description:'A seeded synthetic score combines log-count information with noise. It is not an empirical entomological result.' },
+    { id:'random', title:'Random ranking', description:'A seeded random score is independent of the simulated counts. Its realized lift may differ from zero; its expectation over random permutations is zero.' },
+    { id:'reversed', title:'Reversed ordering', description:'The lowest observed counts receive the highest scores. For heterogeneous non-negative outcomes, normalized lift is -1.' },
+    { id:'tied', title:'No discrimination: all scores tied', description:'All scores are equal. Expected-within-tie coverage is the random diagonal, giving lift zero when outcomes vary.' },
+    { id:'partial_ties', title:'Coarse priority categories', description:'Several habitats share a priority score. The chart averages possible orders inside each tied block.' },
+    { id:'uniform', title:'Equal observed outcomes', description:'Every site has the same positive count. There is no advantage available from ranking, so normalized lift is undefined.' },
+    { id:'allzero', title:'All-zero observations', description:'There is no observed outcome total to divide by. Coverage and normalized lift are undefined; this is not a failed model.' },
+    { id:'crossing', title:'Crossing curves: budget matters', description:'Two deliberately constructed rankings have crossing curves. A stronger full-curve summary need not win at every selection budget.' }
+  ];
+
+  function simulate(caseId = 'good', options = {}) {
+    const definition = cases.find(c => c.id === caseId);
+    if (!definition) throw new Error('Unknown simulation case.');
+    const requestedN = options.n === undefined ? 120 : Number(options.n);
+    const seed = options.seed === undefined ? 2026 : Number(options.seed);
+    if (!Number.isInteger(requestedN) || requestedN < 2 || requestedN > 10000) throw new Error('Simulation size must be an integer from 2 to 10,000.');
+    if (!Number.isInteger(seed) || seed < 0 || seed > 4294967295) throw new Error('Simulation seed must be an integer from 0 to 4,294,967,295.');
+    const random = rngFor(seed);
+    function normal() { return Math.sqrt(-2 * Math.log(Math.max(random(), 1e-12))) * Math.cos(2 * Math.PI * random()); }
+    let rows;
+    if (caseId === 'worked') {
+      rows = [40,30,20,10].map((observed, i) => ({site_id:`DEMO-${i + 1}`, observed, score:[4,2,3,1][i]}));
+    } else if (caseId === 'crossing') {
+      const ys=[100,80,60,40,30,20,15,10,5,0];
+      const orderA=[1,2,3,4,5,6,0,7,8,9], orderB=[0,9,8,7,6,5,4,3,2,1];
+      rows=ys.map((observed,i)=>({site_id:`DEMO-${String(i+1).padStart(2,'0')}`, observed,
+        score:10-orderA.indexOf(i), score_alt:10-orderB.indexOf(i)}));
+    } else {
+      rows=Array.from({length:requestedN},(_,i)=>{
+        const observed=caseId==='allzero'?0:caseId==='uniform'?10:
+          random()<.22?0:Math.max(1,Math.round(Math.exp(2.1+1.25*normal())));
+        let score;
+        if (caseId==='perfect') score=observed;
+        else if (caseId==='reversed') score=-observed;
+        else if (caseId==='tied') score=1;
+        else if (caseId==='good') score=Math.log1p(observed)+1.2*normal();
+        else if (caseId==='partial_ties') score=Math.floor(Math.log1p(observed)/1.2);
+        else score=random();
+        return {site_id:`SIM-${String(i+1).padStart(5,'0')}`,observed,score};
+      });
+      // The named non-degenerate teaching cases must remain heterogeneous even for n=2.
+      if (!['uniform','allzero'].includes(caseId) && rows.every(r=>r.observed===rows[0].observed)) {
+        rows[0].observed=0; rows[1].observed=Math.max(1,rows[1].observed);
+        if (caseId==='perfect') rows.forEach(r=>r.score=r.observed);
+        if (caseId==='reversed') rows.forEach(r=>r.score=-r.observed);
+        if (caseId==='partial_ties') rows.forEach(r=>r.score=Math.floor(Math.log1p(r.observed)/1.2));
+      }
+    }
+    return { ...definition, seed, requestedN, n:rows.length, synthetic:true,
+      rows, scoreColumns:caseId==='crossing'?['score','score_alt']:['score'],
+      scoreLabels:caseId==='crossing'?{'score':'Broad-coverage ranking','score_alt':'Early-hit ranking'}:{'score':'Prediction score'},
+      generator:['worked','crossing'].includes(caseId)
+        ? 'Fixed hand-constructed illustration, not empirical data. The seed does not change this case.'
+        : ['uniform','allzero'].includes(caseId)
+          ? 'Constant illustrative outcomes with Mulberry32-generated scores; no empirical parameter calibration.'
+          : 'Mulberry32; zero-inflated log-normal illustrative counts; no empirical parameter calibration.' };
+  }
+
+  return Object.freeze({ VERSION, MAX_ROWS, MAX_CSV_CHARACTERS, evaluate, atFraction, parseCSV, toCSV,
+    simulate, cases:Object.freeze(cases.map(c=>Object.freeze(c))) });
+});
+</script><script>/* Empirical-marginal teaching examples. No original habitat records are embedded.
+ * Counts are bootstrapped from aggregate frequencies; ranking scores are artificial.
+ * No network, fitted ecological process, or historical prediction-model reuse.
+ */
+(function(root,factory){
+  const api=factory(root.LiftCore||(typeof module==='object'&&module.exports?require('../dist/core.js'):null));
+  if(typeof module==='object'&&module.exports)module.exports=api;
+  root.LiftExamples=api;
+})(typeof globalThis!=='undefined'?globalThis:this,function(C){
+  'use strict';
+  if(!C)throw new Error('LiftExamples requires LiftCore.');
+  const VERSION='2.0';
+  const distributionData={"jigjiga_743":{"source_cohort":743,"source_file":"code/density_prediction/productivity_code_audit/data/manual/cohort_743_manual.csv","sha256":"b0655259627a5dbfdca26a1cca7ba4eb9e121cdc78a7a54f079621e1ac9f81e8","n":743,"total":88586,"zero_count":157,"zero_share":0.21130551816958276,"minimum":0,"median":62,"mean":119.22745625841185,"maximum":850,"top10_observed_share":0.38073736256293317,"top30_observed_share":0.7612376673515001,"top_share_convention":"Interpolated share of observed counts under descending observed-count ordering","unique_counts":187,"histogram":[[0,157],[1,3],[2,4],[4,1],[5,18],[6,6],[7,4],[8,3],[9,1],[10,15],[11,1],[12,8],[14,1],[15,13],[16,3],[17,1],[18,2],[19,2],[20,14],[21,4],[22,3],[24,2],[25,6],[28,1],[29,1],[30,10],[32,2],[33,4],[34,2],[35,6],[36,5],[37,1],[38,2],[39,1],[40,9],[41,1],[42,1],[43,1],[45,7],[46,1],[48,1],[50,17],[51,1],[52,1],[53,1],[54,2],[55,4],[56,2],[57,1],[58,3],[59,1],[60,8],[61,2],[62,3],[65,2],[66,1],[67,5],[68,2],[69,1],[70,7],[71,1],[72,1],[74,3],[75,4],[76,3],[77,1],[78,2],[79,2],[80,10],[81,2],[82,2],[83,2],[85,1],[86,2],[89,1],[90,5],[91,1],[92,1],[94,1],[95,2],[96,1],[99,1],[100,6],[104,1],[105,3],[106,1],[108,1],[110,8],[113,2],[115,1],[118,1],[120,14],[121,2],[122,2],[123,3],[124,1],[125,1],[128,1],[130,6],[135,1],[136,3],[138,1],[140,6],[141,1],[143,1],[145,2],[150,25],[153,1],[154,1],[155,4],[160,2],[161,1],[162,1],[165,3],[170,2],[172,1],[175,1],[176,1],[177,1],[180,5],[182,1],[185,3],[190,2],[191,1],[195,1],[196,1],[200,11],[207,2],[210,3],[213,1],[215,1],[220,8],[225,2],[230,4],[236,1],[239,1],[240,3],[246,1],[250,24],[255,2],[259,1],[260,3],[270,1],[275,1],[280,2],[285,1],[290,2],[295,1],[300,10],[310,1],[315,1],[320,9],[325,3],[330,2],[332,1],[334,1],[340,1],[350,14],[352,1],[360,4],[364,1],[370,1],[380,1],[397,1],[400,5],[403,1],[408,1],[417,2],[420,1],[450,8],[460,2],[470,1],[485,1],[500,3],[510,1],[520,2],[525,1],[540,1],[550,7],[560,1],[600,2],[625,1],[630,1],[650,2],[660,1],[760,1],[850,1]]},"jigjiga_547":{"source_cohort":547,"source_file":"code/density_prediction/productivity_code_audit/data/manual/cohort_547_manual.csv","sha256":"d4df54994dd6ba6668f1399638d9a9fc9b3aab388e54a3cc5aec201036dc7cd4","n":547,"total":72806,"zero_count":97,"zero_share":0.1773308957952468,"minimum":0,"median":75,"mean":133.10054844606947,"maximum":850,"top10_observed_share":0.36065708870148067,"top30_observed_share":0.7369996978271022,"top_share_convention":"Interpolated share of observed counts under descending observed-count ordering","unique_counts":167,"histogram":[[0,97],[1,2],[2,2],[4,1],[5,10],[6,4],[7,3],[8,1],[9,1],[10,10],[11,1],[12,4],[15,8],[16,2],[17,1],[18,2],[19,2],[20,10],[21,3],[22,1],[24,1],[25,5],[29,1],[30,8],[32,1],[33,3],[34,1],[35,6],[36,5],[37,1],[38,1],[39,1],[40,8],[41,1],[42,1],[43,1],[45,5],[46,1],[48,1],[50,13],[51,1],[52,1],[53,1],[54,2],[55,3],[56,2],[57,1],[58,3],[59,1],[60,6],[61,2],[62,1],[65,1],[66,1],[67,4],[68,2],[70,6],[71,1],[72,1],[74,3],[75,3],[76,1],[77,1],[78,2],[79,1],[80,7],[81,2],[83,2],[85,1],[86,1],[90,3],[92,1],[94,1],[95,1],[99,1],[100,2],[105,2],[106,1],[110,8],[113,2],[115,1],[118,1],[120,12],[121,2],[122,1],[123,2],[125,1],[128,1],[130,6],[135,1],[136,2],[138,1],[140,6],[141,1],[143,1],[145,2],[150,20],[154,1],[155,3],[160,2],[162,1],[165,3],[170,1],[172,1],[175,1],[177,1],[180,3],[185,3],[190,1],[191,1],[195,1],[196,1],[200,7],[207,1],[210,3],[213,1],[215,1],[220,8],[225,2],[230,3],[236,1],[239,1],[240,2],[246,1],[250,19],[255,1],[259,1],[260,3],[270,1],[275,1],[280,2],[290,2],[295,1],[300,10],[315,1],[320,8],[325,2],[330,1],[332,1],[334,1],[350,11],[352,1],[360,4],[364,1],[380,1],[400,4],[408,1],[417,2],[420,1],[450,8],[460,1],[470,1],[485,1],[500,3],[510,1],[520,2],[525,1],[540,1],[550,5],[560,1],[600,2],[625,1],[630,1],[650,2],[660,1],[760,1],[850,1]]}};
+  const fitScope='Univariate empirical recorded-count distribution only; score quality is artificially specified, not fitted to a real model.';
+  const cohortDefinition='743 complete labeled survey habitats; 547 is the segmentation-mask-available nested subset, not independent external validation.';
+  const histograms=Object.freeze(Object.fromEntries(Object.entries(distributionData).map(([id,data])=>[id,Object.freeze(data.histogram.map(pair=>Object.freeze(pair.slice())))])));
+  const cohortSummaries=Object.freeze(Object.fromEntries(Object.entries(distributionData).map(([id,data])=>{
+    const {histogram,...summary}=data;return[id,Object.freeze(summary)];
+  })));
+  const definitions=[
+    {id:'jigjiga_743',title:'Jigjiga-shaped simulation: 743-habitat distribution',description:'New synthetic counts resampled from the full Jigjiga cohort count distribution. Artificial ranking scores, not historical OOF predictions.'},
+    {id:'jigjiga_547',title:'Jigjiga-shaped simulation: 547-habitat subset distribution',description:'New synthetic counts resampled from the nested segmentation-mask subset. This is not an independent cohort or a reconstructed field result.'}
+  ];
+  const cases=Object.freeze(C.cases.concat(definitions).map(c=>Object.freeze({...c})));
+  function rng(seed){
+    let a=seed>>>0;
+    return function(){a=(a+0x6D2B79F5)>>>0;let t=Math.imul(a^(a>>>15),1|a);t^=t+Math.imul(t^(t>>>7),61|t);return((t^(t>>>14))>>>0)/4294967296;};
+  }
+  function simulate(caseId='good',options={}){
+    const definition=definitions.find(c=>c.id===caseId);
+    if(!definition)return C.simulate(caseId,options);
+    const summary=cohortSummaries[caseId],histogram=histograms[caseId];
+    const n=options.n===undefined?summary.n:Number(options.n);
+    const seed=options.seed===undefined?2026:Number(options.seed);
+    const quality=options.quality===undefined?'informative':options.quality;
+    const noiseStd=options.noiseStd===undefined?2.5:Number(options.noiseStd);
+    if(typeof options.n==='boolean'||!Number.isInteger(n)||n<2||n>10000)throw new Error('Simulation size must be an integer from 2 to 10,000.');
+    if(typeof options.seed==='boolean'||!Number.isInteger(seed)||seed<0||seed>4294967295)throw new Error('Simulation seed must be an integer from 0 to 4,294,967,295.');
+    if(!['informative','random','reversed','perfect'].includes(quality))throw new Error('Score quality must be informative, random, reversed, or perfect.');
+    if(typeof options.noiseStd==='boolean'||!Number.isFinite(noiseStd)||noiseStd<0||noiseStd>20)throw new Error('Informative-score noise standard deviation must be between 0 and 20.');
+    // Independent streams keep every bootstrapped outcome fixed when only quality changes.
+    const outcomeRng=rng(seed),scoreRng=rng((seed^0x9E3779B9)>>>0);
+    const cumulative=[];let totalFrequency=0;
+    for(const pair of histogram){totalFrequency+=pair[1];cumulative.push(totalFrequency);}
+    function drawOutcome(){
+      const position=Math.floor(outcomeRng()*totalFrequency);
+      let low=0,high=cumulative.length-1;
+      while(low<high){const middle=Math.floor((low+high)/2);if(cumulative[middle]>position)high=middle;else low=middle+1;}
+      return histogram[low][0];
+    }
+    function normal(){return Math.sqrt(-2*Math.log(Math.max(scoreRng(),1e-12)))*Math.cos(2*Math.PI*scoreRng());}
+    const rows=Array.from({length:n},(_,i)=>{
+      const observed=drawOutcome();
+      const score=quality==='perfect'?observed:quality==='reversed'?-observed:quality==='random'?scoreRng():Math.log1p(observed)+noiseStd*normal();
+      return{site_id:'SYN-'+summary.source_cohort+'-'+String(i+1).padStart(6,'0'),observed,score};
+    });
+    return{...definition,n,requestedN:n,seed,synthetic:true,empirical:true,
+      endpoint:'Synthetic recorded larval count (Jigjiga distribution)',scenario:quality,quality,
+      sourceCohort:summary.source_cohort,fitScope,generatorVersion:VERSION,
+      noiseStd:quality==='informative'?noiseStd:null,
+      rows,scoreColumns:['score'],scoreLabels:{score:quality==='informative'?'Artificial noisy log-count score':quality==='random'?'Artificial independent random score':quality==='perfect'?'Retrospective perfect-information score':'Artificial reversed outcome score'},
+      generator:'Mulberry32 bootstrap with replacement from aggregate observed count frequencies; independent Mulberry32 score stream. Informative scores use log1p(count) plus normal noise with specified standard deviation.',
+      provenance:{sourcePath:summary.source_file,sourceSHA256:summary.sha256,sourceCohort:summary.source_cohort,cohortDefinition,fitScope},
+      warnings:[
+        'Synthetic teaching data, not actual survey rows or held-out model predictions.',
+        'Only the empirical marginal count distribution is reused. Covariates, spatial dependence, sampling effort, seasonality and habitat persistence are not modeled.',
+        'The artificial score mechanism is not calibrated to historical lift or a validated predictive model.',
+        'Bootstrap sample totals and zero frequencies vary. The source cohorts are nested, not independent validation samples.'
+      ]};
+  }
+  return Object.freeze({VERSION,cases,simulate,histograms,cohortSummaries});
+});
+
+</script><script>/* Operational descriptions of already-computed coverage curves.
+ * No fitting, confidence intervals, causal claims or cost assumptions.
+ */
+(function (root, factory) {
+  const api = typeof module === 'object' && module.exports
+    ? factory(require('../dist/core.js')) : factory(root.LiftCore);
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  root.LiftInsights = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (Core) {
+  'use strict';
+  if (!Core || typeof Core.atFraction !== 'function') {
+    throw new Error('LiftInsights requires LiftCore.atFraction. Load core.js first.');
+  }
+
+  function checkResult(result) {
+    if (!result || !Number.isInteger(result.n) || result.n < 2 ||
+        !Array.isArray(result.curve) || result.curve.length !== result.n + 1) {
+      throw new Error('Pass an evaluation result produced by LiftCore.evaluate.');
+    }
+    return result;
+  }
+
+  function checkFraction(value, label) {
+    if (typeof value !== 'number' || !Number.isFinite(value) || value < 0 || value > 1) {
+      throw new Error(`${label} must be a finite number from 0 to 1 inclusive.`);
+    }
+  }
+
+  function undefinedCoverage(result) {
+    return result.status === 'zero_total' || result.curve[0].model === null;
+  }
+
+  function inverse(curve, target, key) {
+    if (target === 0) return 0;
+    // First crossing, rather than the last point on a plateau.
+    let low = 0, high = curve.length - 1;
+    while (low < high) {
+      const middle = Math.floor((low + high) / 2);
+      if (curve[middle][key] >= target) high = middle;
+      else low = middle + 1;
+    }
+    const right = curve[low];
+    if (right[key] === null || right[key] < target) return null;
+    if (low === 0) return right.x;
+    const left = curve[low - 1];
+    const rise = right[key] - left[key];
+    if (!(rise > 0)) return left.x;
+    const fraction = left.x + (right.x - left.x) * (target - left[key]) / rise;
+    return Math.max(0, Math.min(1, fraction));
+  }
+
+  function wholeBudget(result, siteEquivalents, target) {
+    const rounded = Math.round(siteEquivalents);
+    const tolerance = 8 * Number.EPSILON * Math.max(1, Math.abs(siteEquivalents));
+    // Do not snap a strictly positive target down to zero visits.
+    let k = rounded > 0 && Math.abs(siteEquivalents - rounded) <= tolerance
+      ? rounded : Math.ceil(siteEquivalents);
+    k = Math.max(0, Math.min(result.n, k));
+    let coverage = Core.atFraction(result.curve, k / result.n);
+    const valueTolerance = 16 * Number.EPSILON * Math.max(Number.MIN_VALUE,
+      Math.abs(target), Math.abs(coverage));
+    // Retain the ceiling interpretation if a nearly-integer inverse sits just above
+    // a boundary by more than ordinary floating-point error.
+    if (k < result.n && coverage + valueTolerance < target) {
+      k += 1;
+      coverage = Core.atFraction(result.curve, k / result.n);
+    }
+    return { wholeSites: k, wholeFraction: k / result.n, wholeCoverage: coverage };
+  }
+
+  function targetCoverage(result, targetFraction) {
+    checkResult(result);
+    checkFraction(targetFraction, 'Target coverage');
+    if (undefinedCoverage(result)) {
+      return { status: 'undefined_zero_total', target: targetFraction,
+        fraction: null, siteEquivalents: null, wholeSites: null,
+        wholeFraction: null, wholeCoverage: null, randomFraction: null, idealFraction: null };
+    }
+    const fraction = inverse(result.curve, targetFraction, 'model');
+    const idealFraction = inverse(result.curve, targetFraction, 'ideal');
+    if (fraction === null || idealFraction === null) {
+      throw new Error('The supplied curve does not reach the target coverage.');
+    }
+    const siteEquivalents = fraction * result.n;
+    return { status: result.status, target: targetFraction, fraction, siteEquivalents,
+      ...wholeBudget(result, siteEquivalents, targetFraction),
+      randomFraction: targetFraction, idealFraction };
+  }
+
+  function budgetRows(result, budgets = [.1, .2, .3, .5, .8]) {
+    checkResult(result);
+    if (!Array.isArray(budgets)) throw new Error('Budgets must be an array of fractions.');
+    return budgets.map(fraction => {
+      checkFraction(fraction, 'Selection budget');
+      const k = Math.min(result.n, Math.floor(fraction * result.n + 1e-12));
+      const floorFraction = k / result.n;
+      const coverage = Core.atFraction(result.curve, fraction);
+      const idealCoverage = Core.atFraction(result.curve, fraction, 'ideal');
+      const floorCoverage = Core.atFraction(result.curve, floorFraction);
+      return { fraction, siteEquivalents: fraction * result.n, coverage, idealCoverage,
+        multiplier: fraction > 0 && coverage !== null ? coverage / fraction : null,
+        k, floorFraction, floorCoverage,
+        floorMultiplier: floorFraction > 0 && floorCoverage !== null ? floorCoverage / floorFraction : null,
+        status: undefinedCoverage(result) ? 'undefined_zero_total' : result.status };
+    });
+  }
+
+  function diagnostics(result) {
+    checkResult(result);
+    const denominator = result.denominator;
+    const denominatorState = denominator === null ? 'undefined' : denominator === 0 ? 'zero' : 'positive';
+    const denominatorDescription = denominatorState === 'undefined'
+      ? 'No positive observed total: outcome coverage and its area denominator are undefined.'
+      : denominatorState === 'zero'
+        ? 'No observed outcome contrast: ideal ordering has no area advantage over random ordering.'
+        : 'Positive observed outcome contrast: ideal ordering has an area advantage over random ordering.';
+    const tiedUnits = (result.tieBlocks || []).reduce((total, block) => total + block.size, 0);
+    return { n: result.n, total: result.total, zeroShare: result.zeroCount / result.n,
+      observedTop10Share: Core.atFraction(result.curve, .1, 'ideal'), denominator,
+      denominatorState, denominatorDescription,
+      idealConcentration: denominator === null ? null : 2 * denominator,
+      uniqueScoreCount: result.uniqueScoreCount, tiedUnitShare: tiedUnits / result.n,
+      status: result.status };
+  }
+
+  // Explicit polygons avoid renderer-dependent clipping of positive/negative fills.
+  // Close each returned run to the diagonal at its final and initial x positions.
+  function signedAreaRegions(curve) {
+    const regions = { positive: [], negative: [] };
+    if (!Array.isArray(curve) || curve.length < 2 || curve.some((point, i) =>
+      !point || !Number.isFinite(point.x) || !Number.isFinite(point.model) ||
+      (i > 0 && point.x <= curve[i - 1].x))) return regions;
+
+    let run = [], sign = 0;
+    const copy = point => ({ x: point.x, model: point.model });
+    function flush() {
+      if (run.length > 1) {
+        let area = 0;
+        for (let i = 1; i < run.length; i++) {
+          const a = run[i - 1], b = run[i];
+          area += (b.x - a.x) * ((a.model - a.x) + (b.model - b.x)) / 2;
+        }
+        if (area > 0) regions.positive.push(run);
+        else if (area < 0) regions.negative.push(run);
+      }
+      run = []; sign = 0;
+    }
+    function add(a, b, nextSign) {
+      if (nextSign === 0) { flush(); return; }
+      if (nextSign !== sign) { flush(); run.push(copy(a)); sign = nextSign; }
+      run.push(copy(b));
+      if (b.model === b.x) flush();
+    }
+    for (let i = 1; i < curve.length; i++) {
+      const a = curve[i - 1], b = curve[i];
+      const da = a.model - a.x, db = b.model - b.x;
+      if ((da < 0 && db > 0) || (da > 0 && db < 0)) {
+        const x = a.x + (b.x - a.x) * da / (da - db);
+        const crossing = { x, model: x };
+        add(a, crossing, Math.sign(da));
+        add(crossing, b, Math.sign(db));
+      } else add(a, b, Math.sign(da || db));
+    }
+    flush();
+    return regions;
+  }
+
+  return Object.freeze({ VERSION: '1.0.0', targetCoverage, budgetRows, diagnostics, signedAreaRegions });
+});
+</script><script>(function () {
+  'use strict';
+  const C = globalThis.LiftCore;
+  const E = globalThis.LiftExamples;
+  const I = globalThis.LiftInsights;
+  const $ = id => document.getElementById(id);
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const number = (x,d=3) => x === null || x === undefined || !Number.isFinite(x) ? 'N/A' : x.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+  const pct = x => x === null || x === undefined ? 'N/A' : `${number(100*x,1)}%`;
+  const state = {rows:[],headers:[],source:null,result:null,comparison:null,revision:0};
+  const exportIDs=['download-data','download-curves','download-ranks','download-json','download-svg','download-png','copy-report','download-report','download-budgets'];
+  const plot={w:820,h:460,left:72,right:792,top:30,bottom:360};
+  const px=x=>plot.left+x*(plot.right-plot.left), py=y=>plot.bottom-y*(plot.bottom-plot.top);
+  const svgText=(x,y,t,opts='')=>`<text x="${x}" y="${y}" fill="#425b71" font-family="Arial, sans-serif" ${/\bfont-size\s*=/.test(opts)?'':'font-size="12"'} ${opts}>${esc(t)}</text>`;
+  function message(text,error=false){$('message').textContent=text;$('message').className='notice'+(error?' error':'');}
+  function invalidate(err,dropData=false){
+    if(dropData){state.rows=[];state.headers=[];state.source=null;$('dataset-title').textContent='No dataset loaded';$('dataset-source').textContent='INPUT NOT ACCEPTED';$('sample-badge').textContent='0 rows';}
+    state.result=null;state.comparison=null;
+    message(err instanceof Error ? err.message : String(err),true);
+    for(const id of ['metric-lift','metric-coverage','metric-multiplier']) $(id).textContent='N/A';
+    for(const id of ['lift-interpretation','coverage-detail','area-calculation','budget-convention','calculation-detail','rank-table','report-text','chart-readout','target-result','data-diagnostics','budget-table']) {
+      if(id==='report-text')$(id).value='';else $(id).textContent='';
+    }
+    $('coverage-chart').innerHTML=svgText(410,220,'No valid result. Correct the input and compute again.','text-anchor="middle"');
+    $('comparison-output').hidden=true;$('compare-legend').hidden=true;
+    exportIDs.forEach(id=>$(id).disabled=true);
+  }
+  function options(scoreKey='score-column',directionKey='direction'){
+    return {observed:$('observed-column').value,score:$(scoreKey).value,
+      id:$('id-column').value||null,direction:$(directionKey).value,fraction:Number($('budget').value)/100};
+  }
+  function fillSelect(id,values,preferred,empty){
+    const el=$(id);el.replaceChildren();
+    if(empty!==undefined){const opt=document.createElement('option');opt.value='';opt.textContent=empty;el.add(opt);}
+    values.forEach(value=>{const opt=document.createElement('option');opt.value=value;opt.textContent=value;el.add(opt);});
+    if(preferred!==undefined&&[...el.options].some(o=>o.value===preferred))el.value=preferred;
+  }
+  function inputMode(mode){
+    const examples=mode==='examples';
+    $('example-inputs').hidden=!examples;$('input-details').hidden=examples;
+    $('mode-examples').setAttribute('aria-pressed',String(examples));
+    $('mode-csv').setAttribute('aria-pressed',String(!examples));
+  }
+  function setData(rows,headers,source){
+    if(rows.length>20000)throw new Error('Please use 20,000 rows or fewer for this browser calculator. No rows were dropped.');
+    if(rows.length<2)throw new Error('At least two evaluation rows are required.');
+    state.rows=rows;state.headers=headers;state.source=source;
+    const find=pattern=>headers.find(h=>pattern.test(h));
+    const observed=find(/^(observed|actual_larvae|observed_larvae|count|outcome|y_true)$/i)||headers[1]||headers[0];
+    const score=find(/^(score|prediction|predicted|y_score|oof_score)$/i)||headers.find(h=>h!==observed&&!/^.*id$/i.test(h))||headers[0];
+    fillSelect('id-column',headers,find(/^(site_id|id|habitat_id)$/i)||'','Generate row IDs');
+    fillSelect('observed-column',headers,observed);
+    fillSelect('score-column',headers,score);
+    fillSelect('compare-column',headers,headers.includes('score_alt')?'score_alt':'','No comparison');
+    $('direction').value='high';$('compare-direction').value='high';
+    $('cohort').value=source.title;
+    $('endpoint').value=source.endpoint||(source.synthetic?'Synthetic recorded larval count':'');
+    $('evaluation-metadata').open=!source.synthetic;
+    inputMode(source.synthetic?'examples':'csv');
+    $('validation').value=source.synthetic?'simulated':'unknown';
+    $('dataset-source').textContent=source.empirical?'JIGJIGA-DISTRIBUTION SYNTHETIC DATA':source.synthetic?'SIMULATED TEACHING DATA':'USER-SUPPLIED DATA';
+    $('dataset-title').textContent=source.title;$('sample-badge').textContent=`${rows.length.toLocaleString()} rows`;
+    $('csv-input').value='';
+    compute();
+  }
+  function generate(){
+    // Every new data attempt, including a rejected one, supersedes older file reads.
+    state.revision++;
+    try{
+      if(!Number.isInteger(Number($('sample-size').value))||Number($('sample-size').value)<4||Number($('sample-size').value)>2000)throw new Error('Example size must be an integer from 4 to 2,000.');
+      $('empirical-controls').hidden=!Object.hasOwn(E.histograms,$('case').value);
+      const sim=E.simulate($('case').value,{n:Number($('sample-size').value),seed:Number($('seed').value),quality:$('ranking-quality').value});
+      $('case-description').textContent=sim.description+(sim.n!==Number($('sample-size').value)?` This fixed example uses ${sim.n} sites.`:'');
+      setData(sim.rows,Object.keys(sim.rows[0]),{...sim,rows:undefined});
+    }catch(e){invalidate(e,true);}
+  }
+  function loadCSV(text,name,requestRevision=++state.revision){
+    if(requestRevision!==state.revision)return;
+    try{
+      if(text.length>5000000)throw new Error('CSV exceeds the 5 MB browser input limit.');
+      const data=C.parseCSV(text);
+      setData(data.rows,data.headers,{title:name,synthetic:false,format:'CSV'});
+      $('case-description').textContent='User data loaded. Simulations remain available above.';
+    }catch(e){invalidate(e,true);}
+  }
+  function compute(){
+    try{
+      if(!state.rows.length)return;
+      const r=C.evaluate(state.rows,options());
+      const comparison=$('compare-column').value?C.evaluate(state.rows,options('compare-column','compare-direction')):null;
+      state.result=r;state.comparison=comparison;
+      const warnings=[...r.warnings];
+      if(r.observedColumn===r.scoreColumn)warnings.unshift('The observed outcome column is also the ranking score. This is retrospective perfect information, not predictive validation.');
+      if($('validation').value==='insample')warnings.unshift('In-sample ranking is descriptive and potentially optimistic. It is not a held-out performance estimate.');
+      if(!state.source.synthetic&&$('validation').value==='simulated')warnings.unshift('User-supplied CSV is labeled simulated. Confirm this provenance before reporting.');
+      if($('validation').value==='unknown')warnings.unshift('Prediction provenance is not documented. Do not interpret this calculation as a validated model result.');
+      if(comparison&&comparison.scoreColumn===r.scoreColumn&&comparison.direction===r.direction)warnings.push('The comparison uses the same score and direction as ranking 1.');
+      message(warnings.join('\n'));
+      exportIDs.forEach(id=>$(id).disabled=false);
+      $('metric-lift').textContent=number(r.lift);
+      $('lift-interpretation').textContent=r.lift===null?'No defined normalized comparison':r.lift<0?'Negative signed area gain versus random':`${number(100*r.lift,1)}% of the available area gain`;
+      $('metric-coverage').textContent=pct(r.budget.coverage);
+      $('coverage-detail').textContent=`At ${pct(r.budget.fraction)} of evaluation units`;
+      $('metric-multiplier').textContent=r.budget.multiplier===null?'N/A':number(r.budget.multiplier,2)+'×';
+      $('budget-output').textContent=`${$('budget').value}%`;
+      $('dataset-title').textContent=$('cohort').value||state.source.title;
+      $('area-calculation').innerHTML=r.lift===null?
+        esc(r.status==='zero_total'?'No outcome total: neither outcome coverage nor lift is defined.':'No outcome heterogeneity: model and ideal both follow the diagonal, leaving no area advantage to normalize.'):
+        `<b class="blue">A = ${number(r.modelAdvantage,5)}</b> &nbsp; <b class="amber">B = ${number(r.denominator-r.modelAdvantage,5)}</b><br>Lift ratio = A / (A + B) = ${number(r.modelAdvantage,5)} / ${number(r.denominator,5)} = <b>${number(r.lift)}</b>${r.lift<0?'<br>A is a signed area. Below-random performance is negative, not clipped to zero.':''}`;
+      $('budget-convention').textContent=`Interpolated budget: ${number(r.budget.siteEquivalents,2)} habitat equivalents. Whole-habitat floor budget: ${r.budget.k} habitats (${pct(r.budget.floorFraction)}), expected coverage ${pct(r.budget.floorCoverage)}. Fractional habitats are an evaluation convention, not partial field visits.`;
+      $('comparison-output').hidden=!comparison;$('compare-legend').hidden=!comparison;
+      if(comparison)$('comparison-output').textContent=`Ranking 2 (${comparison.scoreColumn}): full lift ${number(comparison.lift)}, coverage ${pct(comparison.budget.coverage)} at this budget. Ranking 1 minus 2: ${r.lift===null||comparison.lift===null?'N/A':number(r.lift-comparison.lift)} lift and ${r.budget.coverage===null?'N/A':number(100*(r.budget.coverage-comparison.budget.coverage),1)+' percentage points'} coverage. This is a same-sample descriptive comparison, not a test of statistical significance.`;
+      $('calculation-detail').innerHTML=`<div class="table-wrap"><table><tbody>${[
+        ['Evaluation units',String(r.n)],['Observed total',number(r.total,3)],['Zero-outcome units',`${r.zeroCount} (${pct(r.zeroCount/r.n)})`],
+        ['Model area under coverage curve',number(r.aucModel,6)],['Ideal area under coverage curve',number(r.aucIdeal,6)],
+        ['Random expected area',r.status==='zero_total'?'N/A':'0.500000'],['Ideal area advantage (denominator)',number(r.denominator,8)],
+        ['Distinct score values',String(r.uniqueScoreCount)],['Tied-score blocks',String(r.tieBlocks.length)],
+        ['Rule','Exact score ties; straight chords; full [0, 1] domain; trapezoidal integration']
+      ].map(([k,v])=>`<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join('')}</tbody></table></div>`;
+      $('rank-table').innerHTML=`<table><thead><tr><th>ID</th><th>Priority rank</th><th>Observed</th><th>Score</th><th>Expected cumulative coverage</th></tr></thead><tbody>${r.rankedRows.slice(0,100).map(row=>`<tr><td>${esc(row.siteId)}</td><td>${row.rankStart===row.rankEnd?row.rankStart:`${row.rankStart} to ${row.rankEnd} (tied)`}</td><td class="num">${number(row.observed,2)}</td><td class="num">${number(row.score,3)}</td><td class="num">${pct(row.cumulativeExpected)}</td></tr>`).join('')}</tbody></table>`;
+      drawChart();updateReadout(r.budget.fraction);renderInsights();$('report-text').value=reportText();
+    }catch(e){invalidate(e);}
+  }
+  function budgetData(){
+    if(!state.result)return [];
+    const rows=I.budgetRows(state.result),other=state.comparison?I.budgetRows(state.comparison):null;
+    return rows.map((r,i)=>({...r,...(other?{comparisonCoverage:other[i].coverage,comparisonMultiplier:other[i].multiplier}:{} )}));
+  }
+  function renderInsights(){
+    const r=state.result;if(!r)return;
+    const q=Number($('target-coverage').value)/100,t=I.targetCoverage(r,q),d=I.diagnostics(r);
+    $('target-output').textContent=pct(q);
+    $('target-result').innerHTML=t.fraction===null?'<p class="target-explainer">No target coverage can be calculated when the observed total is zero.</p>':
+      `<strong class="target-number">${t.wholeSites} <small>of ${r.n} habitats</small></strong><p class="target-explainer">Whole-habitat ceiling: ${pct(t.wholeFraction)} of habitats, representing ${pct(t.wholeCoverage)} of the observed outcome.</p><p class="target-explainer">Interpolated crossing: ${pct(t.fraction)} (${number(t.siteEquivalents,2)} habitat equivalents). Ideal: ${pct(t.idealFraction)}. Random expectation curve: ${pct(t.randomFraction)}.</p>${state.comparison?`<p class="target-explainer">Ranking 2 reaches this target at ${pct(I.targetCoverage(state.comparison,q).fraction)} of habitats (interpolated).</p>`:''}`;
+    $('data-diagnostics').innerHTML=`<dl class="diagnostic-list"><div><dt>Zero-outcome habitats</dt><dd>${pct(d.zeroShare)}</dd></div><div><dt>Outcome in the highest observed 10%</dt><dd>${pct(d.observedTop10Share)}</dd></div><div><dt>Habitats with tied scores</dt><dd>${pct(d.tiedUnitShare)}</dd></div></dl><p class="target-explainer">${esc(d.denominatorDescription)} Top-10% concentration is interpolated from observed outcomes, not the model's top 10%.</p>`;
+    $('budget-table').innerHTML=`<table><thead><tr><th>Habitats selected</th><th>Ranking 1 coverage</th>${state.comparison?'<th>Ranking 2 coverage</th>':''}<th>Random expectation</th><th>Ideal coverage</th><th>Ranking 1 multiplier</th></tr></thead><tbody>${budgetData().map(b=>`<tr><td>${pct(b.fraction)}</td><td>${pct(b.coverage)}</td>${state.comparison?`<td>${pct(b.comparisonCoverage)}</td>`:''}<td>${r.status==='zero_total'?'N/A':pct(b.fraction)}</td><td>${pct(b.idealCoverage)}</td><td>${b.multiplier===null?'N/A':number(b.multiplier,2)+'×'}</td></tr>`).join('')}</tbody></table>`;
+  }
+  function pathOf(curve,key){return curve.map((p,i)=>`${i?'L':'M'}${px(p.x).toFixed(2)},${py(p[key]).toFixed(2)}`).join(' ');}
+  function drawChart(){
+    const r=state.result;if(!r)return;
+    let content='<title id="chart-title">Cumulative outcome coverage by habitat-selection budget</title><desc id="chart-desc">Blue: ranking 1; teal: ideal outcome ordering; dashed gray: random expectation. Shading shows signed gain above random and remaining possible gain.</desc><rect width="820" height="460" fill="white"/>';
+    for(let k=0;k<=5;k++){
+      const p=k/5;
+      content+=`<path d="M${plot.left},${py(p)}H${plot.right}" stroke="#e4ebf1" stroke-width="1"/>`;
+      content+=svgText(plot.left-12,py(p)+4,`${20*k}`,'text-anchor="end"');
+      content+=svgText(px(p),plot.bottom+23,`${20*k}`,'text-anchor="middle"');
+    }
+    content+=`<path d="M${plot.left},${plot.top}V${plot.bottom}H${plot.right}" fill="none" stroke="#8c9aaa" stroke-width="1.1"/>`;
+    content+=svgText(432,411,'Evaluation units selected (%)','text-anchor="middle" font-weight="600"');
+    content+=svgText(432,431,'Highest-ranked first; each row has equal horizontal weight','text-anchor="middle" font-size="10"');
+    content+=`<text x="19" y="195" transform="rotate(-90 19 195)" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#425b71">Share of observed outcome (%)</text>`;
+    if(r.status==='zero_total'){
+      content+=svgText(432,180,'All observed outcomes are zero.','text-anchor="middle"');
+      content+=svgText(432,204,'A coverage curve has no defined denominator.','text-anchor="middle"');
+      $('coverage-chart').innerHTML=content;return;
+    }
+    const model=pathOf(r.curve,'model'), ideal=pathOf(r.curve,'ideal');
+    if($('shade').checked){
+      const gap=ideal+' '+r.curve.slice().reverse().map(p=>`L${px(p.x).toFixed(2)},${py(p.model).toFixed(2)}`).join(' ')+'Z';
+      const regions=I.signedAreaRegions(r.curve);
+      const areaPath=points=>points.map((p,i)=>`${i?'L':'M'}${px(p.x).toFixed(2)},${py(p.model).toFixed(2)}`).join(' ')+`L${px(points.at(-1).x).toFixed(2)},${py(points.at(-1).x).toFixed(2)}L${px(points[0].x).toFixed(2)},${py(points[0].x).toFixed(2)}Z`;
+      content+=`<path d="${gap}" fill="#f1d8a2" fill-opacity=".58"/>`;
+      for(const points of regions.positive)content+=`<path d="${areaPath(points)}" fill="#9cc6fc" fill-opacity=".53"/>`;
+      for(const points of regions.negative)content+=`<path d="${areaPath(points)}" fill="#e5aca4" fill-opacity=".48"/>`;
+    }
+    content+=`<path d="M${px(0)},${py(0)}L${px(1)},${py(1)}" fill="none" stroke="#7d8793" stroke-width="1.8" stroke-dasharray="6 5"/>`;
+    content+=`<path d="${ideal}" fill="none" stroke="#009b9d" stroke-width="2.5" stroke-linejoin="round"/><path d="${model}" fill="none" stroke="#1766d0" stroke-width="2.7" stroke-linejoin="round"/>`;
+    if(state.comparison)content+=`<path d="${pathOf(state.comparison.curve,'model')}" fill="none" stroke="#be6b37" stroke-width="2.1" stroke-dasharray="7 4"/>`;
+    const q=r.budget.fraction,y=r.budget.coverage;
+    content+=`<path d="M${px(q)},${plot.bottom}V${py(y)}H${plot.left}" fill="none" stroke="#1766d0" stroke-width="1" stroke-dasharray="3 4"/><circle cx="${px(q)}" cy="${py(y)}" r="5" fill="#1766d0" stroke="white" stroke-width="2"/>`;
+    content+=`<g id="hover-indicator" visibility="hidden"><path id="hover-line" fill="none" stroke="#667e94" stroke-dasharray="2 4"/><circle id="hover-point" r="4" fill="white" stroke="#1766d0" stroke-width="2"/></g><rect id="chart-hit" x="${plot.left}" y="${plot.top}" width="${plot.right-plot.left}" height="${plot.bottom-plot.top}" fill="transparent" style="cursor:crosshair"/>`;
+    $('coverage-chart').innerHTML=content;
+  }
+  function updateReadout(q){
+    const r=state.result;if(!r)return;
+    $('chart-readout').textContent=`Select ${pct(q)} of units → ranking 1 represents ${pct(C.atFraction(r.curve,q))} of the outcome; ideal ${pct(C.atFraction(r.curve,q,'ideal'))}; random expectation ${r.status==='zero_total'?'N/A':pct(q)}.${state.comparison?' Ranking 2: '+pct(C.atFraction(state.comparison.curve,q))+'.':''}`;
+  }
+  function pointerFraction(e){const svg=$('coverage-chart'),p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;const point=p.matrixTransform(svg.getScreenCTM().inverse());return Math.max(0,Math.min(1,(point.x-plot.left)/(plot.right-plot.left)));}
+  function reportObject(){
+    const r=state.result;if(!r)throw new Error('No valid result to export.');
+    const summarize=x=>x?{n:x.n,total:x.total,zeroCount:x.zeroCount,aucModel:x.aucModel,aucIdeal:x.aucIdeal,
+      signedGain:x.modelAdvantage,denominator:x.denominator,lift:x.lift,status:x.status,budget:x.budget,
+      scoreColumn:x.scoreColumn,direction:x.direction,warnings:x.warnings}:null;
+    return {specification:'coverage-lift-v1.0',handbookEdition:2,engineVersion:C.VERSION,createdUTC:new Date().toISOString(),
+      cohort:$('cohort').value,endpoint:$('endpoint').value,predictionSource:$('validation').value,
+      source:state.source,mapping:options(),rankingA:summarize(r),rankingB:summarize(state.comparison),
+      budgetTable:budgetData(),diagnostics:I.diagnostics(r),coverageTarget:{rankingA:I.targetCoverage(r,Number($('target-coverage').value)/100),rankingB:state.comparison?I.targetCoverage(state.comparison,Number($('target-coverage').value)/100):null},
+      conventions:{rowWeight:'equal',ties:'expected ordering within exact-score blocks',integration:'piecewise-linear trapezoid over [0,1]',
+        budgets:'exact fraction plus floor(n*q) whole-habitat comparator',undefined:'null, not zero',
+        exclusions:'none; invalid required values rejected',confidenceIntervals:'not computed',independence:'not verified by this calculator'},
+      safeguards:['A ranking metric is not treatment effectiveness, cost saving, adult emergence reduction or malaria reduction.',
+        'Simulated examples are generated teaching data, not observed entomological datasets.']};
+  }
+  function reportText(){
+    const r=state.result;if(!r)return '';
+    return `${$('cohort').value||'The evaluation sample'} included ${r.n} evaluation units with ${number(r.total,3)} total units of the specified outcome (${$('endpoint').value||'not documented'}); ${r.zeroCount} units had zero outcomes. Prediction source was reported as "${$('validation').selectedOptions[0].textContent}". We ordered units by ${r.direction==='high'?'decreasing':'increasing'} ${r.scoreColumn}, treated exact score ties by expected within-block coverage, and integrated the piecewise-linear cumulative coverage curve over the full selection range. The coverage lift ratio was ${number(r.lift)} (model area ${number(r.aucModel,6)}, ideal area ${number(r.aucIdeal,6)}; undefined values are reported as N/A). At an interpolated ${pct(r.budget.fraction)} habitat budget, coverage was ${pct(r.budget.coverage)} and the budget-specific multiplier was ${number(r.budget.multiplier,3)}. This represents ${number(r.budget.siteEquivalents,2)} habitat equivalents; the floor budget of ${r.budget.k} whole units (${pct(r.budget.floorFraction)}) gave expected coverage ${pct(r.budget.floorCoverage)}. All ${r.n} supplied rows were retained. The app did not compute uncertainty intervals or verify prediction independence. Metric specification: coverage-lift-v1.0. ${state.source.synthetic?'These are simulated teaching data, not field results. ':''}Coverage describes the represented observed outcome, not a measured treatment effect or cost saving.`;
+  }
+  function download(name,content,type='text/plain;charset=utf-8'){
+    const blob=content instanceof Blob?content:new Blob([content],{type});const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
+  }
+  function figureSVG(){
+    const svg=$('coverage-chart').cloneNode(true);svg.setAttribute('xmlns','http://www.w3.org/2000/svg');
+    svg.setAttribute('width','1230');svg.setAttribute('height','885');svg.setAttribute('viewBox','0 0 820 590');
+    svg.querySelector('#chart-hit')?.remove();svg.querySelector('#hover-indicator')?.remove();
+    const r=state.result;
+    const plotGroup=document.createElementNS('http://www.w3.org/2000/svg','g');plotGroup.setAttribute('transform','translate(0 60)');plotGroup.innerHTML=svg.innerHTML;
+    svg.innerHTML='<rect width="820" height="590" fill="white"/>';svg.appendChild(plotGroup);
+    const header=document.createElementNS('http://www.w3.org/2000/svg','g');
+    const short=(text,max)=>text.length>max?text.slice(0,max-1)+'…':text;
+    header.innerHTML=svgText(72,27,short($('cohort').value||'Cumulative outcome coverage',76),'font-size="18" font-weight="600"')+svgText(72,48,short(`${$('endpoint').value||'Outcome not documented'} | n = ${r.n} | ${state.source.synthetic?'SIMULATED TEACHING DATA':'USER-SUPPLIED DATA'}`,105),'font-size="11"');svg.appendChild(header);
+    const meta=document.createElementNS('http://www.w3.org/2000/svg','metadata');meta.textContent=JSON.stringify(reportObject());svg.appendChild(meta);
+    const footer=document.createElementNS('http://www.w3.org/2000/svg','g');
+    footer.innerHTML=`<rect x="0" y="500" width="820" height="90" fill="white"/>${svgText(72,521,'Blue: ranking 1; teal: ideal retrospective order; gray dashed: random expectation.')}${svgText(72,539,state.comparison?'Orange dashed: ranking 2. Shading: signed gain A and remaining gain B.':'Shading: blue positive gain A, red negative gain A, amber remaining gain B.')}${svgText(72,557,`Lift = ${number(r.lift)}; n = ${r.n}; coverage at ${pct(r.budget.fraction)} = ${pct(r.budget.coverage)}.`)}${svgText(72,575,state.source.synthetic?'Simulated teaching data. Not treatment effectiveness.':'User-supplied data. Prediction provenance and independence require verification.')}`;
+    svg.appendChild(footer);return new XMLSerializer().serializeToString(svg);
+  }
+  function intro(){
+    const x=q=>58+424*q,y=q=>249-208*q;
+    const points=Array.from({length:101},(_,i)=>{const q=i/100;return {q,m:q+.24*Math.sin(Math.PI*q),ideal:1-(1-q)**3};});
+    const path=k=>points.map((p,i)=>`${i?'L':'M'}${x(p.q)},${y(p[k])}`).join(' ');
+    let s='<rect width="520" height="310" fill="#f7f9fb"/>';
+    for(let i=0;i<=4;i++){const p=i/4;s+=`<path d="M58,${y(p)}H482" stroke="#e2e9ef" stroke-width="1"/><text x="45" y="${y(p)+4}" text-anchor="end" font-family="Arial" font-size="11" fill="#51677b">${i*25}</text><text x="${x(p)}" y="270" text-anchor="middle" font-family="Arial" font-size="11" fill="#51677b">${i*25}</text>`;}
+    s+=`<path d="${path('ideal')} ${points.slice().reverse().map(p=>`L${x(p.q)},${y(p.m)}`).join(' ')}Z" fill="#f7dcaa" fill-opacity=".7"/><path d="${path('m')}Z" fill="#b5d4fc" fill-opacity=".8"/><path d="M58,249L482,41" stroke="#788795" fill="none" stroke-dasharray="5 4" stroke-width="1.6"/><path d="${path('m')}" fill="none" stroke="#1766d0" stroke-width="2.5"/><path d="${path('ideal')}" fill="none" stroke="#009b9d" stroke-width="2.5"/><text x="225" y="153" font-size="25" font-weight="bold" font-family="Arial" fill="#1766d0">A</text><text x="230" y="109" font-size="25" font-weight="bold" font-family="Arial" fill="#ad6b00">B</text><text x="270" y="298" font-family="Arial" font-size="12" text-anchor="middle" fill="#51677b">Habitats selected (%)</text><text x="15" y="145" transform="rotate(-90 15 145)" font-family="Arial" font-size="12" text-anchor="middle" fill="#51677b">Observed outcome (%)</text>`;
+    $('intro-chart').innerHTML=s;
+  }
+  E.cases.forEach(c=>{const o=document.createElement('option');o.value=c.id;o.textContent=c.title;$('case').add(o);});$('case').value='jigjiga_743';
+  $('mode-examples').addEventListener('click',()=>inputMode('examples'));
+  $('mode-csv').addEventListener('click',()=>inputMode('csv'));
+  $('generate').addEventListener('click',generate);$('case').addEventListener('change',()=>{
+    const cohort=E.cohortSummaries[$('case').value];
+    if(cohort)$('sample-size').value=cohort.n;
+    generate();
+  });
+  $('ranking-quality').addEventListener('change',generate);
+  $('load-csv').addEventListener('click',()=>loadCSV($('csv-input').value,'Pasted CSV'));
+  $('file-input').addEventListener('change',async e=>{
+    const f=e.target.files[0];if(!f)return;
+    const requestRevision=++state.revision;
+    if(f.size>5000000){invalidate('CSV exceeds 5 MB. No file was uploaded to a server.',true);e.target.value='';return;}
+    invalidate('Reading the selected CSV. No result is available yet.',true);
+    message('Reading the selected CSV. Calculations remain in this browser.');
+    try{
+      const text=await f.text();
+      if(requestRevision===state.revision)loadCSV(text,f.name,requestRevision);
+    }catch(err){if(requestRevision===state.revision)invalidate(err,true);}
+    finally{if(requestRevision===state.revision)e.target.value='';}
+  });
+  $('analyze').addEventListener('click',compute);
+  ['id-column','observed-column','score-column','direction','compare-column','compare-direction','validation'].forEach(id=>$(id).addEventListener('change',compute));
+  ['cohort','endpoint'].forEach(id=>$(id).addEventListener('input',()=>{if(state.result){$('report-text').value=reportText();$('dataset-title').textContent=$('cohort').value||state.source.title;}}));
+  $('budget').addEventListener('input',compute);$('shade').addEventListener('change',drawChart);
+  $('target-coverage').addEventListener('input',renderInsights);
+  $('coverage-chart').addEventListener('pointermove',e=>{const r=state.result;if(!r||r.status==='zero_total')return;const q=pointerFraction(e),y=C.atFraction(r.curve,q);const g=$('hover-indicator');if(g){g.setAttribute('visibility','visible');$('hover-line').setAttribute('d',`M${px(q)},${plot.top}V${plot.bottom}`);$('hover-point').setAttribute('cx',px(q));$('hover-point').setAttribute('cy',py(y));}updateReadout(q);});
+  $('coverage-chart').addEventListener('pointerleave',()=>{if(state.result){$('hover-indicator')?.setAttribute('visibility','hidden');updateReadout(state.result.budget.fraction);}});
+  $('coverage-chart').addEventListener('click',e=>{if(!state.result)return;$('budget').value=Math.max(1,Math.round(pointerFraction(e)*100));compute();});
+  $('template-download').addEventListener('click',()=>download('lift_input_template.csv',C.toCSV(C.simulate('worked').rows),'text/csv;charset=utf-8'));
+  $('download-data').addEventListener('click',()=>download('lift_input_data.csv',C.toCSV(state.rows,state.headers),'text/csv;charset=utf-8'));
+  $('download-curves').addEventListener('click',()=>download('lift_curve_points.csv',C.toCSV(state.result.curve.map((p,i)=>({...p,...(state.comparison?{comparison:state.comparison.curve[i].model}:{})}))),'text/csv;charset=utf-8'));
+  $('download-ranks').addEventListener('click',()=>download('lift_ranked_rows.csv',C.toCSV(state.result.rankedRows),'text/csv;charset=utf-8'));
+  $('download-budgets').addEventListener('click',()=>download('lift_budget_table.csv',C.toCSV(budgetData()),'text/csv;charset=utf-8'));
+  $('download-json').addEventListener('click',()=>download('lift_analysis_report.json',JSON.stringify(reportObject(),null,2),'application/json'));
+  $('download-report').addEventListener('click',()=>download('lift_reporting_paragraph.txt',reportText()));
+  $('copy-report').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(reportText());$('copy-report').textContent='Copied';setTimeout(()=>$('copy-report').textContent='Copy paragraph',1800);}catch{$('report-text').focus();$('report-text').select();message('Select and copy the highlighted paragraph. Clipboard access is unavailable in this browser context.');}});
+  $('download-svg').addEventListener('click',()=>download('lift_coverage_figure.svg',figureSVG(),'image/svg+xml'));
+  $('download-png').addEventListener('click',()=>{const url=URL.createObjectURL(new Blob([figureSVG()],{type:'image/svg+xml'}));const img=new Image();img.onload=()=>{const canvas=document.createElement('canvas');canvas.width=2460;canvas.height=1770;const ctx=canvas.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,2460,1770);ctx.drawImage(img,0,0,2460,1770);URL.revokeObjectURL(url);canvas.toBlob(blob=>{if(blob)download('lift_coverage_figure.png',blob);else message('PNG export failed. Use SVG instead.',true);},'image/png');};img.onerror=()=>{URL.revokeObjectURL(url);message('PNG export is unavailable in this browser. The editable SVG export remains available.',true);};img.src=url;});
+  document.querySelectorAll('[data-case]').forEach(el=>el.addEventListener('click',()=>{
+    $('case').value=el.dataset.case;
+    if(el.dataset.budget)$('budget').value=el.dataset.budget;
+    if(el.dataset.size)$('sample-size').value=el.dataset.size;
+    else if(E.cohortSummaries[el.dataset.case])$('sample-size').value=E.cohortSummaries[el.dataset.case].n;
+    generate();$('laboratory').scrollIntoView({behavior:'smooth'});
+  }));
+  $('print-handbook').addEventListener('click',()=>{document.querySelectorAll('.chapter details').forEach(d=>d.open=true);window.print();});
+  if($('intro-chart'))intro();
+  generate();
+})();
+</script></body></html>
