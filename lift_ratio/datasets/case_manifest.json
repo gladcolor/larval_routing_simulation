@@ -6,8 +6,7 @@
   "seed": 2026,
   "requested_n": {
     "original_examples": 120,
-    "jigjiga_743": 743,
-    "jigjiga_547": 547
+    "jigjiga_743": 743
   },
   "fixed_case_sizes": {
     "worked": 4,
@@ -293,7 +292,7 @@
       "fit_scope": "Univariate empirical recorded-count distribution only; score quality is artificially specified, not fitted to a real model.",
       "provenance": {
         "sourceCohort": 743,
-        "cohortDefinition": "743 complete labeled survey habitats; 547 is the segmentation-mask-available nested subset, not independent external validation.",
+        "cohortDefinition": "743 complete labeled survey habitats.",
         "fitScope": "Univariate empirical recorded-count distribution only; score quality is artificially specified, not fitted to a real model."
       },
       "warnings": [
@@ -309,41 +308,6 @@
       "expected_total": 92277,
       "expected_zero_count": 154,
       "expected_coverage_30_percent": 0.5178430161361987
-    },
-    {
-      "id": "jigjiga_547",
-      "title": "Jigjiga-shaped simulation: 547-habitat subset distribution",
-      "description": "New synthetic counts resampled from the nested segmentation-mask subset. This is not an independent cohort or a reconstructed field result.",
-      "file": "jigjiga_547.csv",
-      "n": 547,
-      "requested_n": 547,
-      "seed": 2026,
-      "synthetic": true,
-      "empirical_marginal": true,
-      "generator": "Mulberry32 bootstrap with replacement from aggregate observed count frequencies; independent Mulberry32 score stream. Informative scores use log1p(count) plus normal noise with specified standard deviation.",
-      "generator_version": "2.0",
-      "quality": "informative",
-      "noise_standard_deviation": 2.5,
-      "source_cohort": 547,
-      "fit_scope": "Univariate empirical recorded-count distribution only; score quality is artificially specified, not fitted to a real model.",
-      "provenance": {
-        "sourceCohort": 547,
-        "cohortDefinition": "743 complete labeled survey habitats; 547 is the segmentation-mask-available nested subset, not independent external validation.",
-        "fitScope": "Univariate empirical recorded-count distribution only; score quality is artificially specified, not fitted to a real model."
-      },
-      "warnings": [
-        "Synthetic teaching data, not actual survey rows or held-out model predictions.",
-        "Only the empirical marginal count distribution is reused. Covariates, spatial dependence, sampling effort, seasonality and habitat persistence are not modeled.",
-        "The artificial score mechanism is not calibrated to historical lift or a validated predictive model.",
-        "Bootstrap sample totals and zero frequencies vary. The source cohorts are nested, not independent validation samples."
-      ],
-      "expected_lift": 0.5104791453259871,
-      "expected_status": "ok",
-      "expected_auc_model": 0.6516186880930638,
-      "expected_auc_ideal": 0.7970125018451861,
-      "expected_total": 75026,
-      "expected_zero_count": 94,
-      "expected_coverage_30_percent": 0.4812065150747741
     }
   ]
 }
