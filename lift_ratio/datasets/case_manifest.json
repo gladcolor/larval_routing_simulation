@@ -14,7 +14,6 @@
     "crossing": 10
   },
   "interpretation": "All downloadable rows are synthetic. Two cases bootstrap aggregate Jigjiga count frequencies and assign artificial scores; none reproduce historical OOF predictions.",
-  "empirical_provenance_file": "empirical_distribution_provenance.json",
   "cases": [
     {
       "id": "worked",
@@ -278,7 +277,7 @@
     },
     {
       "id": "jigjiga_743",
-      "title": "Jigjiga-shaped simulation: 743-site distribution",
+      "title": "Jigjiga-shaped simulation: 743-habitat distribution",
       "description": "New synthetic counts resampled from the full Jigjiga cohort count distribution. Artificial ranking scores, not historical OOF predictions.",
       "file": "jigjiga_743.csv",
       "n": 743,
@@ -293,10 +292,8 @@
       "source_cohort": 743,
       "fit_scope": "Univariate empirical recorded-count distribution only; score quality is artificially specified, not fitted to a real model.",
       "provenance": {
-        "sourcePath": "code/density_prediction/productivity_code_audit/data/manual/cohort_743_manual.csv",
-        "sourceSHA256": "b0655259627a5dbfdca26a1cca7ba4eb9e121cdc78a7a54f079621e1ac9f81e8",
         "sourceCohort": 743,
-        "cohortDefinition": "743 complete labelled survey sites; 547 is the segmentation-mask-available nested subset, not independent external validation.",
+        "cohortDefinition": "743 complete labeled survey habitats; 547 is the segmentation-mask-available nested subset, not independent external validation.",
         "fitScope": "Univariate empirical recorded-count distribution only; score quality is artificially specified, not fitted to a real model."
       },
       "warnings": [
@@ -315,7 +312,7 @@
     },
     {
       "id": "jigjiga_547",
-      "title": "Jigjiga-shaped simulation: 547-site subset distribution",
+      "title": "Jigjiga-shaped simulation: 547-habitat subset distribution",
       "description": "New synthetic counts resampled from the nested segmentation-mask subset. This is not an independent cohort or a reconstructed field result.",
       "file": "jigjiga_547.csv",
       "n": 547,
@@ -330,10 +327,8 @@
       "source_cohort": 547,
       "fit_scope": "Univariate empirical recorded-count distribution only; score quality is artificially specified, not fitted to a real model.",
       "provenance": {
-        "sourcePath": "code/density_prediction/productivity_code_audit/data/manual/cohort_547_manual.csv",
-        "sourceSHA256": "d4df54994dd6ba6668f1399638d9a9fc9b3aab388e54a3cc5aec201036dc7cd4",
         "sourceCohort": 547,
-        "cohortDefinition": "743 complete labelled survey sites; 547 is the segmentation-mask-available nested subset, not independent external validation.",
+        "cohortDefinition": "743 complete labeled survey habitats; 547 is the segmentation-mask-available nested subset, not independent external validation.",
         "fitScope": "Univariate empirical recorded-count distribution only; score quality is artificially specified, not fitted to a real model."
       },
       "warnings": [
