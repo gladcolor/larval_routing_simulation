@@ -94,30 +94,30 @@
     <p class="lead">Plan <span class="em">An. stephensi</span> larval treatment on the real
       <b>road network</b>. Set the field constraints below — routes <b>recompute live</b>.</p>
 
-    <div class="grp"><b>City<button type="button" class="tip" aria-label="What is City?" data-tip="The town to plan for. Each town has its own road map and its own breeding sites.">?</button></b><div id="cityList"></div></div>
-    <div class="grp"><b>Campaign<button type="button" class="tip" aria-label="What is Campaign?" data-tip="Which set of breeding sites to plan for. Dry24, Rainy24, Malaria24 and Dry25 are field surveys: the dry season of 2024, the rainy season of 2024, the 2024 malaria season, and the dry season of 2025. Predicted (Jigjiga only) is 1,518 likely breeding sites, with larvae counts estimated by a computer model instead of a survey.">?</button></b><div id="campSeg" class="seg"></div></div>
+    <div class="grp"><b>City<button type="button" class="tip" aria-label="What is City?" data-tip="The town to plan for. Each town has its own road map and its own breeding habitats.">?</button></b><div id="cityList"></div></div>
+    <div class="grp"><b>Campaign<button type="button" class="tip" aria-label="What is Campaign?" data-tip="Which set of breeding habitats to plan for. Dry24, Rainy24, Malaria24 and Dry25 are field surveys: the dry season of 2024, the rainy season of 2024, the 2024 malaria season, and the dry season of 2025. Predicted (Jigjiga only) is 1,518 likely breeding habitats, with larvae counts estimated by a computer model instead of a survey.">?</button></b><div id="campSeg" class="seg"></div></div>
 
     <div class="grp">
       <b>Field parameters<button type="button" class="tip" aria-label="What is Field parameters?" data-tip="The working conditions of the treatment teams. Change any number and every plan updates straight away.">?</button></b>
-      <div class="pr"><label>driving speed<button type="button" class="tip" aria-label="What is driving speed?" data-tip="The average speed of a team&#x27;s vehicle on the town&#x27;s roads, in kilometres per hour. Setting it to 0 shows what happens if teams cannot drive at all.">?</button></label><input id="pSpeed" type="number" min="0" max="80" step="1" value="25"><span class="u">km/h</span></div>
-      <div class="pr"><label>service / site<button type="button" class="tip" aria-label="What is service / site?" data-tip="Minutes a team spends treating each breeding site once it gets there. The time to walk from the road to the site and back is added on top automatically.">?</button></label><input id="pService" type="number" min="1" max="120" step="1" value="10"><span class="u">min</span></div>
+      <div class="pr"><label>driving speed<button type="button" class="tip" aria-label="What is driving speed?" data-tip="The average speed of a team&#x27;s vehicle on the town&#x27;s roads, in kilometers per hour. Setting it to 0 shows what happens if teams cannot drive at all.">?</button></label><input id="pSpeed" type="number" min="0" max="80" step="1" value="25"><span class="u">km/h</span></div>
+      <div class="pr"><label>service / habitat<button type="button" class="tip" aria-label="What is service / habitat?" data-tip="Minutes a team spends treating each breeding habitat once it gets there. The time to walk from the road to the habitat and back is added on top automatically.">?</button></label><input id="pService" type="number" min="1" max="120" step="1" value="10"><span class="u">min</span></div>
       <div class="pr"><label>working hours / day<button type="button" class="tip" aria-label="What is working hours / day?" data-tip="How many hours each team works per day, counting both driving and treating.">?</button></label><input id="pHours" type="number" min="1" max="24" step="0.5" value="8"><span class="u">h</span></div>
-      <div class="note">Driving uses these road distances ÷ your speed; each site also adds a road→site walk-in.</div>
+      <div class="note">Driving uses these road distances ÷ your speed; each habitat also adds a road→habitat walk-in.</div>
     </div>
 
     <div class="grp">
-      <b>Routing algorithm<button type="button" class="tip" aria-label="What is Routing algorithm?" data-tip="The rule each team uses to decide which breeding site to go to next. Pick one to see its routes on the map. The chart below the map compares all of them.">?</button></b>
-      <div style="font-size:10px;color:var(--mut);margin:2px 0 1px">— optimized (target methods) —<button type="button" class="tip" aria-label="What is optimized?" data-tip="Plans that use a map of the breeding sites and how many larvae each one has.">?</button></div>
+      <b>Routing algorithm<button type="button" class="tip" aria-label="What is Routing algorithm?" data-tip="The rule each team uses to decide which breeding habitat to go to next. Pick one to see its routes on the map. The chart below the map compares all of them.">?</button></b>
+      <div style="font-size:10px;color:var(--mut);margin:2px 0 1px">— optimized (target methods) —<button type="button" class="tip" aria-label="What is optimized?" data-tip="Plans that use a map of the breeding habitats and how many larvae each one has.">?</button></div>
       <label class="r"><input type="radio" name="algo" value="sector" checked> <span id="quadrantLabel">Four-quadrant sweep (one quadrant at a time)</span><button id="quadrantTip" type="button" class="tip" aria-label="What is Four-quadrant sweep?" data-tip="For Jigjiga predicted habitats, work through four road-aligned planning quadrants: NE, NW, SE and SW. Choose a quadrant by total priority relative to estimated entry, walking and service time, then visit nearby habitats within it. These are planning areas, not administrative districts.">?</button></label>
-      <label class="r"><input type="radio" name="algo" value="greedy"> Greedy hotspot (richest sites first)<button type="button" class="tip" aria-label="What is Greedy hotspot?" data-tip="Always goes next to the site that gives the most larvae for the time it takes to drive there and treat it. The biggest sites get treated early, but teams criss-cross the town.">?</button></label>
-      <label class="r"><input type="radio" name="algo" value="cluster"> Cluster + greedy (split by area)<button type="button" class="tip" aria-label="What is Cluster + greedy?" data-tip="Splits the town into one area per team, and each team stays in its own area. Inside its area, a team always goes next to the site that gives the most larvae for the time. With 1 team this is the same as Greedy hotspot.">?</button></label>
+      <label class="r"><input type="radio" name="algo" value="greedy"> Priority per minute (richest habitats first)<button type="button" class="tip" aria-label="What is Priority per minute?" data-tip="Always goes next to the habitat that gives the most larvae for the time it takes to drive there and treat it. The biggest habitats get treated early, but teams criss-cross the town.">?</button></label>
+      <label class="r"><input type="radio" name="algo" value="cluster"> Cluster + priority per minute (split by area)<button type="button" class="tip" aria-label="What is Cluster + priority per minute?" data-tip="Splits the town into one area per team, and each team stays in its own area. Inside its area, a team always goes next to the habitat that gives the most larvae for the time. With 1 team this is the same as Priority per minute.">?</button></label>
       <div style="font-size:10px;color:var(--mut);margin:6px 0 1px">— current-practice baselines —<button type="button" class="tip" aria-label="What is current practice?" data-tip="Simpler ways of working, closer to how teams often work today. Useful for comparison.">?</button></div>
-      <label class="r"><input type="radio" name="algo" value="zigzag"> Zig-zag sweep (systematic, by area)<button type="button" class="tip" aria-label="What is Zig-zag sweep?" data-tip="Each team covers its part of town in strips, back and forth like mowing a lawn, and treats every site in that order. Easy to organise, but it ignores where most of the larvae are.">?</button></label>
-      <label class="r"><input type="radio" name="algo" value="nn"> Nearest (start &amp; treat nearby)<button type="button" class="tip" aria-label="What is Nearest?" data-tip="Always drives to the closest untreated site next. Very little driving, but big sites that are far away can wait a long time.">?</button></label>
-      <label class="r" id="randRow" hidden><input type="radio" name="algo" value="random"> Random order<button type="button" class="tip" aria-label="What is Random order?" data-tip="Visits the sites in a random order. A worst case to compare the other plans against.">?</button></label>
+      <label class="r"><input type="radio" name="algo" value="zigzag"> Zigzag sweep (systematic, by area)<button type="button" class="tip" aria-label="What is Zigzag sweep?" data-tip="Each team covers its part of town in strips, back and forth like mowing a lawn, and treats every habitat in that order. Easy to organize, but it ignores where most of the larvae are.">?</button></label>
+      <label class="r"><input type="radio" name="algo" value="nn"> Nearest neighbor (start &amp; treat nearby)<button type="button" class="tip" aria-label="What is Nearest neighbor?" data-tip="Always drives to the closest untreated habitat next. Very little driving, but big habitats that are far away can wait a long time.">?</button></label>
+      <label class="r" id="randRow" hidden><input type="radio" name="algo" value="random"> Random order<button type="button" class="tip" aria-label="What is Random order?" data-tip="Visits the habitats in a random order. A worst case to compare the other plans against.">?</button></label>
       <label class="r tog"><input type="checkbox" id="showRandom"> show Random order (slowest baseline)<button type="button" class="tip" aria-label="What is show Random order?" data-tip="Adds the Random order plan to the list and to the chart. It is usually by far the slowest, so it is hidden to keep the chart easy to read.">?</button></label>
-      <div style="font-size:10px;color:var(--mut);margin:6px 0 1px">— no map at all (must find the sites) —<button type="button" class="tip" aria-label="What is no map?" data-tip="What happens if nobody knows in advance where the breeding sites are.">?</button></div>
-      <label class="r"><input type="radio" name="algo" value="blind"> Search every street (no detection / prediction)<button type="button" class="tip" aria-label="What is Search every street?" data-tip="The teams have no list of sites, so they drive down every street in their part of town and treat breeding sites as they come across them. This shows how much time a map of the sites saves.">?</button></label>
+      <div style="font-size:10px;color:var(--mut);margin:6px 0 1px">— no map at all (must find the habitats) —<button type="button" class="tip" aria-label="What is no map?" data-tip="What happens if nobody knows in advance where the breeding habitats are.">?</button></div>
+      <label class="r"><input type="radio" name="algo" value="blind"> Search every street (no detection / prediction)<button type="button" class="tip" aria-label="What is Search every street?" data-tip="The teams have no list of habitats, so they drive down every street in their part of town and treat breeding habitats as they come across them. This shows how much time a map of the habitats saves.">?</button></label>
     </div>
 
     <div class="grp">
@@ -127,7 +127,7 @@
       <div class="note">Day 0: before visits. Day 1: end of the first working day.</div>
       <button id="play">▶ Drive route</button>
       <div id="spdRow" style="display:flex;align-items:center;gap:6px;margin-top:8px">
-        <span class="note" style="margin:0">▶ play speed<button type="button" class="tip" aria-label="What is Drive route and play speed?" data-tip="Drive route plays an animation of each team&#x27;s car driving its route, day by day. Sites change colour as they are treated. Play speed sets how fast it plays, and how long a saved GIF is.">?</button></span><div id="spdSeg" class="seg" style="flex:1"></div>
+        <span class="note" style="margin:0">▶ play speed<button type="button" class="tip" aria-label="What is Drive route and play speed?" data-tip="Drive route plays an animation of each team&#x27;s car driving its route, day by day. Habitats change color as they are treated. Play speed sets how fast it plays, and how long a saved GIF is.">?</button></span><div id="spdSeg" class="seg" style="flex:1"></div>
       </div>
       <div id="playSpeedRow" style="margin-top:6px">
         <input id="playSpeedRange" type="range" min="0.25" max="4" step="0.25" value="1" aria-label="Animation playback speed" aria-valuetext="1 times">
@@ -143,7 +143,7 @@
     </div>
 
     <div class="grp">
-      <b>Site dot size<button type="button" class="tip" aria-label="What is Site dot size?" data-tip="Makes every site dot on the map bigger or smaller. Bigger dots still mean more larvae.">?</button></b>
+      <b>Habitat dot size<button type="button" class="tip" aria-label="What is Habitat dot size?" data-tip="Makes every habitat dot on the map bigger or smaller. Bigger dots still mean more larvae.">?</button></b>
       <div id="dotRow"><input id="dotRange" type="range" min="0.2" max="4" step="0.1" value="1"><span id="dotVal">1.0×</span></div>
       <div class="note">Scales every habitat dot; relative size still ∝ larvae.</div>
     </div>
@@ -151,13 +151,13 @@
     <div class="grp">
       <b>Legend</b>
       <div class="lgrow"><span class="dot" style="background:#39424e"></span>not yet treated</div>
-      <div class="lgrow"><span class="dot" style="background:#fd8d3c"></span>treated · colour + opacity = <span id="priorityLabel">predicted priority</span></div>
+      <div class="lgrow"><span class="dot" style="background:#fd8d3c"></span>treated · color + opacity = <span id="priorityLabel">predicted priority</span></div>
       <div id="ramp" class="ramp"></div>
       <div class="rampLab"><span>0</span><span id="rampMid"></span><span id="rampMax"></span></div>
       <div class="note" style="margin:0 0 5px 19px">Lower productivity is more transparent; higher productivity is more visible. Faint habitats remain clickable.</div>
       <div class="lgrow"><span class="dot" style="background:none;border:1px solid #9aa6b2"></span>dot size also ∝ larvae</div>
       <div class="lgrow"><span class="ln" style="border-color:#58a6ff"></span>team 1 &nbsp;<span class="ln" style="border-color:#f9a620"></span>2 &nbsp;<span class="ln" style="border-color:#1f9e89"></span>3</div>
-      <div class="note" style="margin:0 0 3px">Team colour marks both its route line and the outline of the sites it treated.</div>
+      <div class="note" style="margin:0 0 3px">Team color marks both its route line and the outline of the habitats it treated.</div>
       <div class="lgrow"><span style="font-size:13px">◆</span>&nbsp;team start (per-team zone)</div>
       <div class="interp" id="interp"></div>
     </div>
@@ -170,11 +170,11 @@
       <svg id="covsvg" viewBox="0 0 560 236" preserveAspectRatio="xMidYMid meet"></svg>
       <div id="covside">
         <h3 id="covTitle">Coverage</h3>
-        <div class="stat"><span class="k">larvae treated by day <span id="dDay">0</span><button type="button" class="tip" aria-label="What is larvae treated?" data-tip="The share of all the larvae in town that were in sites treated by the end of this day.">?</button></span><span class="v big" id="vLarv">—</span></div>
-        <div class="stat"><span class="k">habitats visited<button type="button" class="tip" aria-label="What is habitats visited?" data-tip="Breeding sites treated so far, out of all the breeding sites in town.">?</button></span><span class="v" id="vHab">—</span></div>
-        <div class="stat"><span class="k">days to knock down 50% larvae<button type="button" class="tip" aria-label="What is 50% of larvae?" data-tip="How many days it takes until the treated sites held half of all the larvae.">?</button></span><span class="v" id="v50">—</span></div>
-        <div class="stat"><span class="k">days to knock down 80% larvae<button type="button" class="tip" aria-label="What is 80% of larvae?" data-tip="How many days it takes until the treated sites held 80% of all the larvae.">?</button></span><span class="v" id="v80">—</span></div>
-        <div class="stat"><span class="k">treat ALL sites — calendar days<button type="button" class="tip" aria-label="What is all sites?" data-tip="How many days it takes to treat every site, with all teams working at the same time.">?</button></span><span class="v" id="vFinish">—</span></div>
+        <div class="stat"><span class="k">larvae treated by day <span id="dDay">0</span><button type="button" class="tip" aria-label="What is larvae treated?" data-tip="The share of all the larvae in town that were in habitats treated by the end of this day.">?</button></span><span class="v big" id="vLarv">—</span></div>
+        <div class="stat"><span class="k">habitats visited<button type="button" class="tip" aria-label="What is habitats visited?" data-tip="Breeding habitats treated so far, out of all the breeding habitats in town.">?</button></span><span class="v" id="vHab">—</span></div>
+        <div class="stat"><span class="k">days to knock down 50% larvae<button type="button" class="tip" aria-label="What is 50% of larvae?" data-tip="How many days it takes until the treated habitats held half of all the larvae.">?</button></span><span class="v" id="v50">—</span></div>
+        <div class="stat"><span class="k">days to knock down 80% larvae<button type="button" class="tip" aria-label="What is 80% of larvae?" data-tip="How many days it takes until the treated habitats held 80% of all the larvae.">?</button></span><span class="v" id="v80">—</span></div>
+        <div class="stat"><span class="k">treat ALL habitats — calendar days<button type="button" class="tip" aria-label="What is all habitats?" data-tip="How many days it takes to treat every habitat, with all teams working at the same time.">?</button></span><span class="v" id="vFinish">—</span></div>
         <div class="stat"><span class="k">team-days (total effort)<button type="button" class="tip" aria-label="What is team-days?" data-tip="Days worked by all teams added together, out of the days available so far. For example, 2 teams working 5 days is 10 team-days.">?</button></span><span class="v" id="vTd">—</span></div>
         <div class="verdict" id="verdict"></div>
       </div>
@@ -190,7 +190,7 @@ const $=id=>document.getElementById(id);
 const CAMPS=SIM_CAMPS, CITIES=SIM_CITIES;
 const TEAM_COL=["#58a6ff","#f9a620","#1f9e89"];
 const ALGO_COL={blind:"#c08a3a",random:"#e0529c",nn:"#f9a620",zigzag:"#8b949e",greedy:"#1f9e89",cluster:"#58a6ff",sector:"#d2a8ff"};
-const ALGO_LAB={blind:"Search every street (no map)",random:"Random",nn:"Nearest (treat nearby)",zigzag:"Zig-zag sweep",greedy:"Greedy hotspot",cluster:"Cluster + greedy",sector:"Four-quadrant sweep"};
+const ALGO_LAB={blind:"Search every street (no map)",random:"Random",nn:"Nearest neighbor (treat nearby)",zigzag:"Zigzag sweep",greedy:"Priority per minute",cluster:"Cluster + priority per minute",sector:"Four-quadrant sweep"};
 const WALK_KMH=4.3;
 const SIMD=3650;                // simulation horizon (days): long enough for milestones and the day slider to reach the real finish
 const DOT_W=0.5, DOT_W_T=0.8;  // habitat dot outline width (px): untreated / treated (team-coloured)
@@ -606,7 +606,7 @@ function buildCurveLegend(){
   el.insertAdjacentHTML("beforeend",
     `<span class="li on" style="cursor:default"><i class="sw dash" style="border-color:#c6d0da"></i>habitats visited</span>`+
     `<span class="li on" style="cursor:default;color:#d6b06a"><i class="sw dash" style="border-color:#d6b06a"></i>50% / 80% milestones</span>`+
-    `<button type="button" class="tip" aria-label="What is chart?" data-tip="Each line shows how fast larvae get treated, day by day, with one plan. Higher and steeper is better. The bold line is the plan you picked. The dotted line shows the share of sites visited, the gold dashed lines mark 50% and 80% of larvae treated, and the upright dotted line marks the day on the slider.">?</button>`);
+    `<button type="button" class="tip" aria-label="What is chart?" data-tip="Each line shows how fast larvae get treated, day by day, with one plan. Higher and steeper is better. The bold line is the plan you picked. The dotted line shows the share of habitats visited, the gold dashed lines mark 50% and 80% of larvae treated, and the upright dotted line marks the day on the slider.">?</button>`);
 }
 function applyRandomToggle(){
   $("randRow").hidden=!showRandom;
@@ -655,20 +655,20 @@ function update(){
   $("vFinish").textContent=fin==null?"> "+SIMD+" d":fin+" d";
   $("vTd").textContent=`${teamDaysUsed(st.algo,st.teams,day)} of ${st.teams*day}`;
   $("covTitle").innerHTML=`${st.city} · ${st.camp} — <span style="color:${ALGO_COL[st.algo]}">${ALGO_LAB[st.algo]}</span>, ${st.teams} team${st.teams>1?"s":""}`;
-  $("tdNote").innerHTML=`${st.hours}h/day · ${st.service}min/site + walk-in · ${st.speed}km/h driving. Routes recompute live.`;
+  $("tdNote").innerHTML=`${st.hours}h/day · ${st.service}min/habitat + walk-in · ${st.speed}km/h driving. Routes recompute live.`;
   if(st.city==="Jigjiga"&&st.camp==="Predicted")$("tdNote").innerHTML+='<br>Four road-aligned planning quadrants (NE/NW/SE/SW). Purple boundaries: solid = major road; dashed = local road / track. Priorities are predicted, not measured treatment outcomes.';
   const fmt=v=>v==null?`>${SIMD}d`:`${v}d`;
   const fd=[1,2,3].map(t=>fmt(finishDay(coverage(st.algo,t))));
   $("verdict").innerHTML=`<b>More teams = fewer days, not less work.</b> With <b style="color:${ALGO_COL[st.algo]}">${ALGO_LAB[st.algo]}</b>, `+
-    `treating all sites takes 1 team <b>${fd[0]}</b> · 2 <b>${fd[1]}</b> · 3 <b>${fd[2]}</b> (calendar days). `+
+    `treating all habitats takes 1 team <b>${fd[0]}</b> · 2 <b>${fd[1]}</b> · 3 <b>${fd[2]}</b> (calendar days). `+
     `Change driving speed / service time / hours above to see the route + days update instantly.`;
 }
 function interp(){
   $("interp").innerHTML=`Set <b>driving speed, service time, hours/day, teams</b> and the routes <b>recompute live</b>. `+
-    `Solid curves = larvae treated (bold = chosen algorithm); dashed grey = habitats visited. `+
+    `Solid curves = larvae treated (bold = chosen algorithm); dashed gray = habitats visited. `+
     `Routes <b>follow the real road network</b> (shortest road path between stops; travel time = road distance ÷ your speed). `+
     `<b>▶ Drive route</b> animates a 🚗 per team. `+
-    `<span style="display:block;margin-top:6px;color:#c08a3a"><b>Search every street (no map)</b> is the no-information floor: with no prediction/detection the crew must sweep <i>every street</i> (a Chinese-Postman coverage tour) to find the sites — the gap up to the targeted methods is the <b>value of the prediction map</b> (it also mixes in the freedom to skip empty streets).</span>`+
+    `<span style="display:block;margin-top:6px;color:#c08a3a"><b>Search every street (no map)</b> is the no-information floor: with no prediction/detection the crew must sweep <i>every street</i> (a Chinese-Postman coverage tour) to find the habitats — the gap up to the targeted methods is the <b>value of the prediction map</b> (it also mixes in the freedom to skip empty streets).</span>`+
     `<span style="display:block;margin-top:6px;color:#d6b06a">Tip: service time usually matters more than driving speed — try it.</span>`;
 }
 
